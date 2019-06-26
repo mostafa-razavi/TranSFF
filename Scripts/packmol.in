@@ -1,0 +1,13 @@
+#
+#   molecules in a LLL Angs cubic box
+#
+
+tolerance 2.0
+filetype pdb
+output out.txt
+seed -1
+
+structure pdbFile
+  number NNN
+  inside box 0.0 0.0 0.0 LLL LLL LLL
+end structure

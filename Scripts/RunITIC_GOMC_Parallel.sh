@@ -5,7 +5,7 @@
 
 
 #===== Number of CPU cores to use ===== 
-Nproc="4"
+Nproc="24"
 
 #===== Molecule and force field files =====
 molec_name="C2"
@@ -20,14 +20,14 @@ Potential="VDW"
 LRC="true"
 Rcut="14"
 PressureCalc="1000"
-RunSteps="100000"
-EqSteps="50"
-AdjSteps="50"
-CoordinatesFreq="1"
-RestartFreq="1000"
-ConsoleFreq="1"
-BlockAverageFreq="1"
-OutputName="out"
+RunSteps="10000000"
+EqSteps="500000"
+AdjSteps="1000"
+CoordinatesFreq="5000"
+RestartFreq="1000000"
+ConsoleFreq="5000"
+BlockAverageFreq="5000"
+OutputName="nvt"
 
 #===== Important paths =====
 Scripts_path="/home/mostafa/myProjects/myMBAR/Scripts"
@@ -98,4 +98,4 @@ else
 	parallel --jobs $Nproc < COMMANDS.parallel
 fi
 
-#bash ~/Git/GONvtRdr.sh/GONvtRdr.sh
+bash ~/Git/TranSFF/Scripts/GONvtRdr/GONvtRdr.sh nvt.inp nvt

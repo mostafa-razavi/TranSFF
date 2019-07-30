@@ -57,9 +57,10 @@ Structure 0  	 ../../../Files/rhoGCC_NNN/rhoGCC_NNN.psf
 #############################
 Temperature     some_Temperature
 Potential       some_Potential
-LRC		        some_LRC
-Rcut		    some_Rcut   
-Exclude 	    1-4
+LRC		some_LRC
+Rcut		some_Rcut 
+RcutFactor	3.0     
+Exclude		1-4
 
 #############################
 # ELECTROSTATIC   
@@ -71,17 +72,17 @@ PressureCalc    true  some_PressureCalc
 ################################
 # STEPS 
 ################################
-RunSteps       some_RunSteps      
-EqSteps		   some_EqSteps       
-AdjSteps	   some_AdjSteps
+RunSteps	some_RunSteps      
+EqSteps		some_EqSteps       
+AdjSteps	some_AdjSteps
 
 ################################
 # MOVE FREQUENCY              
 ################################
-DisFreq               0.4  
-RotFreq		          0.1
-CrankShaftFreq	      0.2
-RegrowthFreq	      0.3
+DisFreq		0.4  
+RotFreq		0.1
+CrankShaftFreq	0.2
+RegrowthFreq	0.3
 
 
 ################################

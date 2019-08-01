@@ -6,17 +6,16 @@ import numpy
 import sys
 import matplotlib.pyplot as plt
 
-plot_or_deviation = sys.argv[1]               # if "plot" then Z and U plots are generated else if "deviatin" one single score value is printed
+plot_or_deviation = sys.argv[1]            # if "plot" then Z and U plots are generated else if "deviatin" one single score value is printed
 true_data_file = sys.argv[2]               # The file that is used to minimize the deviation against
 mbar_data_file = sys.argv[3]               # The MBAR file that contains MBAR results at ITIC state points
-output_figure_filename=sys.argv[4]
+output_figure_filename = sys.argv[4]
+MW = float(sys.argv[5])
 
-MW = 30.07
-R_const = 8.314
+R_const = 8.31446261815324
 
 true_data = numpy.loadtxt(true_data_file, skiprows=1, usecols=(0,1,2,5))
 mbar_data = numpy.loadtxt(mbar_data_file, skiprows=1, usecols=(1,3))
-
 
 temp_k = true_data[:,0]
 rho_gcc = true_data[:,1]

@@ -2,6 +2,7 @@
 # This script plots either heatmap ("heatmap" option) or a (Z-1)/rho vs and TUres vs 1000/T plot ("zu" option)
 # The folder where this script is run in should contain only .res files
 heatmap_or_zu=$1
+MW="30.07"
 
 if [ "$heatmap_or_zu" == "heatmap" ]
 then
@@ -16,7 +17,7 @@ fi
 for i in *.target.res
 do
 	cat $i | awk '{print $2, $3, $4, $5, $6}' > $i.temp
-	score=$(python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation CassandraRdr.res $i.temp $i.png)
+	score=$(python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation CassandraRdr.res $i.temp $i.png $MW)
 	rm $i.temp
 
 	if [ "$heatmap_or_zu" == "heatmap" ]

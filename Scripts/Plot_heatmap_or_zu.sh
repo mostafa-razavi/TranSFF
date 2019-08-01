@@ -3,12 +3,13 @@
 # The folder where this script is run in should contain only .res files
 MW=$1
 heatmap_or_zu=$2
+direct_sim_file=$3
 
 if [ "$heatmap_or_zu" == "heatmap" ]
 then
-	outfile=$3
-	z_wt=$4
-	u_wt=$5	
+	outfile=$4
+	z_wt=$5
+	u_wt=$6	
 	rm -rf $outfile
 	
 	plot_or_deviation="deviation"
@@ -20,7 +21,7 @@ fi
 for i in *.target.res
 do
 	cat $i | awk '{print $2, $3, $4, $5, $6}' > $i.temp
-	score=$(python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation CassandraRdr.res $i.temp $i.png $MW $z_wt $u_wt)
+	score=$(python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation $direct_sim_file $i.temp $i.png $MW $z_wt $u_wt)
 	rm $i.temp
 
 	if [ "$heatmap_or_zu" == "heatmap" ]
@@ -53,6 +54,8 @@ gnuplot -persist << PLOT
 
 	set xrange[108:126]
 	set yrange[3.73:3.77]
+	
+	unset key
 
 	plot '$outfile' using 2:1:3 with image
 PLOT

@@ -1,10 +1,10 @@
 #!/bin/bash
 # This script runs GOMC_ITIC_MBAR.sh script for specified sigma and epsilons as two arrays by modifying the raw_par file.
 raw_par="/home/mostafa/Git/TranSFF/Forcefields/C2_sSOMEeSOME.par"
-Selected_Ts="274.79 235.56 360.00"
-Selected_rhos="0.0857 0.4714 0.6000"
-sig=(3.730 3.740 3.750 3.760 3.770)
-eps=(109 113 117 121 125)
+Selected_Ts="all"
+Selected_rhos="all"
+sig=(3.730)
+eps=(109)
 for isig in "${sig[@]}"
 do
     for ieps in "${eps[@]}"

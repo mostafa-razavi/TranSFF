@@ -11,8 +11,9 @@ true_data_file = sys.argv[2]               # The file that is used to minimize t
 mbar_data_file = sys.argv[3]               # The MBAR file that contains MBAR results at ITIC state points
 output_figure_filename = sys.argv[4]
 MW = float(sys.argv[5])
-z_wt = float(sys.argv[6])
-u_wt = float(sys.argv[7])
+if plot_or_deviation == "deviation":
+    z_wt = float(sys.argv[6])
+    u_wt = float(sys.argv[7])
 
 R_const = 8.31446261815324
 

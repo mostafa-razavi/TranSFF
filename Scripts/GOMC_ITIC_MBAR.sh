@@ -29,7 +29,7 @@ parallel_file_name="${parallel_file_name}${target_ff_name}.target"
 
 # Function that returns 1 if the T_rho pair is selected 
 isFolderSelected () {
-
+    local iRhoOrT
 	path_string=$1
 	T_array=$2
 	rho_array=$3
@@ -57,9 +57,9 @@ isFolderSelected () {
 	fi
 
 
-	for i in $(seq 0 1 $(echo "${#rho_array[@]}-1" | bc))	# Loop from 0 to len(rho_array)-1
+	for iRhoOrT in $(seq 0 1 $(echo "${#rho_array[@]}-1" | bc))	# Loop from 0 to len(rho_array)-1
 	do
-		if [ "$rho" == "${rho_array[i]}" ] && [ "$T" == "${T_array[i]}" ]; then
+		if [ "$rho" == "${rho_array[iRhoOrT]}" ] && [ "$T" == "${T_array[iRhoOrT]}" ]; then
   			return 1
 		fi
 	done

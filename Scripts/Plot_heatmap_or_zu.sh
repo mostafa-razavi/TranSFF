@@ -7,18 +7,20 @@ if [ "$heatmap_or_zu" == "heatmap" ]
 then
 	outfile=$2
 	MW=$3
+	z_wt=$4
+	u_wt=$5	
 	rm -rf $outfile
 	plot_or_deviation="deviation"
 elif  [ "$heatmap_or_zu" == "zu" ]
 then
-	MW=$2
+	MW=$2	
 	plot_or_deviation="plot"
 fi
 
 for i in *.target.res
 do
 	cat $i | awk '{print $2, $3, $4, $5, $6}' > $i.temp
-	score=$(python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation CassandraRdr.res $i.temp $i.png $MW)
+	score=$(python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation CassandraRdr.res $i.temp $i.png $MW $z_wt $u_wt)
 	rm $i.temp
 
 	if [ "$heatmap_or_zu" == "heatmap" ]

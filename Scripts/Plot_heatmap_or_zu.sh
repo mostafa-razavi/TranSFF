@@ -1,6 +1,10 @@
 #!/bin/bash
 # This script plots either heatmap ("heatmap" option) or a (Z-1)/rho vs and TUres vs 1000/T plot ("zu" option)
 # The folder where this script is run in should contain only .res files
+# Examples:
+# bash ~/Git/TranSFF/Scripts/Plot_heatmap_or_zu.sh 30.07 heatmap CassandraRdr.res 0.5Z_0.5U_1-2-10-19-23-27.txt 0.5 0.5
+# bash ~/Git/TranSFF/Scripts/Plot_heatmap_or_zu.sh 30.07 zu CassandraRdr.res 
+
 MW=$1
 heatmap_or_zu=$2
 direct_sim_file=$3

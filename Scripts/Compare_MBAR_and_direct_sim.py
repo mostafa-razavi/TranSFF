@@ -1,3 +1,6 @@
+# This script plots the MBAR and direct simulation results or computes the deviation score between them
+
+
 import matplotlib
 import numpy
 import sys

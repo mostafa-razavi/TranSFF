@@ -2,15 +2,16 @@
 # This script plots either heatmap ("heatmap" option) or a (Z-1)/rho vs and TUres vs 1000/T plot ("zu" option)
 # The folder where this script is run in should contain only .res files
 heatmap_or_zu=$1
-MW="30.07"
 
 if [ "$heatmap_or_zu" == "heatmap" ]
 then
 	outfile=$2
+	MW=$3
 	rm -rf $outfile
 	plot_or_deviation="deviation"
 elif  [ "$heatmap_or_zu" == "zu" ]
 then
+	MW=$2
 	plot_or_deviation="plot"
 fi
 

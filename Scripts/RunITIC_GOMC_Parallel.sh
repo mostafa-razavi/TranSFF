@@ -44,7 +44,8 @@ gomc_input_file_name="nvt.inp"
 psfgen_input_file_name="psfgen.tcl"
 packmol_input_file_name="packmol.in"
 
-
+#===== Other =====
+continue_if_Files_folder_exists="yes"
 
 
 
@@ -62,9 +63,12 @@ CD=${PWD}
 this_scripts=${0}
 if [ ! -e "$(basename -- "$this_scripts")" ]; then cp ${this_scripts} .; fi	# Copy the script in the current directory
 
-if [ -e "Files" ]; then echo "Files folder exists. Exiting..."; fi
-mkdir Files 
-cd Files
+if [ $continue_if_Files_folder_exists != "yes" ] && [ $continue_if_Files_folder_exists != "no" ]; then echo "continue_if_Files_folder_exists should either be yes or no. Existing..."; exit; fi
+if [ -e "Files" ] && [ $continue_if_Files_folder_exists == "yes" ]; then echo "Files folder exists. Proceeding..."; fi
+if [ -e "Files" ] && [ $continue_if_Files_folder_exists == "no" ]; then echo "Files folder exists. Exiting..."; exit; fi
+if [ ! -e "Files" ]; then mkdir Files; fi
+
+cd Files 
 bash $Scripts_path/Generate_PDB_PSF.sh \
 	$molec_name $ITIC_file_name \
 	$pdb_file_name $topology_file_name \

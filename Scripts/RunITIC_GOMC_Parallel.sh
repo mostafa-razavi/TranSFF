@@ -30,9 +30,9 @@ BlockAverageFreq="5000"
 OutputName="nvt"
 
 #===== Important paths =====
-Scripts_path="/home/mostafa/myProjects/myMBAR/Scripts"
-Molecules_path="/home/mostafa/myProjects/myMBAR/Molecules/$molec_name"
-Forcefileds_path="/home/mostafa/myProjects/myMBAR/Forcefields"
+Scripts_path="$HOME/Git/TranSFF/Scripts"
+Molecules_path="$HOME/Git/TranSFF/Molecules/$molec_name"
+Forcefileds_path="$HOME/Git/TranSFF/Forcefields"
 
 #===== Executable files =====
 gomc_exe_address="~/Git/GOMC/GOMC-highPrecision/bin/GOMC_CPU_NVT"

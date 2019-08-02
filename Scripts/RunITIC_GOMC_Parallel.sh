@@ -35,8 +35,8 @@ Molecules_path="$HOME/Git/TranSFF/Molecules/$molec_name"
 Forcefileds_path="$HOME/Git/TranSFF/Forcefields"
 
 #===== Executable files =====
-gomc_exe_address="~/Git/GOMC/GOMC-highPrecision/bin/GOMC_CPU_NVT"
-packmol_exe_address="~/Git/packmol/packmol-18.169-precise/bin/packmol"
+gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
+packmol_exe_address="$HOME/Git/packmol/packmol-18.169-precise/bin/packmol"
 vmd_exe_address="vmd"
 
 #===== Input files =====

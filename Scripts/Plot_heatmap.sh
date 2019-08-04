@@ -22,11 +22,17 @@ if [ ! -e $outfile ]; then
 		plot_or_deviation="deviation"
 		score=$(python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation $true_data_file $i.temp $i.png $MW $z_wt $u_wt)
 		rm $i.temp
+		
+		# Obtain sig and epsilon values from file names
+		IFS='_' read -ra temp_array <<< "$i"
+		sig_eps_sting=${temp_array[-1]}
+		sig_eps_sting=$(echo $sig_eps_sting | sed "s/.target.res//g")
+		sig_eps_sting=$(echo $sig_eps_sting | sed "s/s/ /g")
+		sig_eps_sting=$(echo $sig_eps_sting | sed "s/e/ /g")
+		sig_eps_sting=($sig_eps_sting) 
+		sig=${sig_eps_sting[0]}
+		eps=${sig_eps_sting[1]}
 
-		head=${i::-11}
-		tail=${head:136}
-		sig=${tail::-4} 
-		eps=${tail:6}
 		echo $sig $eps $score >> $outfile
 	done
 else

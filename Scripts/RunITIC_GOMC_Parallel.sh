@@ -8,16 +8,18 @@
 Nproc="24"
 
 #===== Molecule and force field files =====
-molec_name="C2"
-ITIC_file_name="C2.itic"
-pdb_file_name="C2.pdb"
-topology_file_name="C2.top"
-force_field_file_name="C2_TraPPE-UA.par"
-
+molec_name="C1"
+ITIC_file_name="C1.itic"
+pdb_file_name="C1.pdb"
+topology_file_name="C1.top"
+force_field_file_name="C1_TraPPE-UA.par"
+if [ "$1" == "prepare" ]; then
+	force_field_file_name=$2
+fi
 #===== Simulation Parameters =====
 Restart="false"
-Potential="VDW"
-LRC="true"
+Potential="FSHIFT"
+LRC="false"
 Rcut="14"
 PressureCalc="1000"
 RunSteps="10000000"
@@ -98,8 +100,11 @@ else
 	for fol in I*/*/*/; do 
 		echo "cd $CD/$fol; $gomc_exe_address $gomc_input_file_name > gomc.log" >> COMMANDS.parallel
 	done
-
-	parallel --jobs $Nproc < COMMANDS.parallel
+	if [ "$1" == "" ]; then
+		parallel --jobs $Nproc < COMMANDS.parallel
+	fi
 fi
 
-bash ~/Git/TranSFF/Scripts/GONvtRdr/GONvtRdr.sh nvt.inp nvt
+if [ "$1" == "" ]; then
+	bash ~/Git/TranSFF/Scripts/GONvtRdr/GONvtRdr.sh nvt.inp nvt
+fi

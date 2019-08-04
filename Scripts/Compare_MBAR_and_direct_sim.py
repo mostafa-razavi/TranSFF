@@ -45,31 +45,42 @@ mbar_z = mbar_p_mpa * MW / ( rho_gcc  * R_const * temp_k )
 mbar_zminus1overRho = ( mbar_z - 1 ) / rho_gcc
 
 def plot_zrho_urest():
-    plt.figure(num=None, figsize=(15, 7.5), dpi=100, facecolor='w', edgecolor='w')
+    plt.figure(num=None, figsize=(15, 15), dpi=100, facecolor='w', edgecolor='w')
     plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.3, hspace=None)
     font = {'weight' : 'normal', 'size' : 14}
     matplotlib.rc('font', **font)    
 
-    # Z plot
-    plt.subplot(1, 2, 1 )
+    # (Z-1)/rho vs. rho plot
+    plt.subplot(2, 2, 1 )
     plt.xlabel("$\\rho$ [g/ml]")
     plt.ylabel("$\\frac{Z-1}{\\rho}$")
-    plt.xlim([0,0.65])
-    plt.ylim([-5.0,8.0])
+    #plt.xlim([0,0.65])
+    #plt.ylim([-5.0,8.0])
     plt.scatter(rho_gcc, true_zminus1overRho, marker="o", facecolors='none', edgecolors='k', label='TraPPE-UA')
     plt.scatter(rho_gcc, mbar_zminus1overRho, marker="o", facecolors='none', edgecolors='r', label='MBAR')
 
-    # U plot
-    plt.subplot(1, 2, 2 )
+    # TU^res vs 1000/T plot
+    plt.subplot(2, 2, 2 )
     plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
     plt.xlabel("$1000/T$ [K$^{-1}$]")
     plt.ylabel("$TU^\mathrm{res}$")
-    plt.xlim([2.0,7.5])
-    plt.ylim([-2.0e3,-0.2e3])
+    #plt.xlim([2.0,7.5])
+    #plt.ylim([-2.0e3,-0.2e3])
     plt.scatter(1000.0 / temp_k[:10], true_u_res[:10] * temp_k[:10], marker="o", facecolors='none', edgecolors='k')
     plt.scatter(1000.0 / temp_k[:10], mbar_u_res[:10] * temp_k[:10], marker="o", facecolors='none', edgecolors='r')
     plt.scatter(1000.0 / temp_k[21:], true_u_res[21:] * temp_k[21:], marker="o", facecolors='none', edgecolors='k', label='TraPPE-UA')
     plt.scatter(1000.0 / temp_k[21:], mbar_u_res[21:] * temp_k[21:], marker="o", facecolors='none', edgecolors='r', label='MBAR')
+
+    # Z vs. 1000/T plot
+    plt.subplot(2, 2, 3 )
+    plt.xlabel("$1000/T$ [K$^{-1}$]")
+    plt.ylabel("$Z$")
+    #plt.xlim([0,0.65])
+    #plt.ylim([-5.0,8.0])
+    plt.scatter(1000.0 / temp_k[:10], true_z[:10], marker="o", facecolors='none', edgecolors='k')
+    plt.scatter(1000.0 / temp_k[:10], mbar_z[:10], marker="o", facecolors='none', edgecolors='r')
+    plt.scatter(1000.0 / temp_k[21:], true_z[21:], marker="o", facecolors='none', edgecolors='k', label='TraPPE-UA')
+    plt.scatter(1000.0 / temp_k[21:], mbar_z[21:], marker="o", facecolors='none', edgecolors='r', label='MBAR')    
 
     plt.legend()
     plt.savefig(output_figure_filename)

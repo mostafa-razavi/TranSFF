@@ -5,16 +5,26 @@ CD=${PWD}
 
 ref_ff_string=$1
 target_par=$2
-Nsnapshots=$3
-Ncores=$4
-GOMC_exe=$5
-Selected_Ts=$6
-Selected_rhos=$7
+target_inp=$3
+Nsnapshots=$4
+Ncores=$5
+GOMC_exe=$6
+Selected_Ts=$7
+Selected_rhos=$8
 
 # Create an array of reference force fields' names
 IFS=', ' read -r -a ref_ff_array <<< "$ref_ff_string"
 
 target_ff_name="${target_par%.*}"
+
+if [ "$target_inp" == "none" ]; then
+    target_inp_name=""
+    rerun_inp_address="none"
+else
+    target_inp_name="${target_inp%.*}"
+    rerun_inp_address="$CD/${target_inp}"
+fi
+target_ff_name=${target_ff_name}${target_inp_name}
 
 # Make a copy of ref_ff_array and the target_ff_name
 all_ff_array=("${ref_ff_array[@]}")
@@ -82,7 +92,7 @@ do
                     rerun_par_address=$(ls $CD/$j/Files/*.par)
                 fi
                 # Arguments: Nsnapshots=$1 GOMC_PDB=$2 rerun_par_address=$3 output_name=$4             
-                echo "cd $k; bash /home/mostafa/Git/TranSFF/Scripts/GOMC_Rerun.sh $Nsnapshots nvt_BOX_0.pdb ${rerun_par_address} $i.ref_$j.rer ${GOMC_exe}" >> $parallel_file_name.parallel
+                echo "cd $k; bash /home/mostafa/Git/TranSFF/Scripts/GOMC_Rerun.sh $Nsnapshots nvt_BOX_0.pdb ${rerun_par_address} ${rerun_inp_address} $i.ref_$j.rer ${GOMC_exe}" >> $parallel_file_name.parallel
             fi
         done
     done
@@ -111,7 +121,7 @@ do
                 which_datafile_columns_string="1 2"   #Total_En Press (0 is first column)
                 how_many_datafile_rows_to_skip="0"
                 energy_unit="K"
-                python3.5 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py "$Temp" "$Nsnapshots" "$ref_sim_fol_string" "$ref_ff_string" "$target_ff_name" "$which_datafile_columns_string" "$how_many_datafile_rows_to_skip" "$energy_unit" >> "$CD/${parallel_file_name}.res"
+                python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py "$Temp" "$Nsnapshots" "$ref_sim_fol_string" "$ref_ff_string" "$target_ff_name" "$which_datafile_columns_string" "$how_many_datafile_rows_to_skip" "$energy_unit" >> "$CD/${parallel_file_name}.res"
             fi
         fi
     done

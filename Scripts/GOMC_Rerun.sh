@@ -1,16 +1,15 @@
 #!/bin/bash
 
-# This script takes GOMC pdb file and runs GOMC executable using recalculate option (RunSteps=0) using new parameters in rerun par and run pdb file.
+# This script takes GOMC pdb file and reruns a PDB file via recalculate option (RunSteps=0) using 
+# new parameters in rerun par file and optinally new key-value pairs specified in rerun_inp_address
 # The program exits if the rerun has already been completed before.
-#
-# Todo: Sometimes we need to rerun using a different pair_style. That means we should also have rerun.conf file in addition to rerun.par file 
 
-# input number of snapshots to be skipped, the name of GOMC PDB file, the name of par file for rerun, and a name for the output .pepress file
-Nsnapshots=$1				# Consider last Nsnapshots in the pdb file
-GOMC_PDB=$2
-rerun_par_address=$3
-pepress_name=$4
-GOMC_exe=$5
+Nsnapshots=$1			# Number of snapshots in the PDB file. Currently, the last Nsnapshots in the pdb file is read
+GOMC_PDB=$2				# The name of the PDB file produced by GOMC
+rerun_par_address=$3	# The adress of the rerun .par file that contains the force field information
+rerun_inp_address=$4	# The address of a .inp file in which updates key values are stored. For example, if "Potential VDW" would exists in ths file the value of "Potential" key is going to be updated to "VDW". This file can contain more than one key-value pairs.
+pepress_name=$5			# The name of the rerun output (.rer file) that contains the values of energy and pressure
+GOMC_exe=$6				# Path to the GOMC executable file
 
 if [ -e "$pepress_name" ]
 then
@@ -60,6 +59,18 @@ sed -i "s:$coordinates_line:Coordinates 0 ${keyword}_for_rerun.pdb:g" "${keyword
 
 runsteps_line=$(grep -R "RunSteps" "${keyword}_nvt-rerun.inp")
 sed -i "s/$runsteps_line/RunSteps 0/g" "${keyword}_nvt-rerun.inp"
+
+if [ "$rerun_inp_address" != "none" ]; then
+	cp $rerun_inp_address "${keyword}_rerun_modifications.inp"
+	key_array=( $(awk '{print $1}' "${keyword}_rerun_modifications.inp") )
+	val_array=( $(awk '{print $2}' "${keyword}_rerun_modifications.inp") )
+	
+	for i in $(seq 0 1 $(echo "${#key_array[@]}-1" | bc))
+	do
+		key_value_line=$(grep -R "${key_array[i]}" "${keyword}_nvt-rerun.inp")
+		sed -i "s/$key_value_line/${key_array[i]}    ${val_array[i]}/g"
+	done
+fi
 
 # check if rerun par file exists, if yes run Cassandra with rerun option
 if [ -e "${keyword}_rerun.par" ]

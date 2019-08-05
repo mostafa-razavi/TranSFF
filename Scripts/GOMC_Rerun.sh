@@ -68,7 +68,7 @@ if [ "$rerun_inp_address" != "none" ]; then
 	for i in $(seq 0 1 $(echo "${#key_array[@]}-1" | bc))
 	do
 		key_value_line=$(grep -R "${key_array[i]}" "${keyword}_nvt-rerun.inp")
-		sed -i "s/$key_value_line/${key_array[i]}    ${val_array[i]}/g"
+		sed -i "s/$key_value_line/${key_array[i]}    ${val_array[i]}/g" "${keyword}_nvt-rerun.inp"
 	done
 fi
 

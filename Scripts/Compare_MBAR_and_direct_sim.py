@@ -4,6 +4,10 @@
 import matplotlib
 import numpy
 import sys
+import os
+if os.environ.get('DISPLAY','') == '':
+    print('no display found. Using non-interactive Agg backend')
+    matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 plot_or_deviation = sys.argv[1]            # if "plot" then Z and U plots are generated else if "deviatin" one single score value is printed

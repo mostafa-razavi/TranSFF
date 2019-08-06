@@ -27,6 +27,7 @@ do
     done
 done
 
+rm -rf "${RunGrid_name}.parallel"
 cat *.parallel >> "${RunGrid_name}.parallel"
 parallel --jobs $Ncore < "${RunGrid_name}.parallel" > "${RunGrid_name}.log"
 

@@ -1,17 +1,20 @@
 #!/bin/bash
 # This script runs GOMC_ITIC_MBAR.sh script for specified sigma and epsilons as two arrays by modifying the raw_par file.
-
-reference_foldernames_array="s3.620e175 s3.645e175 s3.670e175 s3.695e175 s3.720e175 s3.745e175 s3.770e175 s3.795e175 s3.820e175"
-Ncore="32"
+RunGrid_name="RunGrid_results_sig3.732-3.760_eps115-122_lines_1-2-8-10-19-23-26-27_ref-s3.725e117-s3.750e117-s3.775e117"
+reference_foldernames_array="s3.725e117 s3.750e117 s3.775e117"
+Ncore="24"
 Nsnapshots="1000"
-raw_par="$HOME/Git/TranSFF/Forcefields/C1_sSOMEeSOME.par"
-rerun_inp="r3.5.inp"                                                                    # "none" or filename
+raw_par="$HOME/Git/TranSFF/Forcefields/C2_sSOMEeSOME.par"
+rerun_inp="none"     
+true_data_file="GONvtRdr.res"                                                               # "none" or filename
 GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
-Selected_Ts="167.20 95.90 228.00 228.00 228.00"                                        # "all" or array
-Selected_rhos="0.3179 0.4450 0.0636 0.3179 0.4450"                                      # "all" or array
-sig=(3.706 3.708 3.710 3.712 3.714 3.716 3.718 3.720 3.722 3.724 3.726 3.728 3.730 3.732 3.734 3.736)
-eps=(161.5 162.0 162.5 163.0 163.5 164.0 164.5 165.0 165.5 166.0 166.5 167.0 167.5 168.0 168.5 169.0)
-MW="16.04246"
+Selected_Ts="259.42 174.46 137.97 360.00 360.00 360.00 360.00"                                    # "all" or array
+Selected_rhos="0.4286 0.5571 0.6000 0.0857 0.4286 0.5571 0.6000"                                  # "all" or array
+sig=(3.732 3.734 3.736 3.738 3.740 3.742 3.744 3.746 3.748 3.750 3.752 3.754 3.756 3.758 3.760)
+eps=(115.0 115.5 116.0 116.5 117.0 117.5 118.0 118.5 119.0 119.5 120.0 120.5 121.0 121.5 122.0)
+MW="30.06904"
+
+if [ -e "$RunGrid_name" ]; then echo "$RunGrid_name folder already exists. Exiting..."; exit; fi
 
 for isig in "${sig[@]}"
 do
@@ -24,5 +27,14 @@ do
     done
 done
 
-bash $HOME/Git/TranSFF/Scripts/Plot_heatmap.sh $MW target.res GONvtRdr.res 0.5Z_0.5U_all.txt 0.5 0.5 0.002 1
-bash $HOME/Git/TranSFF/Scripts/Plot_zu.sh $MW target.res GONvtRdr.res
+bash $HOME/Git/TranSFF/Scripts/Plot_heatmap.sh $MW target.res $true_data_file 0.5Z_0.5U_all.txt 0.5 0.5 0.002 1
+bash $HOME/Git/TranSFF/Scripts/Plot_zu.sh $MW target.res $true_data_file
+
+mkdir $RunGrid_name
+
+mv *.parallel $RunGrid_name
+mv *.png $RunGrid_name 2>/dev/null
+mv *.res $RunGrid_name
+mv *.log $RunGrid_name
+mv *.par $RunGrid_name
+mv *.inp $RunGrid_name 2>/dev/null

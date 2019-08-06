@@ -32,6 +32,7 @@ bash $HOME/Git/TranSFF/Scripts/Plot_zu.sh $MW target.res $true_data_file
 
 mkdir $RunGrid_name
 
+cp RunGrid.sh $RunGrid_name
 mv *.parallel $RunGrid_name
 mv *.png $RunGrid_name 2>/dev/null
 mv *.res $RunGrid_name

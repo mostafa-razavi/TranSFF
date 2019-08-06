@@ -29,9 +29,11 @@ if [ ! -e $outfile ]; then
 		sig_eps_sting=$(echo $sig_eps_sting | sed "s/.target.res//g")
 		sig_eps_sting=$(echo $sig_eps_sting | sed "s/s/ /g")
 		sig_eps_sting=$(echo $sig_eps_sting | sed "s/e/ /g")
+		sig_eps_sting=$(echo $sig_eps_sting | sed "s/r/ /g")
 		sig_eps_sting=($sig_eps_sting) 
 		sig=${sig_eps_sting[0]}
 		eps=${sig_eps_sting[1]}
+		#r=${sig_eps_sting[2]}
 
 		echo $sig $eps $score >> $outfile
 	done

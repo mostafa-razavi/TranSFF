@@ -1,6 +1,6 @@
 #!/bin/bash
 # This script runs GOMC_ITIC_MBAR.sh script for specified sigma and epsilons as two arrays by modifying the raw_par file.
-RunGrid_name="RunGrid_results_sig3.732-3.760_eps115-122_lines_1-2-8-10-19-23-26-27_ref-s3.725e117-s3.750e117-s3.775e117"
+RunGrid_name="RunGrid_sig3.732-3.760_eps115-122_lines_1-2-8-10-19-23-26-27_ref-s3.725e117-s3.750e117-s3.775e117"
 reference_foldernames_array="s3.725e117 s3.750e117 s3.775e117"
 Ncore="24"
 Nsnapshots="1000"
@@ -23,16 +23,27 @@ do
         cp  $raw_par "s${isig}e${ieps}".par
         sed -i "s/some_sig/$isig/g" "s${isig}e${ieps}".par
         sed -i "s/some_eps/$ieps/g" "s${isig}e${ieps}".par
-        bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR.sh "$reference_foldernames_array" s${isig}e${ieps}.par $rerun_inp $Nsnapshots $Ncore $GOMC_exe "$Selected_Ts" "$Selected_rhos"
+        bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR.sh "TFF" "$reference_foldernames_array" s${isig}e${ieps}.par $rerun_inp $Nsnapshots $Ncore $GOMC_exe "$Selected_Ts" "$Selected_rhos"
+    done
+done
+
+cat *.parallel >> "${RunGrid_name}.parallel"
+parallel --jobs $Ncore < "${RunGrid_name}.parallel" > "${RunGrid_name}.log"
+
+for isig in "${sig[@]}"
+do
+    for ieps in "${eps[@]}"
+    do
+        bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR.sh "FFT" "$reference_foldernames_array" s${isig}e${ieps}.par $rerun_inp $Nsnapshots $Ncore $GOMC_exe "$Selected_Ts" "$Selected_rhos"
     done
 done
 
 bash $HOME/Git/TranSFF/Scripts/Plot_heatmap.sh $MW target.res $true_data_file 0.5Z_0.5U_all.txt 0.5 0.5 0.002 1
 bash $HOME/Git/TranSFF/Scripts/Plot_zu.sh $MW target.res $true_data_file
 
-mkdir $RunGrid_name
+mkdir $RunGrid_name 
 
-cp RunGrid.sh $RunGrid_name 2>/dev/null
+cp $0 $RunGrid_name 2>/dev/null
 mv *.parallel $RunGrid_name
 mv *.png $RunGrid_name 2>/dev/null
 mv *.res $RunGrid_name

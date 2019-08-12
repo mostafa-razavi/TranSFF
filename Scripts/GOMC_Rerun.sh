@@ -84,7 +84,7 @@ else
 	rm -rf "${keyword}_nvt-rerun.inp"
 fi
 
-rm -rf ${keyword}_*
+rm -rf ${keyword}*
 
 
 

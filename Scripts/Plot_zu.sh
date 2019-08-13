@@ -11,6 +11,6 @@ for i in *.$mbar_file_name_tail_keyword
 do
 	cat $i | awk '{print $2, $3, $4, $5, $6}' > $i.temp
 	plot_or_deviation="plot"
-	score=$(python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation $true_data_file $i.temp $i.png $MW)
+	python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation $true_data_file $i.temp $i.png $MW
 	rm $i.temp
 done

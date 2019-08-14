@@ -8,11 +8,11 @@
 Nproc="24"
 
 #===== Molecule and force field files =====
-molec_name="C1"
-ITIC_file_name="C1.itic"
-pdb_file_name="C1.pdb"
-topology_file_name="C1.top"
-force_field_file_name="C1_TraPPE-UA.par"
+molec_name="C4"
+ITIC_file_name="C4.itic"
+pdb_file_name="C4.pdb"
+topology_file_name="C4.top"
+force_field_file_name="C4_TraPPE-UA.par"
 if [ "$1" == "prepare" ]; then
 	force_field_file_name=$2
 fi

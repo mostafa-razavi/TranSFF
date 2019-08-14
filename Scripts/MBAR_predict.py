@@ -53,7 +53,7 @@ N_k[Nref] = 0
 mbar = MBAR(u_RT, N_k)
 Neff = mbar.computeEffectiveSampleNumber()[Nff-1]
 
-print(Temp, rho, end = ' ')
+print(Temp, rho, Neff, end = ' ')
 for iCol in range(0, len(which_cols_array)):
     for iF in range(0, Nff):
         for iX in range(0, Nref):

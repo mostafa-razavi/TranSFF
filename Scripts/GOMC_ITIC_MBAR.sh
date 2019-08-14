@@ -130,7 +130,7 @@ if [ "$prepare_run_post" == "TTT" ] || [ "$prepare_run_post" == "FFT" ]; then
                     which_datafile_columns_string="1 2"   #Total_En Press (0 is first column)
                     how_many_datafile_rows_to_skip="0"
                     energy_unit="K"
-                    echo "python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py $Temp $Nsnapshots $ref_sim_fol_string $ref_ff_string $target_ff_name $which_datafile_columns_string $how_many_datafile_rows_to_skip $energy_unit >> $CD/${parallel_file_name}.res" >> "$parallel_file_name.MBAR_predict.parallel"
+                    echo "python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py \"$Temp\" \"$Nsnapshots\" \"$ref_sim_fol_string\" \"$ref_ff_string\" \"$target_ff_name\" \"$which_datafile_columns_string\" \"$how_many_datafile_rows_to_skip\" \"$energy_unit\" >> $CD/${parallel_file_name}.res" >> "$parallel_file_name.MBAR_predict.parallel"
                 fi
             fi
         done

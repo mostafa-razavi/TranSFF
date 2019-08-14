@@ -6,6 +6,7 @@
 MW=$1
 mbar_file_name_tail_keyword=$2
 true_data_file=$3
+true_label=$4
 
 for i in *.$mbar_file_name_tail_keyword
 do

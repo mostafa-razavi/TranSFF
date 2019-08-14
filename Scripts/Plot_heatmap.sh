@@ -9,11 +9,12 @@
 MW=$1
 mbar_file_name_tail_keyword=$2
 true_data_file=$3
-outfile=$4
-z_wt=$5
-u_wt=$6	
-sig_increment=$7
-eps_increment=$8
+true_label=$4
+outfile=$5
+z_wt=$6
+u_wt=$7	
+sig_increment=$8
+eps_increment=$9
 
 if [ ! -e $outfile ]; then
 	for i in *.$mbar_file_name_tail_keyword

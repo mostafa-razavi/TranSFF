@@ -27,7 +27,6 @@ which_cols_array = which_cols_string.split()
 
 Nref = len(ref_ff_array)    # Number of reference force fields
 Nff = Nref + 1              # Number of all force fields involved
-print(Temp)
 u_array = np.zeros([Nff, Nref*Ns])
 property_array = np.zeros([Nff, Nref*Ns])
 
@@ -54,8 +53,7 @@ N_k[Nref] = 0
 mbar = MBAR(u_RT, N_k)
 Neff = mbar.computeEffectiveSampleNumber()[Nff-1]
 
-print(Temp, Neff, end = ' ')
-print(rho, Neff, end = ' ')
+print(Temp, rho, end = ' ')
 for iCol in range(0, len(which_cols_array)):
     for iF in range(0, Nff):
         for iX in range(0, Nref):

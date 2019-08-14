@@ -126,7 +126,7 @@ if [ "$prepare_run_post" == "TTT" ] || [ "$prepare_run_post" == "FFT" ]; then
                         ref_sim_fol_string="${ref_sim_fol_string} ${string}"
                     done
 
-                    Temp=$(grep -R "Temperature" $k/nvt.inp| awk '{print $2}')
+                    Temp=$T #$(grep -R "Temperature" $k/nvt.inp| awk '{print $2}')
                     which_datafile_columns_string="1 2"   #Total_En Press (0 is first column)
                     how_many_datafile_rows_to_skip="0"
                     energy_unit="K"

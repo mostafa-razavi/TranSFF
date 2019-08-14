@@ -8,10 +8,10 @@ raw_par="$HOME/Git/TranSFF/Forcefields/C2_sSOMEeSOME.par"
 rerun_inp="none"     
 true_data_file="GONvtRdr.res"                                                               # "none" or filename
 GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
-Selected_Ts="259.42 174.46 137.97 360.00 360.00 360.00 360.00"                                    # "all" or array
-Selected_rhos="0.4286 0.5571 0.6000 0.0857 0.4286 0.5571 0.6000"                                  # "all" or array
-sig=(3.732 3.734 3.736 3.738)
-eps=(115.0 115.5 116.0 116.5)
+Selected_Ts="259.42 174.46 137.97"                                    # "all" or array
+Selected_rhos="0.4286 0.5571 0.6000"                                  # "all" or array
+sig=(3.732 3.734)
+eps=(115.0 115.5)
 MW="30.06904"
 
 if [ -e "$RunGrid_name" ]; then echo "$RunGrid_name folder already exists. Exiting..."; exit; fi

@@ -18,10 +18,10 @@ eps_increment=$8
 if [ ! -e $outfile ]; then
 	for i in *.$mbar_file_name_tail_keyword
 	do
-		cat $i | awk '{print $2, $3, $4, $5, $6}' > $i.temp
+		#cat $i | awk '{print $2, $3, $4, $5, $6}' > $i.temp
 		plot_or_deviation="deviation"
-		score=$(python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation $true_data_file $i.temp $i.png $MW $z_wt $u_wt)
-		rm $i.temp
+		score=$(python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation $true_data_file $i $i.png $MW $z_wt $u_wt)
+		#rm $i.temp
 		
 		# Obtain sig and epsilon values from file names
 		IFS='_' read -ra temp_array <<< "$i"

@@ -21,7 +21,7 @@ if plot_or_deviation == "deviation":
 R_const = 8.31446261815324
 
 true_data = numpy.loadtxt(true_data_file, skiprows=1, usecols=(0,1,2,5,11))
-mbar_data = numpy.loadtxt(mbar_data_file, skiprows=1, usecols=(1,3))
+mbar_data = numpy.loadtxt(mbar_data_file, skiprows=1, usecols=(3,5))
 
 temp_k = true_data[:,0]
 rho_gcc = true_data[:,1]

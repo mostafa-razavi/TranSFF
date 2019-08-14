@@ -9,13 +9,14 @@ from scipy import stats
 import sys
 
 Temp = float(sys.argv[1])               # Temperature
-Ns = int(sys.argv[2])                   # Number of snapshots saved during reference simulations
-ref_sim_fol_string = sys.argv[3]    	# Space delimited string containing the absolute path to simulation folders of reference simulations, eg. ".../IT/360.0/0.6000 ..."
-ref_ff_string = sys.argv[4]             # Space delimited string containing the names of all reference simulations, eg. "s3.78e115 s3.88e115"
-target_ff_name = sys.argv[5]            # The name of target force field
-which_cols_string = sys.argv[6]         # Space delimited string containing the column indexes (starting from 0) of the desired properties. First element should be the column index of U
-Nrows_to_skip = int(sys.argv[7])        # Number of data file lines that need to be skipped, eg. 3 for Cassandra
-energy_unit = sys.argv[8]               # "kj/mol" or "kcal/mol", or "K"
+rho = float(sys.argv[2])               # Temperature
+Ns = int(sys.argv[3])                   # Number of snapshots saved during reference simulations
+ref_sim_fol_string = sys.argv[4]    	# Space delimited string containing the absolute path to simulation folders of reference simulations, eg. ".../IT/360.0/0.6000 ..."
+ref_ff_string = sys.argv[5]             # Space delimited string containing the names of all reference simulations, eg. "s3.78e115 s3.88e115"
+target_ff_name = sys.argv[6]            # The name of target force field
+which_cols_string = sys.argv[7]         # Space delimited string containing the column indexes (starting from 0) of the desired properties. First element should be the column index of U
+Nrows_to_skip = int(sys.argv[8])        # Number of data file lines that need to be skipped, eg. 3 for Cassandra
+energy_unit = sys.argv[9]               # "kj/mol" or "kcal/mol", or "K"
 
 ref_sim_fol_array = ref_sim_fol_string.split()
 ref_ff_array = ref_ff_string.split()
@@ -26,7 +27,7 @@ which_cols_array = which_cols_string.split()
 
 Nref = len(ref_ff_array)    # Number of reference force fields
 Nff = Nref + 1              # Number of all force fields involved
-
+print(Temp)
 u_array = np.zeros([Nff, Nref*Ns])
 property_array = np.zeros([Nff, Nref*Ns])
 
@@ -53,7 +54,8 @@ N_k[Nref] = 0
 mbar = MBAR(u_RT, N_k)
 Neff = mbar.computeEffectiveSampleNumber()[Nff-1]
 
-print(ref_sim_fol_array[0], Neff, end = ' ')
+print(Temp, Neff, end = ' ')
+print(rho, Neff, end = ' ')
 for iCol in range(0, len(which_cols_array)):
     for iF in range(0, Nff):
         for iX in range(0, Nref):

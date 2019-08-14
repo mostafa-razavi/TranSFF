@@ -110,12 +110,12 @@ if [ "$prepare_run_post" == "TTT" ] || [ "$prepare_run_post" == "FFT" ]; then
     # Stage 3) Post-process the results and obtain predictions using MBAR_predict.py
     rm -rf "$CD/${parallel_file_name}.res"
     rm -rf "$parallel_file_name.MBAR_predict.parallel"
-    echo "Address Neff u[K] u_err[K] P[bar] P_err[bar]" >> "$CD/${parallel_file_name}.res"
+    echo "Temp[k] rho[g/ml] Neff u[K] u_err[K] P[bar] P_err[bar]" >> "$CD/${parallel_file_name}.res"
     for i in ${ref_ff_array[@]}
     do
         for k in $CD/$i/I*/*/*/
         do     
-            isFolderSelected "$k" "$Selected_Ts" "$Selected_rhos"
+            isFolderSelected "$k" "$Selected_Ts" "$Selected_rhos"   # This function read T and rho variables as well
             if [ "$?" == "1" ]; then    
                 if [ "$i" == "${ref_ff_array[0]}" ]
                 then
@@ -126,11 +126,10 @@ if [ "$prepare_run_post" == "TTT" ] || [ "$prepare_run_post" == "FFT" ]; then
                         ref_sim_fol_string="${ref_sim_fol_string} ${string}"
                     done
 
-                    Temp=$T #$(grep -R "Temperature" $k/nvt.inp| awk '{print $2}')
                     which_datafile_columns_string="1 2"   #Total_En Press (0 is first column)
                     how_many_datafile_rows_to_skip="0"
                     energy_unit="K"
-                    echo "python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py \"$Temp\" \"$Nsnapshots\" \"$ref_sim_fol_string\" \"$ref_ff_string\" \"$target_ff_name\" \"$which_datafile_columns_string\" \"$how_many_datafile_rows_to_skip\" \"$energy_unit\" >> $CD/${parallel_file_name}.res" >> "$parallel_file_name.MBAR_predict.parallel"
+                    echo "python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py \"$T\" \"$rho\" \"$Nsnapshots\" \"$ref_sim_fol_string\" \"$ref_ff_string\" \"$target_ff_name\" \"$which_datafile_columns_string\" \"$how_many_datafile_rows_to_skip\" \"$energy_unit\" >> $CD/${parallel_file_name}.res" >> "$parallel_file_name.MBAR_predict.parallel"
                 fi
             fi
         done

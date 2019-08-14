@@ -11,12 +11,13 @@ import matplotlib.pyplot as plt
 
 plot_or_deviation = sys.argv[1]            # if "plot" then Z and U plots are generated else if "deviatin" one single score value is printed
 true_data_file = sys.argv[2]               # The file that is used to minimize the deviation against
-mbar_data_file = sys.argv[3]               # The MBAR file that contains MBAR results at ITIC state points
-output_figure_filename = sys.argv[4]
-MW = float(sys.argv[5])
+true_data_label = sys.argv[3]               # Label for true data
+mbar_data_file = sys.argv[4]               # The MBAR file that contains MBAR results at ITIC state points
+output_figure_filename = sys.argv[5]
+MW = float(sys.argv[6])
 if plot_or_deviation == "deviation":
-    z_wt = float(sys.argv[6])
-    u_wt = float(sys.argv[7])
+    z_wt = float(sys.argv[7])
+    u_wt = float(sys.argv[8])
 
 R_const = 8.31446261815324
 
@@ -64,7 +65,7 @@ def plot_zrho_urest():
     plt.ylabel("$\\frac{Z-1}{\\rho}$")
     #plt.xlim([0,0.65])
     #plt.ylim([-5.0,8.0])
-    plt.scatter(true_rho_gcc, true_zminus1overRho, marker="o", facecolors='none', edgecolors='k', label='TraPPE-UA')
+    plt.scatter(true_rho_gcc, true_zminus1overRho, marker="o", facecolors='none', edgecolors='k', label=true_data_label)
     plt.scatter(mbar_rho_gcc, mbar_zminus1overRho, marker="o", facecolors='none', edgecolors='r', label='MBAR')
 
     # TU^res vs 1000/T plot
@@ -76,7 +77,7 @@ def plot_zrho_urest():
     #plt.ylim([-2.0e3,-0.2e3])
     plt.scatter(1000.0 / true_temp_k[:10], true_u_res[:10] * true_temp_k[:10], marker="o", facecolors='none', edgecolors='k')
     plt.scatter(1000.0 / mbar_temp_k[:10], mbar_u_res[:10] * mbar_temp_k[:10], marker="o", facecolors='none', edgecolors='r')
-    plt.scatter(1000.0 / true_temp_k[21:], true_u_res[21:] * true_temp_k[21:], marker="o", facecolors='none', edgecolors='k', label='TraPPE-UA')
+    plt.scatter(1000.0 / true_temp_k[21:], true_u_res[21:] * true_temp_k[21:], marker="o", facecolors='none', edgecolors='k', label=true_data_label)
     plt.scatter(1000.0 / mbar_temp_k[21:], mbar_u_res[21:] * mbar_temp_k[21:], marker="o", facecolors='none', edgecolors='r', label='MBAR')
 
     # Z vs. 1000/T plot
@@ -87,7 +88,7 @@ def plot_zrho_urest():
     #plt.ylim([-5.0,8.0])
     plt.scatter(1000.0 / true_temp_k[:10], true_z[:10], marker="o", facecolors='none', edgecolors='k')
     plt.scatter(1000.0 / mbar_temp_k[:10], mbar_z[:10], marker="o", facecolors='none', edgecolors='r')
-    plt.scatter(1000.0 / true_temp_k[21:], true_z[21:], marker="o", facecolors='none', edgecolors='k', label='TraPPE-UA')
+    plt.scatter(1000.0 / true_temp_k[21:], true_z[21:], marker="o", facecolors='none', edgecolors='k', label=true_data_label)
     plt.scatter(1000.0 / mbar_temp_k[21:], mbar_z[21:], marker="o", facecolors='none', edgecolors='r', label='MBAR')    
 
     plt.legend()

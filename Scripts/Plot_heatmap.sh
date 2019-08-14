@@ -19,7 +19,7 @@ if [ ! -e $outfile ]; then
 	for i in *.$mbar_file_name_tail_keyword
 	do
 		plot_or_deviation="deviation"
-		score=$(python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation $true_data_file $i $i.png $MW $z_wt $u_wt)
+		score=$(python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation $true_data_file $true_label $i $i.png $MW $z_wt $u_wt)
 		
 		# Obtain sig and epsilon values from file names
 		IFS='_' read -ra temp_array <<< "$i"

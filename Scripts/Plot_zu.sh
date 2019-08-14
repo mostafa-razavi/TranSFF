@@ -10,5 +10,5 @@ true_data_file=$3
 for i in *.$mbar_file_name_tail_keyword
 do
 	plot_or_deviation="plot"
-	python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation $true_data_file $i $i.png $MW
+	python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation $true_data_file $true_label $i $i.png $MW
 done

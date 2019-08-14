@@ -39,8 +39,8 @@ do
     done
 done
 
-bash $HOME/Git/TranSFF/Scripts/Plot_heatmap.sh $MW target.res $true_data_file 0.5Z_0.5U_all.txt 0.5 0.5 0.002 1
-bash $HOME/Git/TranSFF/Scripts/Plot_zu.sh $MW target.res $true_data_file
+bash $HOME/Git/TranSFF/Scripts/Plot_heatmap.sh $MW target.res $true_data_file "TraPPE" 0.5Z_0.5U_all.txt 0.5 0.5 0.002 1
+bash $HOME/Git/TranSFF/Scripts/Plot_zu.sh $MW target.res $true_data_file "TraPPE"
 
 mkdir $RunGrid_name 
 

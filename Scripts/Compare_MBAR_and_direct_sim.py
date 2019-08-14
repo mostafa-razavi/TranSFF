@@ -21,10 +21,15 @@ if plot_or_deviation == "deviation":
 R_const = 8.31446261815324
 
 true_data = numpy.loadtxt(true_data_file, skiprows=1, usecols=(0,1,2,5,11))
-mbar_data = numpy.loadtxt(mbar_data_file, skiprows=1, usecols=(3,5))
+mbar_data = numpy.loadtxt(mbar_data_file, skiprows=1, usecols=(0,1,3,5))
 
-temp_k = true_data[:,0]
-rho_gcc = true_data[:,1]
+true_temp_k = true_data[:,0]
+true_rho_gcc = true_data[:,1]
+
+
+mbar_temp_k = mbar_data[:,0]
+mbar_rho_gcc = mbar_data[:,1]
+
 Nmolec = true_data[:,4]
 
 # Convert energy to kJ/mol and pressure to Mpa
@@ -37,15 +42,15 @@ kelvin_to_kjmol = 0.0083
 
 true_p_mpa = true_data[:,2] * atm_to_mpa
 true_u_kjmol = true_data[:,3] * kcalmol_to_kjmol
-true_u_res = true_data[:,3] * kcalmol_to_kjmol / Nmolec / R_const / temp_k * 1e3
-true_z = true_p_mpa * MW / ( rho_gcc  * R_const * temp_k )
-true_zminus1overRho = ( true_z - 1 ) / rho_gcc
+true_u_res = true_data[:,3] * kcalmol_to_kjmol / Nmolec / R_const / true_temp_k * 1e3
+true_z = true_p_mpa * MW / ( true_rho_gcc  * R_const * true_temp_k )
+true_zminus1overRho = ( true_z - 1 ) / true_rho_gcc
 
-mbar_p_mpa = mbar_data[:,1] * bar_to_mpa
+mbar_p_mpa = mbar_data[:,3] * bar_to_mpa
 mbar_u_kjmol = mbar_data[:,0] * kelvin_to_kjmol
-mbar_u_res = mbar_data[:,0] * kelvin_to_kjmol / Nmolec / R_const / temp_k * 1e3
-mbar_z = mbar_p_mpa * MW / ( rho_gcc  * R_const * temp_k )
-mbar_zminus1overRho = ( mbar_z - 1 ) / rho_gcc
+mbar_u_res = mbar_data[:,2] * kelvin_to_kjmol / Nmolec / R_const / mbar_temp_k * 1e3
+mbar_z = mbar_p_mpa * MW / ( mbar_rho_gcc  * R_const * mbar_temp_k )
+mbar_zminus1overRho = ( mbar_z - 1 ) / mbar_rho_gcc
 
 def plot_zrho_urest():
     plt.figure(num=None, figsize=(15, 15), dpi=100, facecolor='w', edgecolor='w')
@@ -59,8 +64,8 @@ def plot_zrho_urest():
     plt.ylabel("$\\frac{Z-1}{\\rho}$")
     #plt.xlim([0,0.65])
     #plt.ylim([-5.0,8.0])
-    plt.scatter(rho_gcc, true_zminus1overRho, marker="o", facecolors='none', edgecolors='k', label='TraPPE-UA')
-    plt.scatter(rho_gcc, mbar_zminus1overRho, marker="o", facecolors='none', edgecolors='r', label='MBAR')
+    plt.scatter(true_rho_gcc, true_zminus1overRho, marker="o", facecolors='none', edgecolors='k', label='TraPPE-UA')
+    plt.scatter(mbar_rho_gcc, mbar_zminus1overRho, marker="o", facecolors='none', edgecolors='r', label='MBAR')
 
     # TU^res vs 1000/T plot
     plt.subplot(2, 2, 2 )
@@ -69,10 +74,10 @@ def plot_zrho_urest():
     plt.ylabel("$TU^\mathrm{res}$")
     #plt.xlim([2.0,7.5])
     #plt.ylim([-2.0e3,-0.2e3])
-    plt.scatter(1000.0 / temp_k[:10], true_u_res[:10] * temp_k[:10], marker="o", facecolors='none', edgecolors='k')
-    plt.scatter(1000.0 / temp_k[:10], mbar_u_res[:10] * temp_k[:10], marker="o", facecolors='none', edgecolors='r')
-    plt.scatter(1000.0 / temp_k[21:], true_u_res[21:] * temp_k[21:], marker="o", facecolors='none', edgecolors='k', label='TraPPE-UA')
-    plt.scatter(1000.0 / temp_k[21:], mbar_u_res[21:] * temp_k[21:], marker="o", facecolors='none', edgecolors='r', label='MBAR')
+    plt.scatter(1000.0 / true_temp_k[:10], true_u_res[:10] * true_temp_k[:10], marker="o", facecolors='none', edgecolors='k')
+    plt.scatter(1000.0 / mbar_temp_k[:10], mbar_u_res[:10] * mbar_temp_k[:10], marker="o", facecolors='none', edgecolors='r')
+    plt.scatter(1000.0 / true_temp_k[21:], true_u_res[21:] * true_temp_k[21:], marker="o", facecolors='none', edgecolors='k', label='TraPPE-UA')
+    plt.scatter(1000.0 / mbar_temp_k[21:], mbar_u_res[21:] * mbar_temp_k[21:], marker="o", facecolors='none', edgecolors='r', label='MBAR')
 
     # Z vs. 1000/T plot
     plt.subplot(2, 2, 3 )
@@ -80,10 +85,10 @@ def plot_zrho_urest():
     plt.ylabel("$Z$")
     #plt.xlim([0,0.65])
     #plt.ylim([-5.0,8.0])
-    plt.scatter(1000.0 / temp_k[:10], true_z[:10], marker="o", facecolors='none', edgecolors='k')
-    plt.scatter(1000.0 / temp_k[:10], mbar_z[:10], marker="o", facecolors='none', edgecolors='r')
-    plt.scatter(1000.0 / temp_k[21:], true_z[21:], marker="o", facecolors='none', edgecolors='k', label='TraPPE-UA')
-    plt.scatter(1000.0 / temp_k[21:], mbar_z[21:], marker="o", facecolors='none', edgecolors='r', label='MBAR')    
+    plt.scatter(1000.0 / true_temp_k[:10], true_z[:10], marker="o", facecolors='none', edgecolors='k')
+    plt.scatter(1000.0 / mbar_temp_k[:10], mbar_z[:10], marker="o", facecolors='none', edgecolors='r')
+    plt.scatter(1000.0 / true_temp_k[21:], true_z[21:], marker="o", facecolors='none', edgecolors='k', label='TraPPE-UA')
+    plt.scatter(1000.0 / mbar_temp_k[21:], mbar_z[21:], marker="o", facecolors='none', edgecolors='r', label='MBAR')    
 
     plt.legend()
     plt.savefig(output_figure_filename)

@@ -44,12 +44,12 @@ bash $HOME/Git/TranSFF/Scripts/Plot_zu.sh $MW target.res $true_data_file "TraPPE
 
 mkdir $RunGrid_name 
 
-cp $0 $RunGrid_name 2>/dev/null
+cp $0 $RunGrid_name
 mv 0.5Z_0.5U_all.txt $RunGrid_name
 mv $true_data_file $RunGrid_name
 mv *.parallel $RunGrid_name
-mv *.png $RunGrid_name 2>/dev/null
+mv *.png $RunGrid_name 
 mv *.res $RunGrid_name
 mv *.log $RunGrid_name
 mv *.par $RunGrid_name
-mv *.inp $RunGrid_name 2>/dev/null
+if [ "$rerun_inp" != "none" ]; then mv $rerun_inp $RunGrid_name; fi

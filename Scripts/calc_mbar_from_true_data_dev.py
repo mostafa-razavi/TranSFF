@@ -34,17 +34,17 @@ mbar_p_mpa = mbar_data[:,3] * bar_to_mpa
 
 
 # Calcualte properties
-true_u_res = true_data[:,3] * kcalmol_to_kjmol / Nmolec / R_const / true_temp_k * 1e3
+true_u_hat = true_data[:,3] * kcalmol_to_kjmol / Nmolec / R_const / true_temp_k * 1e3
 true_z = true_p_mpa * MW / ( true_rho_gcc  * R_const * true_temp_k )
 true_zminus1overRho = ( true_z - 1 ) / true_rho_gcc
 
-mbar_u_res = mbar_data[:,2] * kelvin_to_kjmol / Nmolec / R_const / mbar_temp_k * 1e3
+mbar_u_hat = mbar_data[:,2] * kelvin_to_kjmol / Nmolec / R_const / mbar_temp_k * 1e3
 mbar_z = mbar_p_mpa * MW / ( mbar_rho_gcc  * R_const * mbar_temp_k )
 mbar_zminus1overRho = ( mbar_z - 1 ) / mbar_rho_gcc
 
 # Calculate score
 z_dev = ( mbar_zminus1overRho - true_zminus1overRho ) / true_zminus1overRho * 100.0
-u_dev = ( mbar_u_res - true_u_res ) / true_u_res * 100.0
+u_dev = ( mbar_u_hat - true_u_hat ) / true_u_hat * 100.0
 
 z_aad = numpy.mean(numpy.abs(z_dev))
 u_aad = numpy.mean(numpy.abs(u_dev))

@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script plots (Z-1)/rho vs and TUres vs 1000/T plot side by side
 # Example:
-# bash ~/Git/TranSFF/Scripts/Plot_zu.sh 30.07 target.res CassandraRdr.res
+# bash ~/Git/TranSFF/Scripts/Plot_zu.sh 30.07 CassandraRdr.res target.res "Cassandra"
 
 MW=$1
 true_data_file=$2

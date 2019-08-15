@@ -1,4 +1,4 @@
-# This script computes the deviation between MBAR and true data. The data in true_data_file and mbar_data_file should be consistent in terms of order of lines. 
+# This script plots the MBAR vs true data
 
 import matplotlib
 import numpy

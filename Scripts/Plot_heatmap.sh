@@ -4,23 +4,22 @@
 # z_wt and u_wt are given as command-line argument (any number between 0 and 1) where the sum should be 1.
 # Last two arguments are sigma and epsilon increments on x and y axis of the heatmap.
 # Examples:
-# bash ~/Git/TranSFF/Scripts/Plot_heatmap.sh 30.07 target.res CassandraRdr.res 0.5Z_0.5U_all.txt 0.5 0.5 0.002 2
+# bash ~/Git/TranSFF/Scripts/Plot_heatmap.sh 30.07 target.res CassandraRdr.res 0.5Z_0.5U.grid 0.5 0.5 0.002 2
 
 MW=$1
-mbar_file_name_tail_keyword=$2
-true_data_file=$3
-true_label=$4
-outfile=$5
-z_wt=$6
-u_wt=$7	
-sig_increment=$8
-eps_increment=$9
+true_data_file=$2
+mbar_file_name_tail_keyword=$3
+z_wt=$4
+u_wt=$5	
+outfile=$6
+sig_increment=$7
+eps_increment=$8
 
 if [ ! -e $outfile ]; then
 	for i in *.$mbar_file_name_tail_keyword
 	do
-		plot_or_deviation="deviation"
-		score=$(python3.6 ~/Git/TranSFF/Scripts/Compare_MBAR_and_direct_sim.py $plot_or_deviation $true_data_file $true_label $i $i.png $MW $z_wt $u_wt)
+		mbar_data_file="$i"
+		score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev.py $MW $true_data_file $mbar_data_file $z_wt $u_wt)
 		
 		# Obtain sig and epsilon values from file names
 		IFS='_' read -ra temp_array <<< "$i"

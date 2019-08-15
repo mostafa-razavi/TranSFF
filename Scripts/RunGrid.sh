@@ -15,12 +15,13 @@ eps=(116.5 117.0 117.5 118.0 118.5 119.0 119.5 120.0 120.5 121.0 121.5 122.0 122
 # Plot_heatmap arguments
 MW="30.06904"
 true_data_file="GONvtRdr.res"                                                               
+true_data_label="TraPPE-UA"
 mbar_file_name_tail_keyword="target.res"
 z_wt="0.5"
 u_wt="0.5"
 outfile=${z_wt}Z_${u_wt}U.grid
 sig_increment="0.002"
-eps_increment="0.5"
+eps_increment="1"
 
 if [ -e "$RunGrid_name" ]; then echo "$RunGrid_name folder already exists. Exiting..."; exit; fi
 
@@ -47,8 +48,8 @@ do
     done
 done
 
-bash $HOME/Git/TranSFF/Scripts/Plot_heatmap.sh $MW $true_data_file target.res $z_wt $u_wt $outfile $sig_increment $eps_increment
-bash $HOME/Git/TranSFF/Scripts/Plot_zu.sh $MW target.res $true_data_file "TraPPE-UA"
+bash $HOME/Git/TranSFF/Scripts/Plot_heatmap.sh $MW $true_data_file $mbar_file_name_tail_keyword $z_wt $u_wt $outfile $sig_increment $eps_increment
+bash $HOME/Git/TranSFF/Scripts/Plot_zu.sh $MW $true_data_file $mbar_file_name_tail_keyword $true_data_label
 
 mkdir $RunGrid_name 
 

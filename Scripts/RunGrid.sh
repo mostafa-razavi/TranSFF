@@ -20,7 +20,7 @@ true_data_label_array="TraPPE-UA REFPROP"
 mbar_file_name_tail_keyword="target.res"
 z_wt="0.5"
 u_wt="0.5"
-heatmap_outfile="${z_wt}Z_${u_wt}U.grid"
+heatmap_outfilename_array="${z_wt}Z_${u_wt}U_TraPPE-U.grid ${z_wt}Z_${u_wt}U_REFPROP.grid"
 sig_increment="0.002"
 eps_increment="1"
 
@@ -50,10 +50,11 @@ do
 done
 
 true_data_file_array=($true_data_file_array)
+true_data_label_array=($true_data_label_array)
+heatmap_outfilename_array=($heatmap_outfilename_array)
 for i in $(seq 0 $((${#true_data_file_array[@]}-1)))
 do 
-echo ${true_data_file_array[i]}
-    bash $HOME/Git/TranSFF/Scripts/Plot_heatmap.sh $MW ${true_data_file_array[i]} $mbar_file_name_tail_keyword $z_wt $u_wt $heatmap_outfile $sig_increment $eps_increment
+    bash $HOME/Git/TranSFF/Scripts/Plot_heatmap.sh $MW ${true_data_file_array[i]} $mbar_file_name_tail_keyword $z_wt $u_wt ${heatmap_outfilename_array[i]} $sig_increment $eps_increment
     bash $HOME/Git/TranSFF/Scripts/Plot_zu.sh $MW ${true_data_file_array[i]} $mbar_file_name_tail_keyword ${true_data_label_array[i]}
 done
 
@@ -62,7 +63,7 @@ mkdir $RunGrid_name
 
 cp $0 $RunGrid_name
 mv $heatmap_outfile $RunGrid_name
-for i in $(seq 0 $((${#true_data_file_array[@]}-1))); do cp $true_data_file $RunGrid_name; done
+for i in $(seq 0 $((${#true_data_file_array[@]}-1))); do cp ${true_data_file_array[i]} $RunGrid_name; done
 mv *.parallel $RunGrid_name
 mv *.png $RunGrid_name 
 mv *.res $RunGrid_name

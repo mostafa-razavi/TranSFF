@@ -105,7 +105,5 @@ elif plot_or_deviation == "deviation":
     z_aad = numpy.mean(numpy.abs(z_dev))
     u_aad = numpy.mean(numpy.abs(u_dev))
 
-    z_wt = 1.0
-    u_wt = 0.0
     score = z_wt * z_aad + u_wt * u_aad
     print(score)

@@ -19,7 +19,7 @@ if [ ! -e $outfile ]; then
 	for i in *.$mbar_file_name_tail_keyword
 	do
 		mbar_data_file="$i"
-		#score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev.py $MW $true_data_file $mbar_data_file $z_wt $u_wt)
+		score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev.py $MW $true_data_file $mbar_data_file $z_wt $u_wt)
 		
 		# Obtain sig and epsilon values from file names
 		IFS='_' read -ra temp_array <<< "$i"
@@ -33,7 +33,7 @@ if [ ! -e $outfile ]; then
 		eps=${sig_eps_sting[1]}
 		#r=${sig_eps_sting[2]}
 
-		#echo $sig $eps $score >> $outfile
+		echo $sig $eps $score >> $outfile
 	done
 else
 	echo "$outfile already exists. The data will be replotted anyway."

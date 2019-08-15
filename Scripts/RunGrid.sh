@@ -16,7 +16,7 @@ eps=(116.5 117.0)
 # Plot_heatmap arguments
 MW="30.06904"
 true_data_file_array="$HOME/Git/TranSFF/Data/C2/GONvtRdr_select7.res $HOME/Git/TranSFF/Data/C2/REFPROP_select7.res"                                                               
-true_data_label="TraPPE-UA"
+true_data_label_array="TraPPE-UA REFPROP"
 mbar_file_name_tail_keyword="target.res"
 z_wt="0.5"
 u_wt="0.5"
@@ -54,7 +54,7 @@ for i in $(seq 0 $((${#true_data_file_array[@]}-1)))
 do 
 echo ${true_data_file_array[i]}
     bash $HOME/Git/TranSFF/Scripts/Plot_heatmap.sh $MW ${true_data_file_array[i]} $mbar_file_name_tail_keyword $z_wt $u_wt $heatmap_outfile $sig_increment $eps_increment
-    bash $HOME/Git/TranSFF/Scripts/Plot_zu.sh $MW ${true_data_file_array[i]} $mbar_file_name_tail_keyword $true_data_label
+    bash $HOME/Git/TranSFF/Scripts/Plot_zu.sh $MW ${true_data_file_array[i]} $mbar_file_name_tail_keyword ${true_data_label_array[i]}
 done
 
 

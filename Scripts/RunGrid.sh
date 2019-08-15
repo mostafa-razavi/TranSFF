@@ -62,8 +62,11 @@ done
 mkdir $RunGrid_name 
 
 cp $0 $RunGrid_name
-mv $heatmap_outfile $RunGrid_name
-for i in $(seq 0 $((${#true_data_file_array[@]}-1))); do cp ${true_data_file_array[i]} $RunGrid_name; done
+for i in $(seq 0 $((${#true_data_file_array[@]}-1)))
+do 
+    mv ${heatmap_outfilename_array[i]} $RunGrid_name
+    cp ${true_data_file_array[i]} $RunGrid_name
+done
 mv *.parallel $RunGrid_name
 mv *.png $RunGrid_name 
 mv *.res $RunGrid_name

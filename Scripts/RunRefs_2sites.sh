@@ -35,6 +35,6 @@ do
             
     mkdir $sim_name
     cd $sim_name
-    bash ${Scripts_path}/RunITIC_GOMC_Parallel.sh prepare $par_file_name
+    bash ${Scripts_path}/RunITIC_GOMC_Parallel.sh $molec_name $par_file_name "no"
     cd ..
 done

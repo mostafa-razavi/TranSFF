@@ -21,7 +21,7 @@ do
 
         mkdir s${isig}e${ieps}
         cd s${isig}e${ieps}
-        bash ${Scripts_path}/RunITIC_GOMC_Parallel.sh prepare "C1_s${isig}e${ieps}.par"
+        bash ${Scripts_path}/RunITIC_GOMC_Parallel.sh "C1" "C1_s${isig}e${ieps}.par" "no"
         cd ..
     done
 done

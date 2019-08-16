@@ -1,21 +1,23 @@
 #!/bin/bash
-# This script runs the ITIC simulations in parallel
+# This script runs the ITIC simulations in parallel. If the third argument is not specified the script used all cores available.
+# Example: Run butane usinng 32 cores
+# bash RunITIC_GOMC_Parallel.sh C4 C4_TraPPE-UA.par 32
 #
 # S. Mostafa Razavi (sr87@zips.uakron.edu)
 
 
-#===== Number of CPU cores to use ===== 
-Nproc="24"
-
 #===== Molecule and force field files =====
-molec_name="C4"
-ITIC_file_name="C4.itic"
-pdb_file_name="C4.pdb"
-topology_file_name="C4.top"
-force_field_file_name="C4_TraPPE-UA.par"
-if [ "$1" == "prepare" ]; then
-	force_field_file_name=$2
-fi
+molec_name=$1
+force_field_file_name=$2
+should_run=$3
+ITIC_file_name="${molec_name}.itic"
+pdb_file_name="${molec_name}.pdb"
+topology_file_name="${molec_name}.top"
+
+#===== Number of CPU cores to use ===== 
+Nproc=$(nproc)
+if [ "$4" != "" ]; then Nproc="$4"; fi
+
 #===== Simulation Parameters =====
 Restart="false"
 Potential="FSHIFT"
@@ -100,11 +102,11 @@ else
 	for fol in I*/*/*/; do 
 		echo "cd $CD/$fol; $gomc_exe_address $gomc_input_file_name > gomc.log" >> COMMANDS.parallel
 	done
-	if [ "$1" == "" ]; then
+	if [ "$should_run" == "yes" ]; then
 		parallel --jobs $Nproc < COMMANDS.parallel
 	fi
 fi
 
-if [ "$1" == "" ]; then
+if [ "$should_run" == "yes" ]; then
 	bash ~/Git/TranSFF/Scripts/GONvtRdr/GONvtRdr.sh nvt.inp nvt
 fi

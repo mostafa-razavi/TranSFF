@@ -7,9 +7,9 @@
 
 
 #===== Molecule and force field files =====
-molec_name=$1
-force_field_file_name=$2
-should_run=$3
+molec_name=$1									# E.g. C1, C2, C4, C12, etc
+force_field_file_name=$2						# C2_TraPPE-UA.par
+should_run=$3									# "yes" or "no" (lower case)
 ITIC_file_name="${molec_name}.itic"
 pdb_file_name="${molec_name}.pdb"
 topology_file_name="${molec_name}.top"
@@ -36,7 +36,7 @@ OutputName="nvt"
 #===== Important paths =====
 Scripts_path="$HOME/Git/TranSFF/Scripts"
 Molecules_path="$HOME/Git/TranSFF/Molecules/$molec_name"
-Forcefileds_path="$HOME/Git/TranSFF/Forcefields"
+Forcefileds_path="$HOME/Git/TranSFF/Forcefields/$molec_name"
 
 #===== Executable files =====
 gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"

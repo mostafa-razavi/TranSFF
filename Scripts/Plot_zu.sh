@@ -11,6 +11,6 @@ true_data_label=$4
 for i in *.$mbar_file_name_tail_keyword
 do
 	mbar_data_file="$i"
-	output_figure_filename="${mbar_data_file}_${true_data_label}.png"
+	output_figure_filename="${mbar_data_file:225}_${true_data_label}.png"
 	python3.6 ~/Git/TranSFF/Scripts/plot_mbar_vs_true_data.py $MW $true_data_file $mbar_data_file $true_data_label $output_figure_filename
 done

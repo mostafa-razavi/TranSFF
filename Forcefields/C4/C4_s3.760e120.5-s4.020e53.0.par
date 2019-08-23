@@ -60,4 +60,4 @@ NONBONDED_MIE
 !
 !atom   eps	sig_ij	n	description
 CH3	120.5       3.760       12	
-CH2	some_eps    some_sig    12  
+CH2	53.0    4.020    12  

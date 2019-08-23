@@ -31,12 +31,12 @@ true_p_mpa = true_data[:,2] * atm_to_mpa
 true_u_kjmol = true_data[:,3] * kcalmol_to_kjmol
 Nmolec = true_data[:,4]
 
-mbar_data = numpy.loadtxt(mbar_data_file, skiprows=1, usecols=(0,1,3,5))
+mbar_data = numpy.loadtxt(mbar_data_file, skiprows=1, usecols=(0,1,3,5,2))
 mbar_temp_k = mbar_data[:,0]
 mbar_rho_gcc = mbar_data[:,1]
 mbar_u_kjmol = mbar_data[:,2] * kelvin_to_kjmol
 mbar_p_mpa = mbar_data[:,3] * bar_to_mpa
-
+Neff = mbar_data[:,4]
 
 # Calcualte properties
 true_u_hat = true_data[:,3] * kcalmol_to_kjmol / Nmolec / R_const / true_temp_k * 1e3
@@ -59,6 +59,8 @@ plt.xlabel("$\\rho$ [$\mathrm{g/cm^3}$]")
 plt.ylabel("$(Z-1)/\\rho}$ [$\mathrm{cm^3/g}$]")
 plt.scatter(true_rho_gcc, true_zminus1overRho, marker="o", facecolors='none', edgecolors='k', label=true_data_label)
 plt.scatter(mbar_rho_gcc, mbar_zminus1overRho, marker="o", facecolors='none', edgecolors='r', label='MBAR')
+for i in range(0,len(mbar_rho_gcc)):
+    plt.text(mbar_rho_gcc[i]+0.01, mbar_zminus1overRho[i], str(round(Neff[i],1)), color='red', fontsize=9, alpha=0.9, bbox=dict(color='red', alpha=0.01))
 plt.legend()
 
 # Z vs. 1000/T plot

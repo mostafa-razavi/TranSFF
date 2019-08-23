@@ -1,6 +1,6 @@
 #!/bin/bash
 # This script runs GOMC_ITIC_MBAR.sh script for specified sigma and epsilons as two arrays by modifying the raw_par file.
-
+InFile=$1
 # C4
 #T_rho_pairs_all="0.4873/361.43 0.4873/423.10 0.5360/328.02 0.5360/399.30 0.5847/287.75 0.5847/367.96 0.6335/241.55 0.6335/327.86 0.6822/191.34 0.6822/278.30 382.61/0.0244 382.61/0.0325 382.61/0.0487 382.61/0.0975 510.16/0.0244 510.16/0.0325 510.16/0.0487 510.16/0.0975 510.16/0.1949 510.16/0.2924 510.16/0.3898 510.16/0.4873 510.16/0.5360 510.16/0.5847 510.16/0.6335 510.16/0.6822"
 #T_rho_pairs_select="0.4873/361.43 0.6335/241.55 0.6822/191.34 510.16/0.0975 510.16/0.4873 510.16/0.6335 510.16/0.6822"
@@ -13,11 +13,11 @@ T_rho_pairs_rest="0.5336/611.24 0.5870/496.88 0.5870/578.08 0.6404/436.18 0.6404
 
 for i in $T_rho_pairs_select
 do
-    grep -R $i COMMANDS.parallel >> T_rho_pairs_select.commands
+    grep -R $i $InFile >> T_rho_pairs_select.commands
 done
 
 for i in $T_rho_pairs_rest
 do
-    grep -R $i COMMANDS.parallel >> T_rho_pairs_rest.commands
+    grep -R $i $InFile >> T_rho_pairs_rest.commands
 done
 

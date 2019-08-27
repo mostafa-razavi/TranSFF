@@ -8,6 +8,8 @@ Forcefileds_path="$HOME/Git/TranSFF/Forcefields"
 
 raw_par="C1_sSOMEeSOME.par"
 raw_par_path="$Forcefileds_path/$raw_par"
+conf_file="${Scripts_path}/FSHIFT_BULK_LONG.conf"
+
 sig=(3.620 3.645 3.670 3.695 3.720 3.745 3.770 3.795 3.820)
 eps=(175)
 
@@ -21,7 +23,7 @@ do
 
         mkdir s${isig}e${ieps}
         cd s${isig}e${ieps}
-        bash ${Scripts_path}/RunITIC_GOMC_Parallel.sh "C1" "C1_s${isig}e${ieps}.par" "no"
+        bash ${Scripts_path}/RunITIC_GOMC_Parallel.sh "C1" "C1_s${isig}e${ieps}.par" "$conf_file" "no"
         cd ..
     done
 done

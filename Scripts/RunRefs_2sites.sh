@@ -14,6 +14,7 @@ Forcefileds_path="$HOME/Git/TranSFF/Forcefields"
 
 raw_par="${molec_name}_sSOMEeSOME.par"
 raw_par_path="$Forcefileds_path/$raw_par"
+conf_file="${Scripts_path}/FSHIFT_BULK_LONG.conf"
 
 i=-1
 for isig_ch3 in "${sig_ch3[@]}"
@@ -35,6 +36,6 @@ do
             
     mkdir $sim_name
     cd $sim_name
-    bash ${Scripts_path}/RunITIC_GOMC_Parallel.sh $molec_name $par_file_name "no"
+    bash ${Scripts_path}/RunITIC_GOMC_Parallel.sh $molec_name $par_file_name $conf_file "no"
     cd ..
 done

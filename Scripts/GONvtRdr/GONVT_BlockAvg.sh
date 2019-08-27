@@ -5,6 +5,7 @@ GOMC_datfile=$1
 Nskip_lines=$2
 Nblocks=$3
 
+
 for T in I*/*/*
 do
 	cd $CD/$T 
@@ -21,8 +22,8 @@ do
 		rho=$rho_or_T2
 		T=$rho_or_T1
 	fi
-
-	if [ -e "$GOMC_datfile" ]; then
+	GOMC_datfile_content=$(cat "$GOMC_datfile")
+	if [ -e "$GOMC_datfile" ] && [ "$GOMC_datfile_content" != "" ]; then
 		averages=$(python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_BlockAvg.py ${GOMC_datfile} $Nskip_lines $Nblocks avg) 
 		stdev=$(python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_BlockAvg.py ${GOMC_datfile} $Nskip_lines $Nblocks std)
 		echo $T $rho $averages > Blocks.avg

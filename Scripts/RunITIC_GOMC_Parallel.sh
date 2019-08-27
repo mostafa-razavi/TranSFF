@@ -108,5 +108,8 @@ else
 fi
 
 if [ "$should_run" == "yes" ]; then
-	bash ~/Git/TranSFF/Scripts/GONvtRdr/GONvtRdr.sh nvt.inp nvt
+	bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GONvtRdr.sh nvt.inp nvt
+	ndata=$(echo "($RunSteps/$BlockAverageFreq)/2" | bc )
+	nblocks="5"
+	bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_BlockAvg.sh Blk_${OutputName}_BOX_0.dat $ndata $nblocks
 fi

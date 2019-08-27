@@ -20,95 +20,96 @@ except:
 else:
     isDSIM = True
 
-R_const = 8.31446261815324
 
-# Conversion factors
+# Conversion factors and constants
 atm_to_mpa = 0.101325
 kcalmol_to_kjmol = 4.184
-
 bar_to_mpa = 0.1
 kelvin_to_kjmol = 0.0083
+R_const = 8.31446261815324
 
 # Import data
-true_data = numpy.loadtxt(true_data_file, skiprows=1, usecols=(0,1,2,5,11))
+true_data = numpy.loadtxt(true_data_file, skiprows=1)
 true_temp_k = true_data[:,0]
 true_rho_gcc = true_data[:,1]
-true_p_mpa = true_data[:,2] * atm_to_mpa
-true_u_kjmol = true_data[:,3] * kcalmol_to_kjmol
-Nmolec = true_data[:,4]
-
-mbar_data = numpy.loadtxt(mbar_data_file, skiprows=1, usecols=(0,1,3,5,2))
-mbar_temp_k = mbar_data[:,0]
-mbar_rho_gcc = mbar_data[:,1]
-mbar_u_kjmol = mbar_data[:,2] * kelvin_to_kjmol
-mbar_p_mpa = mbar_data[:,3] * bar_to_mpa
-Neff = mbar_data[:,4]
-
-if isDSIM:
-    dsim_data = numpy.loadtxt(dsim_data_file, skiprows=1, usecols=(0,1,2,5,11))
-    dsim_temp_k = dsim_data[:,0]
-    dsim_rho_gcc = dsim_data[:,1]
-    dsim_p_mpa = dsim_data[:,2] * atm_to_mpa
-    dsim_u_kjmol = dsim_data[:,3] * kcalmol_to_kjmol
-
-# Calcualte properties
-true_u_hat = true_data[:,3] * kcalmol_to_kjmol / Nmolec / R_const / true_temp_k * 1e3
-true_z = true_p_mpa * MW / ( true_rho_gcc  * R_const * true_temp_k )
+true_z = true_data[:,2]
+true_u_res = true_data[:,3]
 true_zminus1overRho = ( true_z - 1 ) / true_rho_gcc
 
-mbar_u_hat = mbar_data[:,2] * kelvin_to_kjmol / Nmolec / R_const / mbar_temp_k * 1e3
+mbar_data = numpy.loadtxt(mbar_data_file, skiprows=1)
+mbar_temp_k = mbar_data[:,0]
+mbar_rho_gcc = mbar_data[:,1]
+mbar_Nmolec = mbar_data[:,2]
+Neff = mbar_data[:,3]
+mbar_u_kjmol = mbar_data[:,4] * kelvin_to_kjmol
+mbar_u_kjmol_err = mbar_data[:,5] * kelvin_to_kjmol
+mbar_p_mpa = mbar_data[:,6] * bar_to_mpa
+mbar_p_mpa_err = mbar_data[:,7] * bar_to_mpa
+
+mbar_u_res = ( mbar_u_kjmol ) / mbar_Nmolec / R_const / mbar_temp_k * 1e3
 mbar_z = mbar_p_mpa * MW / ( mbar_rho_gcc  * R_const * mbar_temp_k )
+mbar_z_err = mbar_p_mpa_err * MW / ( mbar_rho_gcc  * R_const * mbar_temp_k )
 mbar_zminus1overRho = ( mbar_z - 1 ) / mbar_rho_gcc
+mbar_zminus1overRho_err = mbar_z_err / mbar_rho_gcc
 
 if isDSIM:
-    dsim_u_hat = dsim_data[:,3] * kcalmol_to_kjmol / Nmolec / R_const / dsim_temp_k * 1e3
-    dsim_z = dsim_p_mpa * MW / ( dsim_rho_gcc  * R_const * dsim_temp_k )
+    dsim_data = numpy.loadtxt(dsim_data_file, skiprows=1)
+    dsim_temp_k = dsim_data[:,0]
+    dsim_rho_gcc = dsim_data[:,1]
+    dsim_z = dsim_data[:,2]
+    dsim_z_std = dsim_data[:,3]
+    dsim_u_res = dsim_data[:,4]
+    dsim_u_res_std = dsim_data[:,5]
     dsim_zminus1overRho = ( dsim_z - 1 ) / dsim_rho_gcc
+    dsim_zminus1overRho_err = dsim_z_std / dsim_rho_gcc
 
-# Initiate plot
+############### Initiate plot #############################################
 plt.figure(num=None, figsize=(24, 7), dpi=100, facecolor='w', edgecolor='w')
 plt.subplots_adjust(left=0.04, bottom=None, right=0.99, top=None, wspace=0.3, hspace=None)
 font = {'weight' : 'normal', 'size' : 14}
 matplotlib.rc('font', **font)    
 
-# (Z-1)/rho vs. rho plot
+############### (Z-1)/rho vs. rho plot ##############################
 plt.subplot(1, 3, 1 )
 plt.xlabel("$\\rho$ [$\mathrm{g/cm^3}$]")
 plt.ylabel("$(Z-1)/\\rho}$ [$\mathrm{cm^3/g}$]")
-plt.scatter(true_rho_gcc, true_zminus1overRho, marker="o", facecolors='none', edgecolors='k', label=true_data_label)
-plt.scatter(mbar_rho_gcc, mbar_zminus1overRho, marker="o", facecolors='none', edgecolors='r', label='MBAR')
+
+plt.scatter(true_rho_gcc, true_zminus1overRho, marker="s", s=70, facecolors='none', edgecolors='k', label=true_data_label)
+plt.scatter(mbar_rho_gcc, mbar_zminus1overRho, marker="o", s=70, facecolors='none', edgecolors='r', label='MBAR')
+plt.errorbar(mbar_rho_gcc, mbar_zminus1overRho, yerr=mbar_zminus1overRho_err, color='r', capsize=5, marker=None, linewidth=0, elinewidth=1, ms=0)
+
 if isDSIM:
-    plt.scatter(dsim_rho_gcc, dsim_zminus1overRho, marker="o", facecolors='none', edgecolors='g', label='Direct dsimulation')
+    plt.scatter(dsim_rho_gcc, dsim_zminus1overRho, marker="^", s=70, facecolors='none', edgecolors='g', label='Direct simulation')
+    plt.errorbar(dsim_rho_gcc, dsim_zminus1overRho, yerr=dsim_zminus1overRho_err, color='g', capsize=5, marker=None, linewidth=0, elinewidth=1, ms=0)
+
+# Add labels to the plot to show Neff    
 for i in range(0,len(mbar_rho_gcc)):
     plt.text(mbar_rho_gcc[i]+0.01, mbar_zminus1overRho[i], str(round(Neff[i],1)), color='red', fontsize=9, alpha=0.9, bbox=dict(color='red', alpha=0.01))
+
+
 plt.legend()
 
-# Z vs. 1000/T plot
+############### Z vs. 1000/T plot #############################################
 plt.subplot(1, 3, 2 )
 plt.xlabel("$1000/T$ [K$^{-1}$]")
 plt.ylabel("$Z$")
-plt.scatter(1000.0 / true_temp_k[:10], true_z[:10], marker="o", facecolors='none', edgecolors='k')
-plt.scatter(1000.0 / true_temp_k[21:], true_z[21:], marker="o", facecolors='none', edgecolors='k')
-plt.scatter(1000.0 / mbar_temp_k[:10], mbar_z[:10], marker="o", facecolors='none', edgecolors='r')
-plt.scatter(1000.0 / mbar_temp_k[21:], mbar_z[21:], marker="o", facecolors='none', edgecolors='r')    
+plt.scatter(1000.0 / true_temp_k, true_z, marker="s", s=70, facecolors='none', edgecolors='k')
+plt.scatter(1000.0 / mbar_temp_k, mbar_z, marker="o", s=70, facecolors='none', edgecolors='r')
+plt.errorbar(1000.0 / mbar_temp_k, mbar_z, yerr=mbar_z_err, color='r', capsize=5, marker=None, linewidth=0, elinewidth=1, ms=0)
+
 if isDSIM:
-    plt.scatter(1000.0 / dsim_temp_k[:10], dsim_z[:10], marker="o", facecolors='none', edgecolors='k')
-    plt.scatter(1000.0 / dsim_temp_k[21:], dsim_z[21:], marker="o", facecolors='none', edgecolors='k')
+    plt.scatter(1000.0 / dsim_temp_k, dsim_z, marker="^", s=70, facecolors='none', edgecolors='g')
+    plt.errorbar(1000.0 / dsim_temp_k, dsim_z, yerr=dsim_z_std, color='g', capsize=5, marker=None, linewidth=0, elinewidth=1, ms=0)
 
-
-# TU^ vs 1000/T plot
+############### TU^ vs 1000/T plot #############################################
 plt.subplot(1, 3, 3 )
-#plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 plt.xlabel("$1000/T$ [K$^{-1}$]")
-plt.ylabel("$T\hat{U}$ [K]")
-plt.scatter(1000.0 / true_temp_k[:10], true_u_hat[:10] * true_temp_k[:10], marker="o", facecolors='none', edgecolors='k')
-plt.scatter(1000.0 / true_temp_k[21:], true_u_hat[21:] * true_temp_k[21:], marker="o", facecolors='none', edgecolors='k')
-plt.scatter(1000.0 / mbar_temp_k[:10], mbar_u_hat[:10] * mbar_temp_k[:10], marker="o", facecolors='none', edgecolors='r')
-plt.scatter(1000.0 / mbar_temp_k[21:], mbar_u_hat[21:] * mbar_temp_k[21:], marker="o", facecolors='none', edgecolors='r')
-if isDSIM:
-    plt.scatter(1000.0 / dsim_temp_k[:10], dsim_u_hat[:10] * dsim_temp_k[:10], marker="o", facecolors='none', edgecolors='k')
-    plt.scatter(1000.0 / dsim_temp_k[21:], dsim_u_hat[21:] * dsim_temp_k[21:], marker="o", facecolors='none', edgecolors='k')
+plt.ylabel("$T\hat{U}^\mathrm{res}$ [K]")
+plt.scatter(1000.0 / true_temp_k, true_u_res * true_temp_k, marker="s", s=70, facecolors='none', edgecolors='k')
+plt.scatter(1000.0 / mbar_temp_k, mbar_u_res * mbar_temp_k, marker="o", s=70, facecolors='none', edgecolors='r')
 
+if isDSIM:
+    plt.scatter(1000.0 / dsim_temp_k, dsim_u_res * dsim_temp_k, marker="^", s=70, facecolors='none', edgecolors='g')
 
 plt.savefig(output_figure_filename)
 plt.close()

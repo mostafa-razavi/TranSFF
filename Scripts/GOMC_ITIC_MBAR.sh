@@ -110,7 +110,7 @@ if [ "$prepare_run_post" == "TTT" ] || [ "$prepare_run_post" == "FFT" ]; then
     # Stage 3) Post-process the results and obtain predictions using MBAR_predict.py
     rm -rf "$CD/${parallel_file_name}.res"
     rm -rf "$parallel_file_name.MBAR_predict.parallel"
-    echo "Temp[k] rho[g/ml] Neff u[K] u_err[K] P[bar] P_err[bar]" >> "$CD/${parallel_file_name}.res"
+    echo "Temp[k] rho[g/ml] Nmolec Neff u[K] u_err[K] P[bar] P_err[bar]" >> "$CD/${parallel_file_name}.res"
     for i in ${ref_ff_array[@]}
     do
         for k in $CD/$i/I*/*/*/
@@ -129,8 +129,9 @@ if [ "$prepare_run_post" == "TTT" ] || [ "$prepare_run_post" == "FFT" ]; then
                     which_datafile_columns_string="1 2"   #Total_En Press (0 is first column)
                     how_many_datafile_rows_to_skip="0"
                     energy_unit="K"
+                    Nmolec=$(grep -R STAT_0: $k/gomc.log | head -n1 | awk '{print $4}')
                     #echo "python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py \"$T\" \"$rho\" \"$Nsnapshots\" \"$ref_sim_fol_string\" \"$ref_ff_string\" \"$target_ff_name\" \"$which_datafile_columns_string\" \"$how_many_datafile_rows_to_skip\" \"$energy_unit\" >> $CD/${parallel_file_name}.res" >> "$parallel_file_name.MBAR_predict.parallel"
-                    python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py "$T" "$rho" "$Nsnapshots" "$ref_sim_fol_string" "$ref_ff_string" "$target_ff_name" "$which_datafile_columns_string" "$how_many_datafile_rows_to_skip" "$energy_unit" >> "$CD/${parallel_file_name}.res"
+                    python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py "$T" "$rho" "$Nmolec" "$Nsnapshots" "$ref_sim_fol_string" "$ref_ff_string" "$target_ff_name" "$which_datafile_columns_string" "$how_many_datafile_rows_to_skip" "$energy_unit" >> "$CD/${parallel_file_name}.res"
                 fi
             fi
         done

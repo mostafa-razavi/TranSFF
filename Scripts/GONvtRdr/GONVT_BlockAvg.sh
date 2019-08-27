@@ -1,7 +1,7 @@
 #!bin/bash
 CD=${PWD}
 
-Output_keyword=$1
+GOMC_datfile=$1
 Nskip_lines=$2
 Nblocks=$3
 
@@ -21,11 +21,13 @@ do
 		rho=$rho_or_T2
 		T=$rho_or_T1
 	fi
-	averages=$(python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_BlockAvg.py Blk_${Output_keyword}_BOX_0.dat $Nskip_lines $Nblocks avg) 
-	stdev=$(python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_BlockAvg.py Blk_${Output_keyword}_BOX_0.dat $Nskip_lines $Nblocks std)
-	echo $T $rho $averages > Blocks.avg
-	echo $T $rho $stdev > Blocks.std
-	 
+
+	if [ -e "$GOMC_datfile" ]; then
+		averages=$(python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_BlockAvg.py ${GOMC_datfile} $Nskip_lines $Nblocks avg) 
+		stdev=$(python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_BlockAvg.py ${GOMC_datfile} $Nskip_lines $Nblocks std)
+		echo $T $rho $averages > Blocks.avg
+		echo $T $rho $stdev > Blocks.std
+	fi
 done
 tail -q -n1 $CD/I*/*/*/Blocks.avg > $CD/Blocks.avg
 tail -q -n1 $CD/I*/*/*/Blocks.std > $CD/Blocks.std

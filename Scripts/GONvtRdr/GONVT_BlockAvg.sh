@@ -9,10 +9,10 @@ Nblocks=$3
 for T in I*/*/*
 do
 	cd $CD/$T 
-	IFS='/' read -ra IX_Y_Z <<< "$T"
-	IT_or_IC=${IX_Y_Z[-3]}
-	rho_or_T1=${IX_Y_Z[-2]}
-	rho_or_T2=${IX_Y_Z[-1]}
+	IFS='/' read -ra IX <<< "$T"
+	IT_or_IC=${IX[-3]}
+	rho_or_T1=${IX[-2]}
+	rho_or_T2=${IX[-1]}
 
 	if [ "$IT_or_IC" == "IC" ]; then
 		rho=$rho_or_T1

@@ -9,29 +9,32 @@
 #===== Molecule and force field files =====
 molec_name=$1									# E.g. C1, C2, C4, C12, etc
 force_field_file_name=$2						# C2_TraPPE-UA.par
-should_run=$3									# "yes" or "no" (lower case)
+config_filename=$3								# A file containing GOMC settings (a list of key value pairs e.g. Potential	FSHIFT\n LRC false)
+should_run=$4									# "yes" or "no" (lower case)
+
 ITIC_file_name="${molec_name}.itic"
 pdb_file_name="${molec_name}.pdb"
 topology_file_name="${molec_name}.top"
+config_file="$HOME/Git/TranSFF/Scripts/${config_filename}"
 
 #===== Number of CPU cores to use ===== 
 Nproc=$(nproc)
-if [ "$4" != "" ]; then Nproc="$4"; fi
+if [ "$5" != "" ]; then Nproc="$5"; fi
 
 #===== Simulation Parameters =====
-Restart="false"
-Potential="FSHIFT"
-LRC="false"
-Rcut="14"
-PressureCalc="1000"
-RunSteps="10000000"
-EqSteps="500000"
-AdjSteps="1000"
-CoordinatesFreq="5000"
-RestartFreq="1000000"
-ConsoleFreq="5000"
-BlockAverageFreq="5000"
-OutputName="nvt"
+Restart=$(grep -R "Restart" $config_file | head -n1 | awk '{print $2}')
+Potential=$(grep -R "Potential" $config_file | awk '{print $2}')
+LRC=$(grep -R "LRC" $config_file | awk '{print $2}')
+Rcut=$(grep -R "Rcut" $config_file | awk '{print $2}')
+PressureCalc=$(grep -R "PressureCalc" $config_file | awk '{print $2}')
+RunSteps=$(grep -R "RunSteps" $config_file | awk '{print $2}')
+EqSteps=$(grep -R "EqSteps" $config_file | awk '{print $2}')
+AdjSteps=$(grep -R "AdjSteps" $config_file | awk '{print $2}')
+CoordinatesFreq=$(grep -R "CoordinatesFreq" $config_file | awk '{print $2}')
+RestartFreq=$(grep -R "RestartFreq" $config_file | awk '{print $2}')
+ConsoleFreq=$(grep -R "ConsoleFreq" $config_file | awk '{print $2}')
+BlockAverageFreq=$(grep -R "BlockAverageFreq" $config_file | awk '{print $2}')
+OutputName=$(grep -R "OutputName" $config_file | awk '{print $2}')
 
 #===== Important paths =====
 Scripts_path="$HOME/Git/TranSFF/Scripts"
@@ -109,7 +112,7 @@ fi
 
 if [ "$should_run" == "yes" ]; then
 	bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GONvtRdr.sh nvt.inp nvt
-	ndataskip=$(echo "($RunSteps/$BlockAverageFreq)/2" | bc )
+	ndataskip=$(echo "($RunSteps/$BlockAverageFreq)/2" $config_file | bc )
 	nblocks="5"
 	bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_BlockAvg.sh Blk_${OutputName}_BOX_0.dat $ndataskip $nblocks
 fi

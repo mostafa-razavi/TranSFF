@@ -37,4 +37,4 @@ sed -i '1i\T_K RHO_GCC TOT_EN EN_INTER EN_TC EN_INTRA(B) EN_INTRA(NB) EN_ELECT E
 
 MW=$(grep -R MW: Files/*.itic | awk '{print$2}')
 rm -rf trhozures.res
-python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_blocks_to_trhozures.py $MW intra >> trhozures.res #Blocks.avg Blocks.std single.avg single.std
+python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_blocks_to_trhozures.py $MW intra Blocks.avg Blocks.std >> trhozures.res # single.avg single.std

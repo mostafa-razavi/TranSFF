@@ -1,0 +1,36 @@
+
+CASN:   106-97-8
+CNAM:   BUTANE
+ FAM:   N-ALKANES
+FORM:   C4H10
+INAM:   BUTANE
+NAME:   n-BUTANE
+SMIL:   CCCC
+STRU:   CH3(CH2)2CH3
+
+  MW:    58.12220
+  TC:   425.12000
+  PC:     3.79600
+RHOC:     0.22793
+
+RHO_HIGH:   0.6822
+  T_HIGH:   510.16
+
+ Isotherms:
+
+    T_IT:
+
+ RHO_IT1:   0.000001
+
+NMOL_IT1:     1 
+
+
+
+ Isochores:
+
+  RHO_IC:   0.000001
+
+   T_IC1:   191.34 278.30    241.55 327.86    287.75 367.96    328.02 399.30    361.43 423.10    510.16 382.61
+  
+NMOL_IC1:   1 1 1 1 1 1 1 1 1 1 1 1
+

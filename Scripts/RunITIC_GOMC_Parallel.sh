@@ -1,7 +1,8 @@
 #!/bin/bash
 # This script runs the ITIC simulations in parallel. If the third argument is not specified the script used all cores available.
 # Example: Run butane usinng 32 cores
-# bash RunITIC_GOMC_Parallel.sh C4 C4_TraPPE-UA.par 32
+# bash RunITIC_GOMC_Parallel.sh C4 C4_TraPPE-UA.par FSHIFT_BULK_LONG.conf yes 5
+# bash RunITIC_GOMC_Parallel.sh C4 C4_TraPPE-UA.par FSHIFT_BULK_LONG.conf no
 #
 # S. Mostafa Razavi (sr87@zips.uakron.edu)
 

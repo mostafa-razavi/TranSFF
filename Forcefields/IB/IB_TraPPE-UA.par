@@ -1,0 +1,81 @@
+*
+* United atom alkane parameters come from TraPPE 1 & 2 model (1998-1999).
+* 
+* SEE:
+* M.G. Martin and J.I. Siepmann,
+* "Transferable potentials for phase equilibria.
+*  1. United-atom description of n-alkanes"
+* J. Phys. Chem. B, 102, 2569-2577 (1998).
+*
+* DOI: 10.1021/jp972543
+*
+*
+*
+
+BONDS
+!
+!V(bond) = Kb(b - b0)**2
+!
+!Kb: kcal/mole/A**2 
+!b0: A
+!
+! Kb (kcal/mol) = Kb (K) * Boltz. const.; (9999999999 if no stretching)
+!
+!atom type     Kb              b0        description
+
+CH3 CH3        9999999999      1.540   ! TraPPE 1
+CH3 CH2        9999999999      1.540   ! TraPPE 1
+CH3 CH1        9999999999      1.540   ! TraPPE 1
+CH3 CT         9999999999      1.540   ! TraPPE 1
+CH2 CH2        9999999999      1.540   ! TraPPE 1
+CH2 CH1        9999999999      1.540   ! TraPPE 1
+CH2 CT         9999999999      1.540   ! TraPPE 1
+CH1 CH1        9999999999      1.540   ! TraPPE 1
+CH1 CT         9999999999      1.540   ! TraPPE 1
+CT  CT         9999999999      1.540   ! TraPPE 1
+
+ANGLES
+!
+!V(angle) = Ktheta(Theta - Theta0)**2
+!
+!V(Urey-Bradley) = Kub(S - S0)**2
+!
+!Ktheta: kcal/mole/rad**2
+!Theta0: degrees
+!Kub: kcal/mole/A**2 (Urey-Bradley)
+!S0: A
+!
+! Ktheta (kcal/mol) = Ktheta (K) * Boltz. const.
+!
+!atom types         Ktheta       Theta0   Kub(?)  S0(?)
+
+CH3 CH1 CH3         31250     112.0  ! TraPPE 2
+
+
+DIHEDRALS
+!
+!V(dihedral) = Kchi(1 + cos(n(chi) - delta))
+!
+!Kchi: kcal/mole
+!n: multiplicity
+!delta: degrees
+!
+! Kchi (kcal/mol) = Kchi (K) * Boltz. const.
+!
+! NOTE: Dihedral series is refitted to standard CHARMM form which
+!   differs from form found in the source paper.
+!
+!atom types         Kchi        n    delta              description
+X   CH2 CH2 X         0.000000    0      0.0              ! Potoff '09
+X   CH2 CH2 X       355.029964    1      0.0              ! ""
+X   CH2 CH2 X       -68.189775    2    180.0              ! ""
+X   CH2 CH2 X       791.317812    3      0.0              ! ""
+
+NONBONDED_MIE
+!
+!V(mie) = 4*eps*((sig_ij/r_ij)^n-(sig_ij/r_ij)^6)
+!
+!atom   eps          sig_ij     n    description
+CH3     98.0       3.750      12
+CH1     10.0	   4.680      12
+

@@ -18,7 +18,7 @@ lb = [3.7, 110]
 ub = [3.8, 130]
 initial_guess = [[],[],[]]
 
-xopt, fopt = pso(objective_function, lb, ub, swarmsize=1, omega=0.5, phip=0.5, phig=0.5, maxiter=100, minstep=1e-10, minfunc=1e-8, debug=True)
+xopt, fopt = pso(objective_function, lb, ub, swarmsize=10, omega=0.5, phip=0.5, phig=0.5, maxiter=100, minstep=1e-10, minfunc=1e-8, debug=True)
 
 print(xopt, fopt)
 

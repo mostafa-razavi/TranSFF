@@ -1,12 +1,12 @@
 #!/bin/bash
 # This script runs GOMC_ITIC_MBAR.sh script for specified sigma and epsilons as two arrays by modifying the raw_par file.
 
-molec_name="IB"
-sig_site1=(3.700	3.725	3.750	3.775	3.800	3.825	3.850	3.875	3.900)
-sig_site2=(4.800	4.775	4.750	4.725	4.700	4.675	4.650	4.625	4.600)
+molec_name="C12"
+sig_site1=(3.750	3.775	3.800	3.825	3.850	3.875	3.900	3.925	3.950)
+sig_site2=(4.100	4.075	4.050	4.025	4.000	3.975	3.950	3.925	3.900)
 
-eps_site1="120"
-eps_site2="13.5"
+eps_site1="127"
+eps_site2="60"
 
 Scripts_path="$HOME/Git/TranSFF/Scripts"
 Molecules_path="$HOME/Git/TranSFF/Molecules/$molec_name"

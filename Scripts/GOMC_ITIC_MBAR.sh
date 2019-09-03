@@ -36,7 +36,8 @@ for i in ${ref_ff_array[@]}
 do
     parallel_file_name="${parallel_file_name}$i.ref_"
 done
-parallel_file_name="${parallel_file_name}${target_ff_name}.target"
+#parallel_file_name="${parallel_file_name}${target_ff_name}.target"
+parallel_file_name="${target_ff_name}.target"
 
 # Function that returns 1 if the T_rho pair is selected 
 isFolderSelected () {

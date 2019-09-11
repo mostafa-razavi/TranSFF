@@ -1,5 +1,5 @@
 
-from pso import pso
+from pso_old import pso
 import os
 
 def objective_function(x):

@@ -1,6 +1,6 @@
 import os, sys
 sys.path.insert(1, os.path.expanduser('~') +'/Git/TranSFF/Scripts/')
-from pso import pso
+from pso_old import pso
 
 
 log = open("RunPSO_2sites.feval", "w", encoding="utf-8")

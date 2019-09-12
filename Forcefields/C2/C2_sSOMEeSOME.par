@@ -59,4 +59,4 @@ NONBONDED_MIE
 !V(mie) = 4*eps*((sig_ij/r_ij)^n-(sig_ij/r_ij)^6)
 !
 !atom   eps	sig_ij	n	description
-CH3	some_eps	some_sig	12	! Optimizing LJSF-UA
+CH3	some_eps_site1	some_sig_site1	12	! Optimizing LJSF-UA

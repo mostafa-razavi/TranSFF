@@ -11,7 +11,8 @@
 molec_name=$1									# E.g. C1, C2, C4, C12, etc
 force_field_file_name=$2						# C2_TraPPE-UA.par
 config_filename=$3								# A file containing GOMC settings (a list of key value pairs e.g. Potential	FSHIFT\n LRC false)
-should_run=$4									# "yes" or "no" (lower case)
+Trho_rhoT_pairs_array=$4						# "all" or pairs of temperature/density (for IT) and density/temperatures (for IC) that we want to run, e.g. 360.00/0.6220 or 0.6220/95.00
+should_run=$5									# "yes" or "no" (lower case)
 
 ITIC_file_name="${molec_name}.itic"
 pdb_file_name="${molec_name}.pdb"
@@ -20,7 +21,7 @@ config_file="$HOME/Git/TranSFF/Scripts/${config_filename}"
 
 #===== Number of CPU cores to use ===== 
 Nproc=$(nproc)
-if [ "$5" != "" ]; then Nproc="$5"; fi
+if [ "$6" != "" ]; then Nproc="$6"; fi
 
 #===== Simulation Parameters =====
 Restart=$(grep -R "Restart" $config_file | head -n1 | awk '{print $2}')
@@ -58,11 +59,38 @@ continue_if_Files_folder_exists="yes"
 
 
 
+# Function that returns 1 if the T_rho pair is selected 
+isTrhoPairSelected () {
+    local iRhoOrT
+	path_string="$1"
+	T_rho_array="$2"
 
+	T_rho_array=($T_rho_array)
 
+	IFS='/' read -ra IX_Y_Z <<< "$path_string"
+	IT_or_IC=${IX_Y_Z[-3]}
+	rho_or_T1=${IX_Y_Z[-2]}
+	rho_or_T2=${IX_Y_Z[-1]}
 
+	if [ "$IT_or_IC" == "IC" ]; then
+		rho=$rho_or_T1
+		T=$rho_or_T2
+		pair="$rho/$T"
+	fi
+	if [ "$IT_or_IC" == "IT" ]; then
+		rho=$rho_or_T2
+		T=$rho_or_T1
+		pair="$T/$rho"
+	fi
 
-
+	for iRhoOrT in $(seq 0 $(echo "${#T_rho_array[@]}-1" | bc))	# Loop from 0 to len(rho_array)-1
+	do
+		if [ "${T_rho_array[iRhoOrT]}" == "$pair" ]; then
+			echo "found"
+			exit
+		fi
+	done
+}
 
 
 #=============================================================================================================
@@ -103,9 +131,17 @@ else
 	bash $Scripts_path/MakeITIC_GOMC.sh "$CD/Files/$ITIC_file_name" "${gomc_input_file_replacements[@]}"
 
 	rm -rf COMMANDS.parallel
-	for fol in I*/*/*/; do 
-		echo "cd $CD/$fol; $gomc_exe_address $gomc_input_file_name > gomc.log" >> COMMANDS.parallel
-	done
+	if [ "$Trho_rhoT_pairs_array" == "all" ]; then
+		for fol in I*/*/*/; do 
+			echo "cd $CD/$fol; $gomc_exe_address $gomc_input_file_name > gomc.log" >> COMMANDS.parallel
+		done
+	else
+		for fol in I*/*/*/; do 
+			if [ "$(isTrhoPairSelected "$fol" "$Trho_rhoT_pairs_array")" == "found" ]; then	
+				echo "cd $CD/$fol; $gomc_exe_address $gomc_input_file_name > gomc.log" >> COMMANDS.parallel
+			fi
+		done		
+	fi
 	if [ "$should_run" == "yes" ]; then
 		parallel --jobs $Nproc < COMMANDS.parallel
 	fi

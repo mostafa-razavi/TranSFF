@@ -1,15 +1,15 @@
 #!/bin/bash
 # This script runs the ITIC simulations in parallel. If the third argument is not specified the script used all cores available.
 # Example: Run butane usinng 32 cores
-# bash RunITIC_GOMC_Parallel.sh C4 C4_TraPPE-UA.par FSHIFT_BULK_LONG.conf yes 5
-# bash RunITIC_GOMC_Parallel.sh C4 C4_TraPPE-UA.par FSHIFT_BULK_LONG.conf no
+# bash RunITIC_GOMC_Parallel.sh C4 C4_TraPPE-UA.par FSHIFT_BULK_LONG.conf "360.00/0.6220 0.6220/95.00" yes 5
+# bash RunITIC_GOMC_Parallel.sh C4 C4_TraPPE-UA.par FSHIFT_BULK_LONG.conf all no
 #
 # S. Mostafa Razavi (sr87@zips.uakron.edu)
 
 
 #===== Molecule and force field files =====
 molec_name=$1									# E.g. C1, C2, C4, C12, etc
-force_field_file_name=$2						# C2_TraPPE-UA.par
+force_field_file_name=$2						# E.g. C2_TraPPE-UA.par
 config_filename=$3								# A file containing GOMC settings (a list of key value pairs e.g. Potential	FSHIFT\n LRC false)
 Trho_rhoT_pairs_array=$4						# "all" or pairs of temperature/density (for IT) and density/temperatures (for IC) that we want to run, e.g. 360.00/0.6220 or 0.6220/95.00
 should_run=$5									# "yes" or "no" (lower case)

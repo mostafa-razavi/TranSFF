@@ -72,41 +72,20 @@ if [ "$rerun_inp_address" != "none" ]; then
 	done
 fi
 
-# check if rerun par file exists, if yes run Cassandra with rerun option
+# check if rerun par file exists, if yes run GOMC with recalculate option
 if [ -e "${keyword}_rerun.par" ]
 then
 	${GOMC_exe} "${keyword}_nvt-rerun.inp" > ${keyword}_rerun.log
-	grep -R "ENER_0" ${keyword}_rerun.log | awk '{print $2,$3}' | tail -n +2 > ${keyword}.pe	# MC_STEP and TotalEnergy
-	grep -R "STAT_0" ${keyword}_rerun.log | awk '{print $3}' | tail -n +2 > ${keyword}.pres		# Pressure
-	paste ${keyword}.pe ${keyword}.pres > "$pepress_name"
+	grep -R "ENER_0" ${keyword}_rerun.log | awk '{print $3,$4,$5,$6,$7,$8}' | tail -n +2 > ${keyword}.ener_0			# TOTAL, INTRA(B),  INTRA(NB), INTER(LJ), LRC, TOTAL_ELECT 
+	grep -R "STAT_0" ${keyword}_rerun.log | awk '{print $2,$3,$4,$5}' | tail -n +2 > ${keyword}.stat_0					# STEP, PRESSURE, TOTALMOL, TOT_DENSITY
+
+	cat ${keyword}.stat_0 | awk '{print $1}'  > ${keyword}.step
+	cat ${keyword}.stat_0 | awk '{print $2}'  > ${keyword}.pres
+
+	paste ${keyword}.step ${keyword}.pres ${keyword}.ener_0 > "$pepress_name"	# STEP, PRESSURE, TOTAL, INTRA(B), INTRA(NB), INTER(LJ), LRC, TOTAL_ELECT 
 else
 	echo "Warning: ${keyword}_rerun.par was not found! No rerun simulation was done."
 	rm -rf "${keyword}_nvt-rerun.inp"
 fi
 
-rm -rf ${keyword}*
-
-
-
-
-
-# Here, We preprocess the big .xyz file to match what we need to input Cassandra. Typically, only 1000 snapshots are enough, but often we have stored more so we skip the first n snpshots. 
-#nHeaderLines=2 
-#nTailLines=1
-#nsnapshots0=$(grep -c "REMARK" "${GOMC_PDB}")	# Number of snapshots in the modified PDB file
-#natoms=$(grep -R "NATOM" nvt_merged.psf | awk '{print$1}')
-#From=$(echo "$NskipSnapshot*($natoms+$nHeaderLines+$nTailLines) + 1" | bc)
-#< ${GOMC_PDB} tail -n +"$From" > "${keyword}_for_rerun.pdb"
-
-# Here, we renumber the extracted frames starting from 1. This operation is very slow, so we avoid it for now
-#nsnapshots1=$(grep -c "REMARK" "${keyword}_for_rerun.pdb")	# Number of snapshots in the modified PDB file
-#if [ "$nsnapshots0" != "$nsapshots1" ]
-#then
-#	for i in $(seq 1 $nsnapshots1)	# This for loop is expensive
-#	do
-		#ith_remark_line=$(grep "REMARK" "${keyword}_for_rerun.pdb" | sed -n "$i"p)
-		#mc_step=$(echo $ith_remark_line | awk '{print $4}')
-		#line_number_to_replace=$(echo "($i-1)*($natoms+$nHeaderLines+$nTailLines) + 1" | bc)
-		#sed -i "$line_number_to_replace""s/.*/REMARK     GOMC $i $mc_step                                            /" "${keyword}_for_rerun.pdb"
-#	done
-#fi
+#rm -rf ${keyword}*

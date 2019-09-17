@@ -11,7 +11,7 @@ Nproc=$6
 reference_foldernames_array=$7
 
 
-Nsnapshots="1000"
+Nsnapshots="100"
 rerun_inp="none"                                                                                 # "none" or filename
 GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
 MW="30.06904"
@@ -30,7 +30,7 @@ do
     IFS='/' read -ra element <<< "${selected_itic_points[iRhoOrT]}"
     rho_or_T1=${element[0]}
     rho_or_T2=${element[1]}
-    if (( $(echo "$rho_or_T1 > 5" | bc -l) )); then # % is just a number too high for density and too low for temperature
+    if (( $(echo "$rho_or_T1 < 5" | bc -l) )); then # 5 is just a number too high for density and too low for temperature
         rho=$rho_or_T1
         T=$rho_or_T2
         pair="$rho/$T"
@@ -43,29 +43,27 @@ do
     Selected_Ts="${Selected_Ts} $T"
     Selected_rhos="${Selected_rhos} $rho"
 done
-Selected_Ts=($Selected_Ts)
-Selected_rhos=($Selected_rhos)
-
 
 bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_2.sh "TFF" "$keyword" "$reference_foldernames_array" $par_file_name $rerun_inp $Nsnapshots $Nproc $GOMC_exe "$Selected_Ts" "$Selected_rhos"
 
 rm -rf "${keyword}.parallel"
-cat "${keyword}*.parallel" >> "${keyword}.parallel"
+cat "${keyword}"*".parallel" >> "${keyword}.parallel"
 parallel --willcite --jobs $Nproc < "${keyword}.parallel" > "${keyword}.log"
  
 bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_2.sh "FFT" "$keyword" "$reference_foldernames_array" $par_file_name $rerun_inp $Nsnapshots $Nproc $GOMC_exe "$Selected_Ts" "$Selected_rhos"
 
-mbar_data_file=$(ls "${keyword}*.target.res")
-score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev.py $MW ${true_data_file} $mbar_data_file $z_wt $u_wt)
+mbar_data_file=$(ls "${keyword}"*".target.res")
+score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev_2.py $MW ${true_data_file} $mbar_data_file $z_wt $u_wt)
 echo $score > ${keyword}.score
-python3.6 $HOME/Git/TranSFF/Scripts/plot_mbar_vs_true_data.py $MW ${true_data_file} $mbar_data_file ${true_data_label} ${mbar_data_file}.png
+python3.6 $HOME/Git/TranSFF/Scripts/plot_mbar_vs_true_data_2.py $MW ${true_data_file} $mbar_data_file ${true_data_label} ${mbar_data_file}.png
 
+rm -rf $keyword 
 mkdir $keyword 
 
-mv "${keyword}*.parallel" $keyword
-mv "${keyword}*.res" $keyword
-mv "${keyword}*.log" $keyword
-mv "${keyword}*.par" $keyword
-mv "${keyword}*.score" $keyword
-mv "${keyword}*.png" $keyword
+mv "${keyword}"*".parallel" $keyword
+mv "${keyword}"*".res" $keyword
+mv "${keyword}"*".log" $keyword
+mv "${keyword}"*".par" $keyword
+mv "${keyword}"*".score" $keyword
+mv "${keyword}"*".png" $keyword
 if [ "$rerun_inp" != "none" ]; then mv $rerun_inp $keyword; fi

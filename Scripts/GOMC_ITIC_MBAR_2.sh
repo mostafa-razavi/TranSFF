@@ -38,7 +38,7 @@ do
     parallel_file_name="${parallel_file_name}$i.ref_"
 done
 #parallel_file_name="${parallel_file_name}${target_ff_name}.target"
-parallel_file_name="${keyword}_${target_ff_name}.target"
+parallel_file_name="${keyword}.target"
 
 # Function that returns 1 if the T_rho pair is selected 
 isFolderSelected () {
@@ -95,8 +95,13 @@ if [ "$prepare_run_post" == "TTT" ] || [ "$prepare_run_post" == "TFF" ]; then
                     else
                         rerun_par_address=$(ls $CD/$j/Files/*.par)
                     fi
+
                     # Arguments: Nsnapshots=$1 GOMC_PDB=$2 rerun_par_address=$3 output_name=$4             
-                    echo "cd $k; bash /home/mostafa/Git/TranSFF/Scripts/GOMC_Rerun.sh $Nsnapshots nvt_BOX_0.pdb ${rerun_par_address} ${rerun_inp_address} $i.ref_$j.rer ${GOMC_exe}" >> $parallel_file_name.parallel
+                    if [ "$i" == "$j" ]; then
+                        echo "cd $k; bash /home/mostafa/Git/TranSFF/Scripts/GOMC_Extract.sh $Nsnapshots $i.ref_$j.rer" >> $parallel_file_name.parallel
+                    else
+                        echo "cd $k; bash /home/mostafa/Git/TranSFF/Scripts/GOMC_Rerun.sh $Nsnapshots nvt_BOX_0.pdb ${rerun_par_address} ${rerun_inp_address} $i.ref_$j.rer ${GOMC_exe}" >> $parallel_file_name.parallel
+                    fi
                 fi
             done
         done
@@ -112,7 +117,7 @@ if [ "$prepare_run_post" == "TTT" ] || [ "$prepare_run_post" == "FFT" ]; then
     # Stage 3) Post-process the results and obtain predictions using MBAR_predict.py
     rm -rf "$CD/${parallel_file_name}.res"
     rm -rf "$parallel_file_name.MBAR_predict.parallel"
-    echo "Temp[k] rho[g/ml] Nmolec Neff u[K] u_err[K] P[bar] P_err[bar]" >> "$CD/${parallel_file_name}.res"
+    echo "Temp[k] rho[g/ml] Nmolec Neff P[bar] P_err[bar] u_tot[K] u_tot_err[K] u_b[K] u_b_err[K] u_nb[K] u_nb_err[K] " >> "$CD/${parallel_file_name}.res"
     for i in ${ref_ff_array[@]}
     do
         for k in $CD/$i/I*/*/*/
@@ -128,12 +133,12 @@ if [ "$prepare_run_post" == "TTT" ] || [ "$prepare_run_post" == "FFT" ]; then
                         ref_sim_fol_string="${ref_sim_fol_string} ${string}"
                     done
 
-                    which_datafile_columns_string="1 2"   #Total_En Press (0 is first column)
+                    which_datafile_columns_string="1 2 3 4"   # STEP, PRESSURE, TOTAL, INTRA(B), INTRA(NB), INTER(LJ), LRC, TOTAL_ELECT    (0 is step column)
                     how_many_datafile_rows_to_skip="0"
                     energy_unit="K"
                     Nmolec=$(grep -R STAT_0: ${k}gomc.log | head -n1 | awk '{print $4}')
                     #echo "python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py \"$T\" \"$rho\" \"$Nsnapshots\" \"$ref_sim_fol_string\" \"$ref_ff_string\" \"$target_ff_name\" \"$which_datafile_columns_string\" \"$how_many_datafile_rows_to_skip\" \"$energy_unit\" >> $CD/${parallel_file_name}.res" >> "$parallel_file_name.MBAR_predict.parallel"
-                    python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py "$T" "$rho" "$Nmolec" "$Nsnapshots" "$ref_sim_fol_string" "$ref_ff_string" "$target_ff_name" "$which_datafile_columns_string" "$how_many_datafile_rows_to_skip" "$energy_unit" >> "$CD/${parallel_file_name}.res"
+                    python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict_2.py "$T" "$rho" "$Nmolec" "$Nsnapshots" "$ref_sim_fol_string" "$ref_ff_string" "$target_ff_name" "$which_datafile_columns_string" "$how_many_datafile_rows_to_skip" "$energy_unit" >> "$CD/${parallel_file_name}.res"
                 fi
             fi
         done

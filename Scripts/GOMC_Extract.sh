@@ -30,4 +30,4 @@ else
 	echo "Warning: gomc.log was not found! Nothing was done."
 fi
 
-#rm -rf ${keyword}*
+rm -rf ${keyword}*

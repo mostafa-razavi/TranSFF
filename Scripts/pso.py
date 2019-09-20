@@ -127,7 +127,8 @@ def parallel_pso(func, lb, ub, ig=[], ieqcons=[], f_ieqcons=None, args=(), kwarg
     
     # Calculate the objective's value for all particles
     fp = obj(p[:, :])
-
+    print("p:", p)
+    print("fp:", fp)
     for i in range(S):
 
         # At the start, there may not be any feasible starting point, so just

@@ -9,16 +9,19 @@ par_file_name=$4
 config_filename=$5
 Nproc=$6
 reference_foldernames_array=$7
+true_data_file=$8 #"$HOME/Git/TranSFF/Data/C2/REFPROP_select4.res" 
+true_data_label=$9 #"REFPROP"                                                              
 
 
-Nsnapshots="100"
+Nsnapshots="1000"
 rerun_inp="none"                                                                                 # "none" or filename
 GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
-MW="30.06904"
-true_data_file="$HOME/Git/TranSFF/Data/C2/REFPROP_select7.res" 
-true_data_label="REFPROP"                                                              
-z_wt="1.0"
-u_wt="0.0"
+MW=$(grep "MW:" $HOME/Git/TranSFF/Molecules/${molecule}/${molecule}.itic | awk '{print $2}')
+z_wt="0.34"
+u_wt="0.33"
+n_wt="0.33"
+number_of_lowest_Neff="3"
+target_Neff="50"
 
 # Separate Trho pair array into T array and rho array
 Selected_Ts=""
@@ -53,7 +56,7 @@ parallel --willcite --jobs $Nproc < "${keyword}.parallel" > "${keyword}.log"
 bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_2.sh "FFT" "$keyword" "$reference_foldernames_array" $par_file_name $rerun_inp $Nsnapshots $Nproc $GOMC_exe "$Selected_Ts" "$Selected_rhos"
 
 mbar_data_file=$(ls "${keyword}"*".target.res")
-score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev_2.py $MW ${true_data_file} $mbar_data_file $z_wt $u_wt)
+score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev_2.py $MW ${true_data_file} $mbar_data_file $z_wt $u_wt $n_wt $number_of_lowest_Neff $target_Neff)
 echo $score > ${keyword}.score
 python3.6 $HOME/Git/TranSFF/Scripts/plot_mbar_vs_true_data_2.py $MW ${true_data_file} $mbar_data_file ${true_data_label} ${mbar_data_file}.png
 

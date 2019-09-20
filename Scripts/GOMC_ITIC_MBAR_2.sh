@@ -136,7 +136,7 @@ if [ "$prepare_run_post" == "TTT" ] || [ "$prepare_run_post" == "FFT" ]; then
                     which_datafile_columns_string="1 2 3 4"   # STEP, PRESSURE, TOTAL, INTRA(B), INTRA(NB), INTER(LJ), LRC, TOTAL_ELECT    (0 is step column)
                     how_many_datafile_rows_to_skip="0"
                     energy_unit="K"
-                    Nmolec=$(grep -R STAT_0: ${k}gomc.log | head -n1 | awk '{print $4}')
+                    Nmolec=$(grep -R STAT_0:  ${k}gomc.log | tail -n1 | awk '{print $4}' )
                     #echo "python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py \"$T\" \"$rho\" \"$Nsnapshots\" \"$ref_sim_fol_string\" \"$ref_ff_string\" \"$target_ff_name\" \"$which_datafile_columns_string\" \"$how_many_datafile_rows_to_skip\" \"$energy_unit\" >> $CD/${parallel_file_name}.res" >> "$parallel_file_name.MBAR_predict.parallel"
                     python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict_2.py "$T" "$rho" "$Nmolec" "$Nsnapshots" "$ref_sim_fol_string" "$ref_ff_string" "$target_ff_name" "$which_datafile_columns_string" "$how_many_datafile_rows_to_skip" "$energy_unit" >> "$CD/${parallel_file_name}.res"
                 fi

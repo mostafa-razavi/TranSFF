@@ -1,4 +1,4 @@
-# This script computes the deviation between sim and true data. The data in true_data_file and sim_data_file should be consistent in terms of order of lines. 
+# This script computes the deviation between sim and true data. The data in true_data_file and dsim_data_file should be consistent in terms of order of lines. 
 
 import numpy
 import sys
@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 MW = float(sys.argv[1])
 true_data_file = sys.argv[2]               # The file that is used to minimize the deviations against
-sim_data_file = sys.argv[3]               # The file that contains sim results at ITIC state points
+dsim_data_file = sys.argv[3]               # The file that contains sim results at ITIC state points
 z_wt = float(sys.argv[4])                  # The weight of Z in score
 u_wt = float(sys.argv[5])                  # The weight of U in score
 
@@ -29,20 +29,20 @@ true_z = true_data[:,2]
 true_u_res = true_data[:,3]
 true_zminus1overRho = ( true_z - 1 ) / true_rho_gcc
 
-sim_data = numpy.loadtxt(sim_data_file, skiprows=1)
-sim_temp_k = sim_data[:,0]
-sim_rho_gcc = sim_data[:,1]
-sim_z = sim_data[:,2]
-sim_z_err = sim_data[:,3]
-sim_u_res = sim_data[:,4]
-sim_u_res_err = sim_data[:,5]
-sim_Nmolec = sim_data[:,6]
-sim_zminus1overRho = ( sim_z - 1 ) / sim_rho_gcc
-#sim_zminus1overRho_err = sim_z_err / sim_rho_gcc
+dsim_data = numpy.loadtxt(dsim_data_file, skiprows=1)
+dsim_temp_k = dsim_data[:,0]
+dsim_rho_gcc = dsim_data[:,1]
+dsim_z = dsim_data[:,2]
+dsim_z_err = dsim_data[:,3]
+dsim_u_res = dsim_data[:,4]
+dsim_u_res_err = dsim_data[:,5]
+dsim_Nmolec = dsim_data[:,6]
+dsim_zminus1overRho = ( dsim_z - 1 ) / dsim_rho_gcc
+#dsim_zminus1overRho_err = dsim_z_err / dsim_rho_gcc
 
 # Calculate deviations
-z_dev = ( sim_zminus1overRho - true_zminus1overRho ) / true_zminus1overRho * 100.0
-u_dev = ( sim_u_res - true_u_res ) / true_u_res * 100.0
+z_dev = ( dsim_zminus1overRho - true_zminus1overRho ) / true_zminus1overRho * 100.0
+u_dev = ( dsim_u_res - true_u_res ) / true_u_res * 100.0
 
 z_aad = numpy.mean(numpy.abs(z_dev))
 u_aad = numpy.mean(numpy.abs(u_dev))

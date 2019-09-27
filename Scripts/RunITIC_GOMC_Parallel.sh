@@ -147,9 +147,9 @@ else
 	fi
 fi
 
-#if [ "$should_run" == "yes" ]; then
+if [ "$should_run" == "yes" ]; then
 #	bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GONvtRdr.sh nvt.inp nvt
-#	ndataskip=$(echo "($RunSteps/$BlockAverageFreq)/2" $config_file | bc )
-#	nblocks="5"
-#	bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_BlockAvg.sh Blk_${OutputName}_BOX_0.dat $ndataskip $nblocks
-#fi
+	ndataskip=$(echo "($RunSteps/$BlockAverageFreq)/2" $config_file | bc )
+	nblocks="5"
+	bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_BlockAvg.sh Blk_${OutputName}_BOX_0.dat $ndataskip $nblocks
+fi

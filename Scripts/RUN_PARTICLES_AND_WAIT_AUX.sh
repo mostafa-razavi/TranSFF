@@ -19,19 +19,21 @@ sig_eps_nnn_array=($sig_eps_nnn_array)
 
 for i in $(seq 0 $(echo "${#sig_eps_nnn_array[@]}-1" | bc)) # Iterate through sites
 do
-	generate_par_output=$(bash $HOME/Git/TranSFF/Scripts/generate_par.sh "${keyword_array[i]}" "${molecule}" "there" "${sig_eps_nnn_array[i]}")
-	sim_name[i]=$(echo $generate_par_output | awk '{print $1}')
-	par_file_name[i]=$(echo $generate_par_output | awk '{print $2}')
+	if [ ! -e "${keyword_array[i]}_${sig_eps_nnn_array[i]}" ]; then
+		generate_par_output=$(bash $HOME/Git/TranSFF/Scripts/generate_par.sh "${keyword_array[i]}" "${molecule}" "there" "${sig_eps_nnn_array[i]}")
+		sim_name[i]=$(echo $generate_par_output | awk '{print $1}')
+		par_file_name[i]=$(echo $generate_par_output | awk '{print $2}')
 
-	#mkdir "${keyword_array[i]}_${sim_name[i]}"
-	#cd "${keyword_array[i]}_${sim_name[i]}"
-	mkdir "${keyword_array[i]}_${sig_eps_nnn_array[i]}"
-	cd "${keyword_array[i]}_${sig_eps_nnn_array[i]}" 
-		cp $HOME/Git/TranSFF/Molecules/${molecule}/${molecule}_Files.zip .
-		unzip ${molecule}_Files.zip
-		rm ${molecule}_Files.zip 
-		bash $HOME/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh "${molecule}" "${par_file_name[i]}" "$config_filename" "$selected_itic_points" "yes" "$Nproc" &
-	cd ..
+		mkdir "${keyword_array[i]}_${sig_eps_nnn_array[i]}"
+		cd "${keyword_array[i]}_${sig_eps_nnn_array[i]}" 
+			cp $HOME/Git/TranSFF/Molecules/${molecule}/${molecule}_Files.zip .
+			unzip ${molecule}_Files.zip
+			rm ${molecule}_Files.zip 
+			bash $HOME/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh "${molecule}" "${par_file_name[i]}" "$config_filename" "$selected_itic_points" "yes" "$Nproc" &
+		cd ..
+	else
+		echo "The reference simulation" "${keyword_array[i]}_${sig_eps_nnn_array[i]}" "was used. No simulation will be run."
+	fi
 done
 
 wait
@@ -40,10 +42,11 @@ MW=$(grep "MW:" $HOME/Git/TranSFF/Molecules/${molecule}/${molecule}.itic | awk '
 
 for i in $(seq 0 $(echo "${#sig_eps_nnn_array[@]}-1" | bc)) # Iterate through sites
 do
+	echo
 	cd "${keyword_array[i]}_${sig_eps_nnn_array[i]}" 
-		sim_data_file="${keyword_array[i]}_${sig_eps_nnn_array[i]}/trhozures.res" 
+		sim_data_file="trhozures.res" 
 		SCORE=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_sim_from_true_data_dev.py $MW ${true_data_file} $sim_data_file $Z_WT $U_WT )
 		echo $SCORE > "${keyword_array[i]}_${sig_eps_nnn_array[i]}.SCORE"
-		python3.6 /home/mostafa/Git/TranSFF/Scripts/plot_sim_vs_true_data.py $MW ${true_data_file} $true_data_label "${keyword_array[i]}_${sig_eps_nnn_array[i]}.SCORE" sim_data_file
+		python3.6 /home/mostafa/Git/TranSFF/Scripts/plot_sim_vs_true_data.py $MW ${true_data_file} $true_data_label "${keyword_array[i]}_${sig_eps_nnn_array[i]}.png" $sim_data_file
 	cd ..
 done

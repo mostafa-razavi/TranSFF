@@ -10,11 +10,13 @@ import numpy
 # Input parameters ##################
 molecule="C2"
 NS=1
-config_filename="FSHIFT_BULK_LONG.conf"
+config_filename="FSHIFT_BULK_2M.conf"
 nproc="4"
 selected_itic_points = "0.4286/259.42 0.5571/174.46 360.00/0.4286 360.00/0.5571"  # C2 select4
 true_data_file="$HOME/Git/TranSFF/Data/C2/REFPROP_select4.res" 
 true_data_label="REFPROP"                                                              
+Z_WT="0.5"
+U_WT="0.5"
 
 
 # Set PSO parameters ################
@@ -25,9 +27,8 @@ LB = [3.700, 110.0]
 UB = [3.800, 130.0]
 #MP = numpy.average(numpy.array([LB, UB]), axis=0)   # Average of LB and UB
 #INITIAL_GUESS = [LB, UB, MP]
-INITIAL_GUESS = [[], [3.75, 117], []]
-#INITIAL_GUESS = [[],[],[]]
-
+#INITIAL_GUESS = [[3.798439938521785, 112.96044772170356],[3.7232740107259135, 120.53420612478035],[3.756567056242516, 123.93603301460698]]
+INITIAL_GUESS = [[3.71, 128.0],[3.71, 112.0],[3.79, 112.0]]
 
 
 
@@ -61,7 +62,8 @@ def OBJECTIVE_FUNCTION(X):
     SIG_EPS_NNN_ARRAY = []  
     PARTICLE_NAMES_ARRAY = []
     OBJECTIVE_ARRAY = []
-    AUX_ARRAY = []
+    AUX_ARRAY = numpy.zeros((0, ND))
+
 
     for P in range(0, NP):
         string = ""
@@ -82,23 +84,25 @@ def OBJECTIVE_FUNCTION(X):
     ITER_PARTICLE_PREFIX_STRING = "\"" + ' '.join(map(str, ITER_PARTICLE_PREFIX)) + "\""
     SIG_EPS_NNN_ARRAY_STRING = "\"" + ' '.join(map(str, SIG_EPS_NNN_ARRAY)) + "\""
 
-    COMMAND = "bash $HOME/Git/TranSFF/Scripts/RUN_PARTICLES_AND_WAIT.sh" + " " + ITER_PARTICLE_PREFIX_STRING + " " + molecule + " " + selected_itic_points + " " + config_filename + " " + nproc + " " + SIG_EPS_NNN_ARRAY_STRING
-    #if ITER != 1:
+    COMMAND = "bash $HOME/Git/TranSFF/Scripts/RUN_PARTICLES_AND_WAIT_AUX.sh" + " " + ITER_PARTICLE_PREFIX_STRING \
+         + " " + molecule + " " + selected_itic_points + " " + config_filename + " " + nproc + " " + SIG_EPS_NNN_ARRAY_STRING \
+         + " " + Z_WT + " " + U_WT + " " + true_data_file + " " + true_data_label
+    print("COMMAND: ", COMMAND)
+    print()
+
     os.system(COMMAND)
     # wait
 
-    print("COMMAND: ", COMMAND)
     
     for P in range(0, NP):
-        #iter_particle_prefix = "I-" + str(ITER) + "_P-" + str(SIMULATED_P) + "_i-" +  str(it) + "_p-" + str(p + 1)
-        SCORE_FILE_ADDRESS = PARTICLE_NAMES_ARRAY[p] + "/" + PARTICLE_NAMES_ARRAY[p] + ".score"
+        SCORE_FILE_ADDRESS = PARTICLE_NAMES_ARRAY[P] + "/" + PARTICLE_NAMES_ARRAY[P] + ".SCORE"
         with open(SCORE_FILE_ADDRESS) as f:
             SCORE = f.readline()
         LIST_OF_SCORES = list(SCORE.split())  
         OBJECTIVE_ARRAY.append(float(LIST_OF_SCORES[0]))
     
-    print("LIST_OF_SCORES: ", LIST_OF_SCORES)    
-
+    print("OBJECTIVE_ARRAY: ", OBJECTIVE_ARRAY)    
+    print()    
 
 
     def objective_function(x):
@@ -130,6 +134,8 @@ def OBJECTIVE_FUNCTION(X):
             arg9 = true_data_label
             command = arg0 + " " + arg1 + " " + arg2 + " " + arg3 + " " + arg4 + " " + arg5 + " " + arg6 + " " + arg7 + " " + arg8 + " " + arg9
             print(command)
+            print()
+
             os.system( command )
 
             return 
@@ -137,10 +143,6 @@ def OBJECTIVE_FUNCTION(X):
         run_particle_input_array = []
         for p in range(0, np):
             run_particle_input_array.append( [ITER, SIMULATED_P , it, p + 1, x[p, 0], x[p, 1]] )
-        print("run_particle_input_array: ", run_particle_input_array)
-
-        #pool = Pool(len(run_particle_input_array))
-        #pool.map( run_one_particle,  run_particle_input_array )
 
         p1 = Process(target = run_one_particle, args=(run_particle_input_array[0],))
         p1.start()
@@ -155,11 +157,12 @@ def OBJECTIVE_FUNCTION(X):
         p6 = Process(target = run_one_particle, args=(run_particle_input_array[5],))
         p6.start()                        
         p1.join()
-        p2.join()        
+        p2.join() 
         p3.join() 
         p4.join()
         p5.join()        
-        p6.join()                
+        p6.join() 
+
         # wait
 
         for p in range(0, np):
@@ -170,7 +173,8 @@ def OBJECTIVE_FUNCTION(X):
             list_of_scores = list(score.split())  
             objective_array.append(float(list_of_scores[0]))
         
-        print("list_of_scores: ", list_of_scores)
+        print("objective_array: ", objective_array)
+        print()
 
         return objective_array  ####################### End of objective_function
 
@@ -180,32 +184,20 @@ def OBJECTIVE_FUNCTION(X):
         it = 0
         SIMULATED_P = SIMULATED_P + 1
 
-        # Get sigma and epsilon of PARTICLE
-        sig_mid = X[SIMULATED_P-1, 0]
-        eps_mid = X[SIMULATED_P-1, 1]
-        #sig_low = sig_mid * 0.995
-        #sig_high = sig_mid * 1.05
-        #eps_low = eps_mid * 0.995
-        #eps_high = eps_mid * 1.01
-
-        #lb = [sig_low, eps_low]
-        #ub = [sig_high, eps_high]
-        #mp = numpy.average(numpy.array([lb, ub]), axis=0)   # Average of lb and ub
-        #initial_guess = [lb, ub, mp]
-
         # Get bounds and initial guess
         lb = LB 
         ub = UB
         initial_guess = [[],[],[],[],[],[]]
 
-        xopt, fopt = parallel_pso(objective_function, lb, ub, ig = initial_guess ,swarmsize=swarm_size, omega=0.5, phip=0.5, phig=0.5, maxiter=1000, minstep=1e-4, minfunc=1e-4, debug=False, outFile = log)
+        xopt, fopt = parallel_pso(objective_function, lb, ub, ig = initial_guess ,swarmsize=swarm_size, omega=0.5, phip=0.5, phig=0.5, maxiter=100, minstep=1e-4, minfunc=1e-4, debug=False, outFile = log)
         
         print("xopt, fopt: ", xopt, fopt)
-        #OBJECTIVE_ARRAY.append(float(fopt))
-        AUX_ARRAY.append(xopt)
+        print()
+        AUX_ARRAY = numpy.append(AUX_ARRAY, [xopt], axis=0)
         it = 0
     
-
+    print("AUX_ARRAY ", AUX_ARRAY)
+    print()
 
     return OBJECTIVE_ARRAY, AUX_ARRAY ############################# Endo of OBJECTIVE_FUNCTION
 
@@ -215,70 +207,9 @@ def OBJECTIVE_FUNCTION(X):
 
 
 print("INITIAL_GUESS: ", INITIAL_GUESS)
+print()
+
 XOPT, FOPT = parallel_pso_auxiliary(OBJECTIVE_FUNCTION, LB, UB, ig = INITIAL_GUESS ,swarmsize=SWARM_SIZE, omega=0.5, phip=0.5, phig=0.5, phia=0.5, maxiter=100, minstep=1e-4, minfunc=1e-4, debug=False, outFile = LOG)
 
 print(XOPT, FOPT, file = LOG)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#    print("#!/bin/bash", file = wait_script)
-#    for p in range(0, NP):
-#        COMMAND = "bash $HOME/Git/TranSFF/Scripts/ConvertParToScore_1site.sh" + " " +  ITER_PARTICLE_PREFIX[p] + " " + reference_sim[i] + " " + SOME_SIG_SITE1[i] + " " + SOME_EPS_SITE1[i] + " " + "&"
-#        print(COMMAND, file = wait_script)
-#    print("wait", file = wait_script)
-
-
-        #COMMAND = "bash ConvertParToScore_2sites_test.sh " + ITER_PARTICLE_PREFIX[p] + " " + str(SOME_SIG_SITE1[p]) + " " + str(SOME_EPS_SITE1[p]) #+ " " + str(some_sig_site2) + " " + str(some_eps_site2)
-        #os.system(COMMAND)
-
-        #score_file_address = ITER_PARTICLE_PREFIX + "/" + ITER_PARTICLE_PREFIX + ".score"
-        #with open(score_file_address) as f:
-        #    score = f.readline()
-        #OBJECTIVE_ARRAY.append(float(score))
-        #print(ITER, SOME_SIG_SITE1, SOME_EPS_SITE1, some_sig_site2, some_eps_site2, score, file = LOG)
-
-
-
-
-'''
-iter_particle_prefix = []
-sig_eps_nnn_array = []   
-particle_names_array = [] 
-
-for p in range(0, np):
-    string = ""
-    for d in range(0, nd):
-        sig_or_eps_or_nnn = x[p,d] 
-
-        if d == int(nd/ns) - 1:
-            delimiter = "_"
-        else:
-            delimiter = "-"
-            
-        string = string + str(sig_or_eps_or_nnn) + delimiter
-
-    iter_particle_prefix.append( "I-"  + str(iter) + "_P-" + str(p+1) )
-    sig_eps_nnn_array.append( string[:-1] )
-    particle_names_array.append( str(iter_particle_prefix[p]) + "_" + str(sig_eps_nnn_array[p]) )
-
-iter_particle_prefix_STRING = "\"" + ' '.join(map(str, iter_particle_prefix)) + "\""
-sig_eps_nnn_array_STRING = "\"" + ' '.join(map(str, sig_eps_nnn_array)) + "\""
-'''
+print()

@@ -8,12 +8,12 @@ import numpy
 
 
 # Input parameters ##################
-molecule="C2"
-NS=1
+molecule="C4"
+NS=2
 config_filename="FSHIFT_BULK_2M.conf"
-nproc="4"
-selected_itic_points = "0.4286/259.42 0.5571/174.46 360.00/0.4286 360.00/0.5571"  # C2 select4
-true_data_file="$HOME/Git/TranSFF/Data/C2/REFPROP_select4.res" 
+nproc="5"
+selected_itic_points = "0.4873/361.43 0.6335/241.55 510.16/0.1949 510.16/0.4873 510.16/0.6335"  # C4 select5
+true_data_file="$HOME/Git/TranSFF/Data/C4/REFPROP_select5.res" 
 true_data_label="REFPROP"                                                              
 Z_WT="0.5"
 U_WT="0.5"
@@ -23,14 +23,11 @@ U_WT="0.5"
 SWARM_SIZE = 3
 swarm_size = 6
 
-LB = [3.700, 110.0]
-UB = [3.800, 130.0]
+LB = [3.60, 100.0, 3.80, 40.0]
+UB = [4.00, 140.0, 4.20, 80.0]
 #MP = numpy.average(numpy.array([LB, UB]), axis=0)   # Average of LB and UB
 #INITIAL_GUESS = [LB, UB, MP]
-#INITIAL_GUESS = [[3.798439938521785, 112.96044772170356],[3.7232740107259135, 120.53420612478035],[3.756567056242516, 123.93603301460698]]
-INITIAL_GUESS = [[3.71, 128.0],[3.71, 112.0],[3.79, 112.0]]
-
-
+INITIAL_GUESS = [[3.61, 105.0, 3.81, 45.0],[3.61, 105.0, 4.19, 75.0],[3.99, 135.0, 4.19, 75.0]]
 
 
 
@@ -119,16 +116,27 @@ def OBJECTIVE_FUNCTION(X):
             PARTICLE = run_particle_input_array[1]
             iteration = run_particle_input_array[2]
             particle = run_particle_input_array[3]
-            sigma = run_particle_input_array[4]
-            epsilon = run_particle_input_array[5]
+            sig_eps_nnn = run_particle_input_array[4]
+
+            string = ""
+            for d in range(0, nd):
+                sig_or_eps_or_nnn = sig_eps_nnn[d]
+
+                if d == int(nd/NS) - 1:
+                    delimiter = "_"
+                else:
+                    delimiter = "-"
+                                            
+                string = string + str(sig_or_eps_or_nnn) + delimiter
+            sig_eps_nnn_string = string[:-1]
 
             arg0 = "bash ~/Git/TranSFF/Scripts/run_particle.sh"
             arg1 = "I-" + str(ITERATION) + "_P-" + str(PARTICLE) + "_i-" + str(iteration) + "_p-" + str(particle)   # keyword
-            arg2 = "C2"                                                                                             # molecule
+            arg2 = molecule                                                                                         # molecule
             arg3 = selected_itic_points                                                                             # selected_itic_points
             arg4 = config_filename                                                                                  # config_filename
             arg5 = nproc                                                                                            # Nproc
-            arg6 = str(sigma) + "-" + str(epsilon)                                                                  # sig_eps_nnn
+            arg6 = sig_eps_nnn_string                                                                               # sig_eps_nnn_string
             arg7 = "I-" + str(ITERATION) + "_P-" + str(PARTICLE) + "_" + str(SIG_EPS_NNN_ARRAY[PARTICLE-1])         # reference_foldernames_array
             arg8 = true_data_file                                                                                   
             arg9 = true_data_label
@@ -142,7 +150,7 @@ def OBJECTIVE_FUNCTION(X):
 
         run_particle_input_array = []
         for p in range(0, np):
-            run_particle_input_array.append( [ITER, SIMULATED_P , it, p + 1, x[p, 0], x[p, 1]] )
+            run_particle_input_array.append( [ITER, SIMULATED_P , it, p + 1, x[p, :]] )
 
         p1 = Process(target = run_one_particle, args=(run_particle_input_array[0],))
         p1.start()

@@ -6,7 +6,6 @@ import numpy
 
 
 
-
 # Input parameters ##################
 molecule="C12"
 NS=2

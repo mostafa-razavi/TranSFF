@@ -8,12 +8,12 @@ import numpy
 
 
 # Input parameters ##################
-molecule="C4"
+molecule="C12"
 NS=2
 config_filename="FSHIFT_BULK_2M.conf"
 nproc="5"
-selected_itic_points = "0.4873/361.43 0.6335/241.55 510.16/0.1949 510.16/0.4873 510.16/0.6335"  # C4 select5
-true_data_file="$HOME/Git/TranSFF/Data/C4/REFPROP_select5.res" 
+selected_itic_points = "0.5336/547.99 0.6937/368.10 691.00/0.2135 691.00/0.5336 691.00/0.6937"  # C12 select5
+true_data_file="$HOME/Git/TranSFF/Data/C12/REFPROP_select5.res" 
 true_data_label="REFPROP"                                                              
 Z_WT="0.5"
 U_WT="0.5"
@@ -37,7 +37,6 @@ LOG = "OUTER.out"
 log = "inner.out"
 
 selected_itic_points =  "\"" + selected_itic_points + "\""
-REFERENCE_SIM_ARRAY = [[]]
 
 it = 0
 ITER = 0

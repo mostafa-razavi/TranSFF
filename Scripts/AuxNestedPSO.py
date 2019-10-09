@@ -10,13 +10,22 @@ import numpy
 # Input parameters ##################
 molecule="C12"
 NS=2
-config_filename="FSHIFT_BULK_2M.conf"
+config_filename="FSHIFT_BULK_VERY_SHORT.conf"
 nproc="5"
-selected_itic_points = "0.5336/547.99 0.6937/368.10 691.00/0.2135 691.00/0.5336 691.00/0.6937"  # C12 select5
-true_data_file="$HOME/Git/TranSFF/Data/C12/REFPROP_select5.res" 
+selected_itic_points="0.4286/259.42 0.5571/174.46 360.00/0.1714 360.00/0.4286 360.00/0.5571"  # C2 select5
+NPROC="5"
+true_data_file="$HOME/Git/TranSFF/Data/C2/REFPROP_select5.res" 
 true_data_label="REFPROP"                                                              
 Z_WT="0.5"
 U_WT="0.5"
+Nsnapshots="50"
+rerun_inp="none"                                                                                 # "none" or filename
+GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
+z_wt="0.34"
+u_wt="0.33"
+n_wt="0.33"
+number_of_lowest_Neff="1"
+target_Neff="5"
 
 
 # Set PSO parameters ################
@@ -42,7 +51,6 @@ it = 0
 ITER = 0
 SIMULATED_P = 0
 
-
 def OBJECTIVE_FUNCTION(X):
     global ITER
     global SIMULATED_P
@@ -59,7 +67,6 @@ def OBJECTIVE_FUNCTION(X):
     PARTICLE_NAMES_ARRAY = []
     OBJECTIVE_ARRAY = []
     AUX_ARRAY = numpy.zeros((0, ND))
-
 
     for P in range(0, NP):
         string = ""
@@ -81,8 +88,11 @@ def OBJECTIVE_FUNCTION(X):
     SIG_EPS_NNN_ARRAY_STRING = "\"" + ' '.join(map(str, SIG_EPS_NNN_ARRAY)) + "\""
 
     COMMAND = "bash $HOME/Git/TranSFF/Scripts/RUN_PARTICLES_AND_WAIT_AUX.sh" + " " + ITER_PARTICLE_PREFIX_STRING \
-         + " " + molecule + " " + selected_itic_points + " " + config_filename + " " + nproc + " " + SIG_EPS_NNN_ARRAY_STRING \
-         + " " + Z_WT + " " + U_WT + " " + true_data_file + " " + true_data_label
+         + " " + molecule + " " + selected_itic_points + " " + config_filename + " " + NPROC + " " + SIG_EPS_NNN_ARRAY_STRING \
+         + " " + Z_WT + " " + U_WT + " " + true_data_file + " " + true_data_label \
+         + " " + Nsnapshots + " " + rerun_inp + " " + GOMC_exe \
+         + " " + z_wt + " " + u_wt + " " + n_wt + " " + number_of_lowest_Neff + " " + target_Neff
+
     print("COMMAND: ", COMMAND)
     print()
 
@@ -151,6 +161,16 @@ def OBJECTIVE_FUNCTION(X):
         for p in range(0, np):
             run_particle_input_array.append( [ITER, SIMULATED_P , it, p + 1, x[p, :]] )
 
+        for p in range(0, np):
+            exec_string = "p" + str(p) + " = Process(target = run_one_particle, args=(run_particle_input_array[" + str(p) + "],))"
+            exec(exec_string)
+            exec_string = "p" + str(p) + ".start()"
+            exec(exec_string)
+
+        for p in range(0, np):
+            exec_string = "p" + str(p) + ".join()"
+            exec(exec_string)
+        '''
         p1 = Process(target = run_one_particle, args=(run_particle_input_array[0],))
         p1.start()
         p2 = Process(target = run_one_particle, args=(run_particle_input_array[1],))
@@ -169,7 +189,7 @@ def OBJECTIVE_FUNCTION(X):
         p4.join()
         p5.join()        
         p6.join() 
-
+        '''
         # wait
 
         for p in range(0, np):
@@ -200,13 +220,14 @@ def OBJECTIVE_FUNCTION(X):
         
         print("xopt, fopt: ", xopt, fopt)
         print()
+
         AUX_ARRAY = numpy.append(AUX_ARRAY, [xopt], axis=0)
         it = 0
     
     print("AUX_ARRAY ", AUX_ARRAY)
     print()
 
-    return OBJECTIVE_ARRAY, AUX_ARRAY ############################# Endo of OBJECTIVE_FUNCTION
+    return OBJECTIVE_ARRAY, AUX_ARRAY ############################# End of OBJECTIVE_FUNCTION
 
 
 
@@ -218,5 +239,4 @@ print()
 
 XOPT, FOPT = parallel_pso_auxiliary(OBJECTIVE_FUNCTION, LB, UB, ig = INITIAL_GUESS ,swarmsize=SWARM_SIZE, omega=0.5, phip=0.5, phig=0.5, phia=0.5, maxiter=100, minstep=1e-4, minfunc=1e-4, debug=False, outFile = LOG)
 
-print(XOPT, FOPT, file = LOG)
-print()
+print("XOPT, FOPT: ", XOPT, FOPT)

@@ -36,7 +36,7 @@ StartFrame=$(echo "$N_total_snapshots-$Nsnapshots" | bc)
 if [ ! -e "StartFrame.txt" ]
 then 
 	StartFrame=$(echo "$StartFrame" | bc)
-	echo $StartFrame  > StartFrame.txt
+	echo $StartFrame >> StartFrame.txt
 else
 	ExistingStartFrame=$(cat StartFrame.txt | awk '{print $1}')
 	if [ "$ExistingStartFrame" != "$StartFrame" ]

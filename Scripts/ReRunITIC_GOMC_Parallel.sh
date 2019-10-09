@@ -11,16 +11,17 @@ Nproc=$6
 reference_foldernames_array=$7
 true_data_file=$8 
 true_data_label=$9                                                               
-Nsnapshots=${10} #"500"
-rerun_inp=${11} #"none"                                                                                 # "none" or filename
-GOMC_exe=${12} #"$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
-z_wt=${13} #"0.34"
-u_wt=${14} #"0.33"
-n_wt=${15} #"0.33"
-number_of_lowest_Neff=${16} #"1"
-target_Neff=${17} #"25"
 
+
+Nsnapshots="500"
+rerun_inp="none"                                                                                 # "none" or filename
+GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
 MW=$(grep "MW:" $HOME/Git/TranSFF/Molecules/${molecule}/${molecule}.itic | awk '{print $2}')
+z_wt="0.34"
+u_wt="0.33"
+n_wt="0.33"
+number_of_lowest_Neff="1"
+target_Neff="25"
 
 # Separate Trho pair array into T array and rho array
 Selected_Ts=""
@@ -51,7 +52,7 @@ bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_2.sh "TFF" "$keyword" "$reference_
 rm -rf "${keyword}.parallel"
 cat "${keyword}"*".parallel" >> "${keyword}.parallel"
 parallel --willcite --jobs $Nproc < "${keyword}.parallel" #> "${keyword}.log"
- 
+
 bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_2.sh "FFT" "$keyword" "$reference_foldernames_array" $par_file_name $rerun_inp $Nsnapshots $Nproc $GOMC_exe "$Selected_Ts" "$Selected_rhos"
 
 mbar_data_file=$(ls "${keyword}"*".target.res")
@@ -64,7 +65,7 @@ mkdir $keyword
 
 mv "${keyword}"*".parallel" $keyword
 mv "${keyword}"*".res" $keyword
-# "${keyword}"*".log" $keyword
+#mv "${keyword}"*".log" $keyword
 mv "${keyword}"*".par" $keyword
 mv "${keyword}"*".score" $keyword
 mv "${keyword}"*".png" $keyword

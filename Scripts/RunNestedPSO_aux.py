@@ -8,37 +8,34 @@ import numpy
 
 
 # Input parameters ##################
-molecule="C12"
-NS=2
-config_filename="FSHIFT_BULK_VERY_SHORT.conf"
+molecule="C2"
+NS=1
+config_filename="FSHIFT_BULK_2M.conf"
 nproc="5"
-selected_itic_points="0.4286/259.42 0.5571/174.46 360.00/0.1714 360.00/0.4286 360.00/0.5571"  # C2 select5
-NPROC="5"
+selected_itic_points = "0.4286/259.42 0.5571/174.46 360.00/0.1714 360.00/0.4286 360.00/0.5571"  # C2 select5
 true_data_file="$HOME/Git/TranSFF/Data/C2/REFPROP_select5.res" 
 true_data_label="REFPROP"                                                              
 Z_WT="0.5"
 U_WT="0.5"
-Nsnapshots="50"
-rerun_inp="none"                                                                                 # "none" or filename
-GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
-z_wt="0.34"
-u_wt="0.33"
-n_wt="0.33"
-number_of_lowest_Neff="1"
-target_Neff="5"
 
 
 # Set PSO parameters ################
 SWARM_SIZE = 3
-swarm_size = 6
+MAX_ITERATIONS = 100
+TOL = 1e-4
 
-LB = [3.60, 100.0, 3.80, 40.0]
-UB = [4.00, 140.0, 4.20, 80.0]
+swarm_size = 5
+max_iterations = 100
+tol = 1e-4
+
+LB = [3.700, 110.0]
+UB = [3.800, 130.0]
+INITIAL_GUESS = [[3.71, 128.0],[3.71, 112.0],[3.79, 112.0]]
+
+
 #MP = numpy.average(numpy.array([LB, UB]), axis=0)   # Average of LB and UB
 #INITIAL_GUESS = [LB, UB, MP]
-INITIAL_GUESS = [[3.61, 105.0, 3.81, 45.0],[3.61, 105.0, 4.19, 75.0],[3.99, 135.0, 4.19, 75.0]]
-
-
+#INITIAL_GUESS = [[3.798439938521785, 112.96044772170356],[3.7232740107259135, 120.53420612478035],[3.756567056242516, 123.93603301460698]]
 
 
 #============================================================================================
@@ -50,6 +47,7 @@ selected_itic_points =  "\"" + selected_itic_points + "\""
 it = 0
 ITER = 0
 SIMULATED_P = 0
+
 
 def OBJECTIVE_FUNCTION(X):
     global ITER
@@ -67,6 +65,7 @@ def OBJECTIVE_FUNCTION(X):
     PARTICLE_NAMES_ARRAY = []
     OBJECTIVE_ARRAY = []
     AUX_ARRAY = numpy.zeros((0, ND))
+
 
     for P in range(0, NP):
         string = ""
@@ -88,16 +87,13 @@ def OBJECTIVE_FUNCTION(X):
     SIG_EPS_NNN_ARRAY_STRING = "\"" + ' '.join(map(str, SIG_EPS_NNN_ARRAY)) + "\""
 
     COMMAND = "bash $HOME/Git/TranSFF/Scripts/RUN_PARTICLES_AND_WAIT_AUX.sh" + " " + ITER_PARTICLE_PREFIX_STRING \
-         + " " + molecule + " " + selected_itic_points + " " + config_filename + " " + NPROC + " " + SIG_EPS_NNN_ARRAY_STRING \
-         + " " + Z_WT + " " + U_WT + " " + true_data_file + " " + true_data_label \
-         + " " + Nsnapshots + " " + rerun_inp + " " + GOMC_exe \
-         + " " + z_wt + " " + u_wt + " " + n_wt + " " + number_of_lowest_Neff + " " + target_Neff
-
+         + " " + molecule + " " + selected_itic_points + " " + config_filename + " " + nproc + " " + SIG_EPS_NNN_ARRAY_STRING \
+         + " " + Z_WT + " " + U_WT + " " + true_data_file + " " + true_data_label
     print("COMMAND: ", COMMAND)
     print()
 
     os.system(COMMAND)
-    # wait
+    # WAIT for all PARTICLES (reference simulations) to finish
 
     
     for P in range(0, NP):
@@ -170,27 +166,8 @@ def OBJECTIVE_FUNCTION(X):
         for p in range(0, np):
             exec_string = "p" + str(p) + ".join()"
             exec(exec_string)
-        '''
-        p1 = Process(target = run_one_particle, args=(run_particle_input_array[0],))
-        p1.start()
-        p2 = Process(target = run_one_particle, args=(run_particle_input_array[1],))
-        p2.start()
-        p3 = Process(target = run_one_particle, args=(run_particle_input_array[2],))
-        p3.start()
-        p4 = Process(target = run_one_particle, args=(run_particle_input_array[3],))
-        p4.start()
-        p5 = Process(target = run_one_particle, args=(run_particle_input_array[4],))
-        p5.start()
-        p6 = Process(target = run_one_particle, args=(run_particle_input_array[5],))
-        p6.start()                        
-        p1.join()
-        p2.join() 
-        p3.join() 
-        p4.join()
-        p5.join()        
-        p6.join() 
-        '''
-        # wait
+
+        # wait for all particles to get ready
 
         for p in range(0, np):
             iter_particle_prefix = "I-" + str(ITER) + "_P-" + str(SIMULATED_P) + "_i-" +  str(it) + "_p-" + str(p + 1)
@@ -214,13 +191,17 @@ def OBJECTIVE_FUNCTION(X):
         # Get bounds and initial guess
         lb = LB 
         ub = UB
-        initial_guess = [[],[],[],[],[],[]]
+        initial_guess = []
+        initial_guess.append(X[SIMULATED_P-1,:])    # Set the first particle to be at the reference simulation exactly, to make sure the PSO algorithm discovers the n_score region.
+        for i in range(0, swarm_size-1):
+            initial_guess.append([])
 
-        xopt, fopt = parallel_pso(objective_function, lb, ub, ig = initial_guess ,swarmsize=swarm_size, omega=0.5, phip=0.5, phig=0.5, maxiter=100, minstep=1e-4, minfunc=1e-4, debug=False, outFile = log)
+        print("initial_guess: ", initial_guess)
+        print()
+        xopt, fopt = parallel_pso(objective_function, lb, ub, ig = initial_guess ,swarmsize=swarm_size, omega=0.5, phip=0.5, phig=0.5, maxiter=max_iterations, minstep=tol, minfunc=tol, debug=False, outFile = log)
         
         print("xopt, fopt: ", xopt, fopt)
         print()
-
         AUX_ARRAY = numpy.append(AUX_ARRAY, [xopt], axis=0)
         it = 0
     
@@ -237,6 +218,7 @@ def OBJECTIVE_FUNCTION(X):
 print("INITIAL_GUESS: ", INITIAL_GUESS)
 print()
 
-XOPT, FOPT = parallel_pso_auxiliary(OBJECTIVE_FUNCTION, LB, UB, ig = INITIAL_GUESS ,swarmsize=SWARM_SIZE, omega=0.5, phip=0.5, phig=0.5, phia=0.5, maxiter=100, minstep=1e-4, minfunc=1e-4, debug=False, outFile = LOG)
+XOPT, FOPT = parallel_pso_auxiliary(OBJECTIVE_FUNCTION, LB, UB, ig = INITIAL_GUESS ,swarmsize=SWARM_SIZE, omega=0.5, phip=0.5, phig=0.5, phia=0.5, maxiter=MAX_ITERATIONS, minstep=TOL, minfunc=TOL, debug=False, outFile = LOG)
 
-print("XOPT, FOPT: ", XOPT, FOPT)
+print("XOPT:", XOPT)
+print("FOPT:", FOPT)

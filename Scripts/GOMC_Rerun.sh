@@ -19,6 +19,7 @@ fi
 
 # We pick a keyword to distinguish different processes working in the same simulation directory by introducing a unique keyword at the begining of all related files.
 keyword=$(date +"%Y.%m.%d.%H.%M.%S.%N")
+
 cp $rerun_par_address "${keyword}_rerun.par"
 
 # check if xyz file exists
@@ -38,10 +39,10 @@ then
 	StartFrame=$(echo "$StartFrame" | bc)
 	echo $StartFrame >> StartFrame.txt
 else
-	ExistingStartFrame=$(cat StartFrame.txt | awk '{print $1}')
+	ExistingStartFrame=$(cat StartFrame.txt | awk '{print $1}' | head -n1)
 	if [ "$ExistingStartFrame" != "$StartFrame" ]
 	then
-		echo "Error: The starting frame in existing StartFrame.txt is not equal to the intended starting frame"
+		echo "Error in $keyword: The starting frame in existing StartFrame.txt is not equal to the intended starting frame"
 		exit
 	fi
 fi

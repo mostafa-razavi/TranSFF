@@ -20,7 +20,7 @@ do
 done 
  
 rm -rf ${CD}/${OutFile}
-echo "I	P	i	p	ref_sig1	ref_eps1	TOTAL_SCORE	Z_SCORE	U^RES_SORE	MBAR_Sig1	MBAR_Eps1	Total_Score	Z_score	U^res_Score	Neff_Score(Target=50)" >> ${CD}/${OutFile}
+echo "I  P  i  p  ref_sig1  ref_eps1  TOTAL_SCORE  Z_SCORE  U^RES_SORE  MBAR_Sig1  MBAR_Eps1  Total_Score  Z_score  U^res_Score  Neff_Score(Target=50)" >> ${CD}/${OutFile}
 for iref in $(seq 0 $(echo "${#ref_sig1[@]}-1" | bc))	
 do
     for ifol in I-${ref_I[iref]}_P-${ref_P[iref]}_i*/

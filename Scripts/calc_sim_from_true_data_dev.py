@@ -2,8 +2,6 @@
 
 import numpy
 import sys
-import matplotlib
-import matplotlib.pyplot as plt
 
 
 MW = float(sys.argv[1])

@@ -47,6 +47,6 @@ do
 		sim_data_file="trhozures.res" 
 		SCORE=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_sim_from_true_data_dev.py $MW ${true_data_file} $sim_data_file $Z_WT $U_WT )
 		echo $SCORE > "${keyword_array[i]}_${sig_eps_nnn_array[i]}.SCORE"
-		python3.6 /home/mostafa/Git/TranSFF/Scripts/plot_sim_vs_true_data.py $MW ${true_data_file} $true_data_label "${keyword_array[i]}_${sig_eps_nnn_array[i]}.png" $sim_data_file
+		python3.6 $HOME/Git/TranSFF/Scripts/plot_sim_vs_true_data.py $MW ${true_data_file} $true_data_label "${keyword_array[i]}_${sig_eps_nnn_array[i]}.png" $sim_data_file
 	cd ..
 done

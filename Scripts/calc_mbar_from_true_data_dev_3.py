@@ -2,8 +2,6 @@
 
 import numpy
 import sys
-import matplotlib
-import matplotlib.pyplot as plt
 
 
 MW = float(sys.argv[1])
@@ -105,21 +103,3 @@ u_score = u_wt * u_aad
 
 score = z_score + u_score + n_score
 print(score, z_score, u_score, n_score)
-
-
-
-
-
-
-    #lowest_m_Neff_index = Neff.argsort()[:number_of_lowest_Neff]
-    #lowest_m_Neff = Neff.sort()[:number_of_lowest_Neff]
-    #lowest_m_Neff_avg = numpy.mean(lowest_m_Neff)
-    #if lowest_m_Neff_avg <= target_Neff:    # Take the average of Neff of m ITIC points with lowest Neff. If that number is lower than target_Neff calculate score, else n_dev is ignored and n_score is zero.
-    #    lowest_m_Neff_dev = []
-    #    for i in range(0, len(lowest_m_Neff_index)):
-    #        lowest_m_Neff_dev.append( neff_criteria_function(target_Neff, Neff[lowest_m_Neff_index[i]]) )
-    #    lowest_m_Neff_dev = numpy.asarray(lowest_m_Neff_dev)
-    #    n_dev = numpy.mean(lowest_m_Neff_dev)
-    #    n_score = n_wt * n_dev
-    #else:
-    #    n_score = 0.0

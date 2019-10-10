@@ -95,7 +95,7 @@ if [ "$prepare_run_post" == "TTT" ] || [ "$prepare_run_post" == "TFF" ]; then
                         rerun_par_address=$(ls $CD/$j/Files/*.par)
                     fi
                     # Arguments: Nsnapshots=$1 GOMC_PDB=$2 rerun_par_address=$3 output_name=$4             
-                    echo "cd $k; bash /home/mostafa/Git/TranSFF/Scripts/GOMC_Rerun.sh $Nsnapshots nvt_BOX_0.pdb ${rerun_par_address} ${rerun_inp_address} $i.ref_$j.rer ${GOMC_exe}" >> $parallel_file_name.parallel
+                    echo "cd $k; bash $HOME/Git/TranSFF/Scripts/GOMC_Rerun.sh $Nsnapshots nvt_BOX_0.pdb ${rerun_par_address} ${rerun_inp_address} $i.ref_$j.rer ${GOMC_exe}" >> $parallel_file_name.parallel
                 fi
             done
         done
@@ -131,8 +131,8 @@ if [ "$prepare_run_post" == "TTT" ] || [ "$prepare_run_post" == "FFT" ]; then
                     how_many_datafile_rows_to_skip="0"
                     energy_unit="K"
                     Nmolec=$(grep -R STAT_0: ${k}gomc.log | head -n1 | awk '{print $4}')
-                    #echo "python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py \"$T\" \"$rho\" \"$Nsnapshots\" \"$ref_sim_fol_string\" \"$ref_ff_string\" \"$target_ff_name\" \"$which_datafile_columns_string\" \"$how_many_datafile_rows_to_skip\" \"$energy_unit\" >> $CD/${parallel_file_name}.res" >> "$parallel_file_name.MBAR_predict.parallel"
-                    python3.6 /home/mostafa/Git/TranSFF/Scripts/MBAR_predict.py "$T" "$rho" "$Nmolec" "$Nsnapshots" "$ref_sim_fol_string" "$ref_ff_string" "$target_ff_name" "$which_datafile_columns_string" "$how_many_datafile_rows_to_skip" "$energy_unit" >> "$CD/${parallel_file_name}.res"
+                    #echo "python3.6 $HOME/Git/TranSFF/Scripts/MBAR_predict.py \"$T\" \"$rho\" \"$Nsnapshots\" \"$ref_sim_fol_string\" \"$ref_ff_string\" \"$target_ff_name\" \"$which_datafile_columns_string\" \"$how_many_datafile_rows_to_skip\" \"$energy_unit\" >> $CD/${parallel_file_name}.res" >> "$parallel_file_name.MBAR_predict.parallel"
+                    python3.6 $HOME/Git/TranSFF/Scripts/MBAR_predict.py "$T" "$rho" "$Nmolec" "$Nsnapshots" "$ref_sim_fol_string" "$ref_ff_string" "$target_ff_name" "$which_datafile_columns_string" "$how_many_datafile_rows_to_skip" "$energy_unit" >> "$CD/${parallel_file_name}.res"
                 fi
             fi
         done

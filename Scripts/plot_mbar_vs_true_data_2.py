@@ -1,5 +1,8 @@
 # This script plots the MBAR vs true data
-
+# Example:
+# python3.6 $HOME/Git/TranSFF/Scripts/plot_mbar_vs_true_data_2.py 170.33484 $HOME/Git/TranSFF/Data/C12/REFPROP_select5.res my_keyword/my_keyword.target.res REFPROP out.png C12_s3.780e120.0_s4.00e60.0/trhozures.res
+    
+    
 import matplotlib
 import numpy
 import sys
@@ -51,6 +54,7 @@ mbar_unb_kjmol = mbar_data[:,10] * kelvin_to_kjmol
 mbar_unb_kjmol_err = mbar_data[:,11] * kelvin_to_kjmol
 
 mbar_u_res = ( mbar_u_kjmol - mbar_ub_kjmol - mbar_unb_kjmol ) / mbar_Nmolec / R_const / mbar_temp_k * 1e3
+mbar_u_res_err = numpy.sqrt( mbar_u_kjmol_err**2 + mbar_ub_kjmol_err**2 + mbar_unb_kjmol_err**2) / mbar_Nmolec / R_const / mbar_temp_k * 1e3
 mbar_z = mbar_p_mpa * MW / ( mbar_rho_gcc  * R_const * mbar_temp_k )
 mbar_z_err = mbar_p_mpa_err * MW / ( mbar_rho_gcc  * R_const * mbar_temp_k )
 mbar_zminus1overRho = ( mbar_z - 1 ) / mbar_rho_gcc
@@ -111,9 +115,11 @@ plt.xlabel("$1000/T$ [K$^{-1}$]")
 plt.ylabel("$T\hat{U}^\mathrm{res}$ [K]")
 plt.scatter(1000.0 / true_temp_k, true_u_res * true_temp_k, marker="s", s=70, facecolors='none', edgecolors='k')
 plt.scatter(1000.0 / mbar_temp_k, mbar_u_res * mbar_temp_k, marker="o", s=70, facecolors='none', edgecolors='r')
+plt.errorbar(1000.0 / mbar_temp_k, mbar_u_res * mbar_temp_k, yerr=mbar_u_res_err*mbar_temp_k, color='r', capsize=5, marker=None, linewidth=0, elinewidth=1, ms=0)
 
 if isDSIM:
     plt.scatter(1000.0 / dsim_temp_k, dsim_u_res * dsim_temp_k, marker="^", s=70, facecolors='none', edgecolors='g')
+    plt.errorbar(1000.0 / dsim_temp_k, dsim_u_res * dsim_temp_k, yerr=dsim_u_res_std * dsim_temp_k, color='g', capsize=5, marker=None, linewidth=0, elinewidth=1, ms=0)
 
 plt.savefig(output_figure_filename)
 plt.close()

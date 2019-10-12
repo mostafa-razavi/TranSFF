@@ -1,4 +1,6 @@
 # This script plots the MBAR vs true data
+# Example:
+# python3.6 plot_sim_vs_true_data.py 170.33484 $HOME/Git/TranSFF/Data/C12/REFPROP_select5.res REFPROP out.png trhozures.res
 
 import matplotlib
 import numpy

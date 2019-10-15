@@ -54,9 +54,14 @@ fig, axes = plt.subplots(NI, len(x)-1, sharey=False, figsize=(5*len(x)-1, 5*NI),
 
 # Get min, max and range for each column, Normalize the data for each column
 min_max_range = {}
-for col in cols_COLS:
+for col in cols:
     min_max_range[col] = [df[col].min(), df[col].max(), numpy.ptp(df[col])]
     df[col] = numpy.true_divide(df[col] - df[col].min(), numpy.ptp(df[col]))
+n=-1
+for col in COLS:
+    n = n + 1
+    min_max_range[col] = [df[cols[n]].min(), df[cols[n]].max(), numpy.ptp(df[cols[n]])]
+    df[col] = numpy.true_divide(df[cols[n]] - df[cols[n]].min(), numpy.ptp(df[cols[n]]))
 
 for ITERATION in range(0, NI):
     for iax, ax in enumerate(axes[ITERATION]):
@@ -65,7 +70,7 @@ for ITERATION in range(0, NI):
             P = df.iloc[idx,1]
             if I == ITERATION + 1:
                 y = df.loc[idx, cols]
-                ax.plot(x, y, color=PCOLORS[P-1], alpha=0.1)    # plot particles
+                ax.plot(x, y, color=PCOLORS[P-1], alpha=0.05)    # plot particles
 
                 i = df.iloc[idx,2] 
                 p = df.iloc[idx,3] 
@@ -83,13 +88,13 @@ for ITERATION in range(0, NI):
         norm_min = df[cols[dim]].min()
         norm_range = numpy.ptp(df[cols[dim]])
         norm_step = norm_range / float(ticks-1)
-        ticks = [round(norm_min + norm_step * i, 2) for i in range(ticks)]
+        ticks = [round(norm_min + norm_step * i, 3) for i in range(ticks)]
         ax.yaxis.set_ticks(ticks)
         ax.set_yticklabels(tick_labels)
 
     for dim, ax in enumerate(axes[ITERATION]):
         ax.xaxis.set_major_locator(ticker.FixedLocator([dim]))
-        set_ticks_for_axis(dim, ax, ticks=6)
+        set_ticks_for_axis(dim, ax, ticks=20)
         if ITERATION == NI - 1:
             ax.set_xticklabels([ytitles[dim]])
         else: 
@@ -100,7 +105,7 @@ for ITERATION in range(0, NI):
     ax = plt.twinx(axes[ITERATION, -1])
     dim = len(axes[ITERATION])
     ax.xaxis.set_major_locator(ticker.FixedLocator([x[-2], x[-1]]))
-    set_ticks_for_axis(dim, ax, ticks=6)
+    set_ticks_for_axis(dim, ax, ticks=20)
     if ITERATION == NI - 1:
         ax.set_xticklabels([ytitles[-2], ytitles[-1]])
     else:

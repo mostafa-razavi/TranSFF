@@ -54,6 +54,7 @@ do
     cd $CD
 done
 
+rm -rf COMMANDS.parallel
 bash $HOME/Git/nestplore/nestplore.sh 1 "cat COMMANDS.parallel" | tee COMMANDS.parallel
 
 parallel --jobs $ncores < COMMANDS.parallel

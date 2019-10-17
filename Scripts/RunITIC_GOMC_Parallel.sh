@@ -8,15 +8,15 @@
 
 
 #===== Molecule and force field files =====
-molec_name=$1									# E.g. C1, C2, C4, C12, etc
+molecule=$1									# E.g. C1, C2, C4, C12, etc
 force_field_file_name=$2						# E.g. C2_TraPPE-UA.par
 config_filename=$3								# A file containing GOMC settings (a list of key value pairs e.g. Potential	FSHIFT\n LRC false)
 Trho_rhoT_pairs_array=$4						# "all" or pairs of temperature/density (for IT) and density/temperatures (for IC) that we want to run, e.g. 360.00/0.6220 or 0.6220/95.00
 should_run=$5									# "yes" or "no" (lower case)
 
-ITIC_file_name="${molec_name}.itic"
-pdb_file_name="${molec_name}.pdb"
-topology_file_name="${molec_name}.top"
+ITIC_file_name="${molecule}.itic"
+pdb_file_name="${molecule}.pdb"
+topology_file_name="${molecule}.top"
 config_file="$HOME/Git/TranSFF/Scripts/${config_filename}"
 
 #===== Number of CPU cores to use ===== 
@@ -40,8 +40,8 @@ OutputName=$(grep -R "OutputName" $config_file | awk '{print $2}')
 
 #===== Important paths =====
 Scripts_path="$HOME/Git/TranSFF/Scripts"
-Molecules_path="$HOME/Git/TranSFF/Molecules/$molec_name"
-Forcefileds_path="$HOME/Git/TranSFF/Forcefields/$molec_name"
+Molecules_path="$HOME/Git/TranSFF/Molecules/$molecule"
+Forcefileds_path="$HOME/Git/TranSFF/Forcefields/$molecule"
 
 #===== Executable files =====
 gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
@@ -106,7 +106,7 @@ if [ ! -e "Files" ]; then mkdir Files; fi
 
 cd Files 
 bash $Scripts_path/Generate_PDB_PSF.sh \
-	$molec_name $ITIC_file_name \
+	$molecule $ITIC_file_name \
 	$pdb_file_name $topology_file_name \
 	$packmol_input_file_name \
 	$psfgen_input_file_name \

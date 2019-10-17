@@ -1,11 +1,17 @@
 #!/bin/bash
-# This script runs RunITIC_GOMC_Parallel.sh script for specified sigma and epsilons
+# This script runs RunITIC_GOMC_Parallel.sh script for specified sigma and epsilons (and nnn if needs be)
 
 molecule="C12"
 selected_itic_points="0.5336/547.99 0.6937/368.10 691.00/0.2135 691.00/0.5336 691.00/0.6937"
-conf_file="FSHIFT_BULK_LONG.conf"
+config_filename="FSHIFT_BULK_LONG.conf"
 nnbp="2"
 ncores="10"
+
+OutputName="nvt" 
+nblocks="5" 
+true_data_file_name="REFPROP_select5.res"
+true_data_file_label="REFPROP"
+png_output="dsim.png"
 
 sig_site1_array=(3.850 3.850 3.850 3.850 3.850 3.850 3.850 3.850)
 sig_site2_array=(4.000 4.000 4.000 4.000 4.000 4.000 4.000 4.000)
@@ -58,3 +64,10 @@ rm -rf COMMANDS.parallel
 bash $HOME/Git/nestplore/nestplore.sh 1 "cat COMMANDS.parallel" | tee COMMANDS.parallel
 
 parallel --jobs $ncores < COMMANDS.parallel
+
+for i in */
+do
+    cd $i
+        bash ~/Git/TranSFF/Scripts/RunITIC_postprocess.sh $molecule $config_filename $OutputName $nblocks $true_data_file_name $true_data_file_label $png_output
+    cd ..
+done

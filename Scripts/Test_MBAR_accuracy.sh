@@ -1,4 +1,8 @@
 #!bin/bash
+# This script obtaines the MBAR results and compares them to direct simulations
+# Example:
+# bash ~/Git/TranSFF/Scripts/Test_MBAR_accuracy.sh C12 2 s3.850e127-s3.920e60 s3.850e127-s4.000e60 "0.5336/547.99 0.6937/368.10 691.00/0.2135 691.00/0.5336 691.00/0.6937"
+
 molecule=$1
 nnbp=$2
 reference_folder=$3

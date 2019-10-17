@@ -62,6 +62,8 @@ score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev_3.py $M
 echo $score > ${keyword}.score
 python3.6 $HOME/Git/TranSFF/Scripts/plot_mbar_vs_true_data_2.py $MW ${true_data_file} $mbar_data_file ${true_data_label} ${mbar_data_file}.png
 
+python3.6 $HOME/Git/TranSFF/Scripts/GOMC_MBAR_res_to_trhozures.py $MW $mbar_data_file "${keyword}.trhozures.res"
+
 rm -rf $keyword 
 mkdir $keyword 
 

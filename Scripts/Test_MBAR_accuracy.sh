@@ -25,4 +25,5 @@ bash $HOME/Git/TranSFF/Scripts/ReRunITIC_GOMC_Parallel.sh "${keyword}" ${molecul
 
 python3.6 $HOME/Git/TranSFF/Scripts/plot_mbar_vs_true_data_2.py ${MW} $HOME/Git/TranSFF/Data/${molecule}/REFPROP_select5.res "${keyword}"/"${keyword}".target.res REFPROP Comparison_${prediction_folder}.png ${prediction_folder}/trhozures.res
 mv Comparison_${prediction_folder}.png "${keyword}"
+cp $prediction_folder/trhozures.res "${keyword}"/"dsim".trhozures.res
 rm -rf ${molecule}_$prediction_folder.par

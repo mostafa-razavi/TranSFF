@@ -17,13 +17,20 @@ true_data_label=$9
 
 Nsnapshots="500"
 rerun_inp="none"                                                                                 # "none" or filename
-GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
+#GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
+GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame-UdepOnly4Rerun/bin/GOMC_CPU_NVT"
 MW=$(grep "MW:" $HOME/Git/TranSFF/Molecules/${molecule}/${molecule}.itic | awk '{print $2}')
-z_wt="0.34"
-u_wt="0.33"
-n_wt="0.33"
+z_wt="0.0"
+u_wt="0.5"
+n_wt="0.5"
 number_of_lowest_Neff="1"
 target_Neff="25"
+
+if [ "$(echo "$z_wt" | bc)" == 0 ]; then
+    ures_or_pures="ures"
+else
+    ures_or_pures="p_ures"
+fi
 
 # Separate Trho pair array into T array and rho array
 Selected_Ts=""
@@ -49,13 +56,13 @@ do
     Selected_rhos="${Selected_rhos} $rho"
 done
 
-bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_2.sh "TFF" "$keyword" "$reference_foldernames_array" $par_file_name $rerun_inp $Nsnapshots $Nproc $GOMC_exe "$Selected_Ts" "$Selected_rhos"
+bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_3.sh "TFF" "$keyword" "$reference_foldernames_array" $par_file_name $rerun_inp $Nsnapshots $Nproc $GOMC_exe "$Selected_Ts" "$Selected_rhos" "$ures_or_pures"
 
 rm -rf "${keyword}.parallel"
 cat "${keyword}"*".parallel" >> "${keyword}.parallel"
 parallel --willcite --jobs $Nproc < "${keyword}.parallel" #> "${keyword}.log"
 
-bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_2.sh "FFT" "$keyword" "$reference_foldernames_array" $par_file_name $rerun_inp $Nsnapshots $Nproc $GOMC_exe "$Selected_Ts" "$Selected_rhos"
+bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_3.sh "FFT" "$keyword" "$reference_foldernames_array" $par_file_name $rerun_inp $Nsnapshots $Nproc $GOMC_exe "$Selected_Ts" "$Selected_rhos" "$ures_or_pures"
 
 mbar_data_file=$(ls "${keyword}"*".target.res")
 score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev_3.py $MW ${true_data_file} $mbar_data_file $z_wt $u_wt $n_wt $number_of_lowest_Neff $target_Neff)

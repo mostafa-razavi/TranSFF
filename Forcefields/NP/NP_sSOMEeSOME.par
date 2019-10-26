@@ -122,11 +122,5 @@ NONBONDED_MIE
 ! F_Mie(r) = -d E_Mie / dr
 
 !atom   eps     sig_ij  n    description
-CH4     175.0   3.720   12  ! TranSFF0 (TraPPE-UA: 148.00       3.730)
-CH3e    122.0   3.767   12  ! TranSFF0 (TraPPE-UA:  98.00       3.750)
-CH3a    123.0   3.800   12  ! TranSFF0 (TraPPE-UA:  98.00       3.750)
-CH3b    120.0   3.800   12  ! TranSFF0 (TraPPE-UA:  98.00       3.750)
-CH3c    some_nbp2_site1   some_nbp1_site1   12  ! TranSFF0 (TraPPE-UA:  98.00       3.750)
-CH2     58.0    4.000   12  ! TranSFF0 (TraPPE-UA:  46.00       3.950)
-CH1     13.5    4.700   12  ! TranSFF0 (TraPPE-UA:  10.00       4.680)
-CT      some_nbp2_site2     some_nbp1_site2   12  ! TranSFF0 (TraPPE-UA:   0.50       6.400)
+CH3c    some_nbp2_site1   some_nbp1_site1   12
+CT      some_nbp2_site2   some_nbp1_site2   12 

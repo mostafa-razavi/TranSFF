@@ -24,7 +24,7 @@ then
 
 	Scripts_path=$9
 	Molecules_path=${10}
-	Forcefileds_path=${11}
+	#Forcefileds_path=${11}
 
 	cp $Molecules_path/$ITIC_file_name .
 	cp $Molecules_path/$pdb_file_name .
@@ -46,7 +46,7 @@ else	# If the script is run with no arguments, it's assumed that all the necessa
 
 	Scripts_path=$CD
 	Molecules_path=$CD
-	Forcefileds_path=$CD
+	#Forcefileds_path=$CD
 fi
 
 

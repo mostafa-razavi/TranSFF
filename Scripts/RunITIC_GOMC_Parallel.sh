@@ -1,15 +1,18 @@
 #!/bin/bash
 # This script runs the ITIC simulations in parallel. If the third argument is not specified the script used all cores available.
-# Example: Run butane usinng 32 cores
+# Example:
 # bash RunITIC_GOMC_Parallel.sh C4 C4_TraPPE-UA.par FSHIFT_BULK_LONG.conf "360.00/0.6220 0.6220/95.00" yes 5
 # bash RunITIC_GOMC_Parallel.sh C4 C4_TraPPE-UA.par FSHIFT_BULK_LONG.conf all no
-#
+# bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh 22DMH 22DMH_TranSFF0.par FSHIFT_BULK_4M.conf all yes 8
+# bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh 22DMH 22DMH_TranSFF0.par FSHIFT_BULK_4M.conf all yes 8
+# bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh 22DMH /home/mostafa/myProjects/TransFF/bAlkanes/TranSFF0_Alkanes.par FSHIFT_BULK_4M.conf all yes 8
+
 # S. Mostafa Razavi (sr87@zips.uakron.edu)
 
 
 #===== Molecule and force field files =====
-molecule=$1									# E.g. C1, C2, C4, C12, etc
-force_field_file_name=$2						# E.g. C2_TraPPE-UA.par
+molecule=$1										# E.g. C1, C2, C4, C12, etc
+force_field_file=$2								# E.g. C2_TraPPE-UA.par (in Forcefileds_path) or /path/to/file/TraPPE-UA.par
 config_filename=$3								# A file containing GOMC settings (a list of key value pairs e.g. Potential	FSHIFT\n LRC false)
 Trho_rhoT_pairs_array=$4						# "all" or pairs of temperature/density (for IT) and density/temperatures (for IC) that we want to run, e.g. 360.00/0.6220 or 0.6220/95.00
 should_run=$5									# "yes" or "no" (lower case)
@@ -17,7 +20,7 @@ should_run=$5									# "yes" or "no" (lower case)
 ITIC_file_name="${molecule}.itic"
 pdb_file_name="${molecule}.pdb"
 topology_file_name="${molecule}.top"
-config_file="$HOME/Git/TranSFF/Scripts/${config_filename}"
+config_file="$HOME/Git/TranSFF/Config/${config_filename}"
 
 #===== Number of CPU cores to use ===== 
 Nproc=$(nproc)
@@ -114,7 +117,7 @@ bash $Scripts_path/Generate_PDB_PSF.sh \
 	$vmd_exe_address \
 	$Scripts_path \
 	$Molecules_path \
-	$Forcefileds_path 
+	#$Forcefileds_path 
 cd $CD
 
 if [ -e "IT" ] || [ -e "IC" ]
@@ -125,8 +128,12 @@ else
 	ITIC_file_address="$Molecules_path/$ITIC_file_name" 
 	cp $ITIC_file_address Files
 	cp $Scripts_path/$gomc_input_file_name Files
-	cp $Forcefileds_path/$force_field_file_name Files
-	parameter_file="$force_field_file_name"
+	if [ "${force_field_file::1}" == "/" ]; then # If force_field_file is an absolute path (starts with "/") 
+		cp $force_field_file Files
+	else	# Or just a file name (the file should be in Forcefileds_path)
+		cp $Forcefileds_path/$force_field_file Files
+	fi
+	parameter_file=$(basename "$force_field_file") 
 	gomc_input_file_replacements=( ${gomc_input_file_name} ${Restart} ${parameter_file} $Potential $LRC $Rcut $PressureCalc $RunSteps $EqSteps $AdjSteps $CoordinatesFreq $RestartFreq $ConsoleFreq $BlockAverageFreq $OutputName )
 	bash $Scripts_path/MakeITIC_GOMC.sh "$CD/Files/$ITIC_file_name" "${gomc_input_file_replacements[@]}"
 

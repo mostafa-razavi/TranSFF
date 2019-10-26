@@ -12,7 +12,7 @@ true_data_file_name=$5
 true_data_file_label=$6
 png_output=$7
 
-config_file="$HOME/Git/TranSFF/Scripts/${config_filename}"
+config_file="$HOME/Git/TranSFF/Config/${config_filename}"
 RunSteps=$(grep -R "RunSteps" $config_file | awk '{print $2}')
 BlockAverageFreq=$(grep -R "BlockAverageFreq" $config_file | awk '{print $2}')
 ndataskip=$(echo "($RunSteps/$BlockAverageFreq)/2" | bc )

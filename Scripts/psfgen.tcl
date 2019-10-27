@@ -1,4 +1,3 @@
-psfgen <<ENDMOL
 topology top_file
 
 segment some_molec_name {
@@ -9,4 +8,3 @@ segment some_molec_name {
  }
 
 writepsf out.psf
-

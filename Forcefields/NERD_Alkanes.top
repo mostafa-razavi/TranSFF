@@ -206,7 +206,7 @@ ATOM C4 CK3     0.00 !   /     \
 ATOM C5 CK3     0.00 ! C5       C4 
 ATOM C6 CK3     0.00 !
 BOND C1 C2 C2 C3 C3 C4
-BOND C3 C5 C3 C6
+BOND C2 C5 C3 C6                ! SMR: wrong connectivity. Should be C2 C5 not C3 C5
 PATCHING FIRS NONE LAST NONE
 
 RESI C7A        0.00 ! n-heptane
@@ -235,11 +235,11 @@ BOND C1 C2 C2 C3 C3 C4
 BOND C4 C5 C5 C6 C2 C7
 PATCHING FIRS NONE LAST NONE
 
-RESI C7C        0.00 ! 3-methylhexane
+RESI C7C        0.00 ! 3-methylhexane   ! SMR: This one was wrong. ATOM C2 should be CH2 and ATOM C3 should be CH1
 GROUP
-ATOM C1 CM3     0.00 !
-ATOM C2 CH1     0.00 !     C7
-ATOM C3 CH2     0.00 !      \
+ATOM C1 CH3     0.00 !
+ATOM C2 CH2     0.00 !     C7
+ATOM C3 CH1     0.00 !      \
 ATOM C4 CH2     0.00 ! C1    C3    C5
 ATOM C5 CH2     0.00 !   \  /  \  /  \
 ATOM C6 CA3     0.00 !    C2    C4    C6

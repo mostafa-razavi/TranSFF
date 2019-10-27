@@ -1,0 +1,39 @@
+MASS   1  CH4    16.043 C  ! 
+MASS   2  CH3e   15.035 C  ! 
+MASS   3  CH3a   15.035 C  ! 
+MASS   4  CH3b   15.035 C  ! 
+MASS   5  CH3c   15.035 C  ! 
+MASS   6  CH2    14.027 C  !
+MASS   7  CH1    13.019 C  !
+MASS   8   CT    12.011 C  !
+
+DEFA FIRS none LAST none
+AUTOGENERATE ANGLES DIHEDRALS
+
+RESI C16        0.00 ! n-hexadecane
+GROUP
+ATOM C1 CH3a    0.00 !
+ATOM C2 CH2     0.00 !
+ATOM C3 CH2     0.00 !
+ATOM C4 CH2     0.00 ! C1    C3    C5    C7    C9   C11   C13   C15
+ATOM C5 CH2     0.00 !   \  /  \  /  \  /  \  /  \  /  \  /  \  /  \
+ATOM C6 CH2     0.00 !    C2    C4    C6    C8    C10   C12   C14  C16
+ATOM C7 CH2     0.00 !
+ATOM C8 CH2     0.00 !
+ATOM C9 CH2     0.00 !
+ATOM C10 CH2    0.00 !
+ATOM C11 CH2    0.00 !
+ATOM C12 CH2    0.00 !
+ATOM C13 CH2    0.00 !
+ATOM C14 CH2    0.00 !
+ATOM C15 CH2    0.00 !
+ATOM C16 CH3a   0.00 !
+BOND C1 C2 C2 C3 C3 C4
+BOND C4 C5 C5 C6 C6 C7
+BOND C7 C8 C8 C9 C9 C10
+BOND C10 C11 C11 C12 C12 C13
+BOND C13 C14 C14 C15 C15 C16
+PATCHING FIRS NONE LAST NONE
+
+END
+

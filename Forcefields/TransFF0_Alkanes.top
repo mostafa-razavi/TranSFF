@@ -590,6 +590,77 @@ BOND C2 C5 C2 C6 C3 C7
 BOND C3 C8
 PATCHING FIRS NONE LAST NONE
 
+RESI C9A        0.00 ! n-nonane
+GROUP
+ATOM C1 CH3a    0.00 !
+ATOM C2 CH2     0.00 !
+ATOM C3 CH2     0.00 !
+ATOM C4 CH2     0.00 ! C1    C3    C5    C7    C9
+ATOM C5 CH2     0.00 !   \  /  \  /  \  /  \  /
+ATOM C6 CH2     0.00 !    C2    C4    C6    C8
+ATOM C7 CH2     0.00 !
+ATOM C8 CH2     0.00 !
+ATOM C9 CH3a    0.00 !
+BOND C1 C2 C2 C3 C3 C4
+BOND C4 C5 C5 C6 C6 C7
+BOND C7 C8 C8 C9
+PATCHING FIRS NONE LAST NONE
+
+RESI C10        0.00 ! n-decane
+GROUP
+ATOM C1 CH3a    0.00 !
+ATOM C2 CH2     0.00 !
+ATOM C3 CH2     0.00 !
+ATOM C4 CH2     0.00 ! C1    C3    C5    C7    C9
+ATOM C5 CH2     0.00 !   \  /  \  /  \  /  \  /  \
+ATOM C6 CH2     0.00 !    C2    C4    C6    C8   C10
+ATOM C7 CH2     0.00 !
+ATOM C8 CH2     0.00 !
+ATOM C9 CH2     0.00 !
+ATOM C10 CH3a    0.00 !
+BOND C1 C2 C2 C3 C3 C4
+BOND C4 C5 C5 C6 C6 C7
+BOND C7 C8 C8 C9 C9 C10
+PATCHING FIRS NONE LAST NONE
+
+RESI C11        0.00 ! n-undecane
+GROUP
+ATOM C1 CH3a    0.00 !
+ATOM C2 CH2     0.00 !
+ATOM C3 CH2     0.00 !
+ATOM C4 CH2     0.00 ! C1    C3    C5    C7    C9   C11
+ATOM C5 CH2     0.00 !   \  /  \  /  \  /  \  /  \  /
+ATOM C6 CH2     0.00 !    C2    C4    C6    C8   C10
+ATOM C7 CH2     0.00 !
+ATOM C8 CH2     0.00 !
+ATOM C9 CH2     0.00 !
+ATOM C10 CH3a    0.00 !
+BOND C1 C2 C2 C3 C3 C4
+BOND C4 C5 C5 C6 C6 C7
+BOND C7 C8 C8 C9 C9 C10
+BOND C10 C11
+PATCHING FIRS NONE LAST NONE
+
+RESI C12        0.00 ! n-dodecane
+GROUP
+ATOM C1 CH3a    0.00 !
+ATOM C2 CH2     0.00 !
+ATOM C3 CH2     0.00 !
+ATOM C4 CH2     0.00 ! C1    C3    C5    C7    C9   C11
+ATOM C5 CH2     0.00 !   \  /  \  /  \  /  \  /  \  /  \
+ATOM C6 CH2     0.00 !    C2    C4    C6    C8    C10   C12
+ATOM C7 CH2     0.00 !
+ATOM C8 CH2     0.00 !
+ATOM C9 CH2     0.00 !
+ATOM C10 CH2    0.00 !
+ATOM C11 CH2    0.00 !
+ATOM C12 CH3a   0.00 !
+BOND C1 C2 C2 C3 C3 C4
+BOND C4 C5 C5 C6 C6 C7
+BOND C7 C8 C8 C9 C9 C10
+BOND C10 C11 C11 C12
+PATCHING FIRS NONE LAST NONE
+
 RESI C16        0.00 ! n-hexadecane
 GROUP
 ATOM C1 CH3a    0.00 !

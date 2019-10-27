@@ -10,7 +10,7 @@ MASS   8   CT    12.011 C  !
 DEFA FIRS none LAST none
 AUTOGENERATE ANGLES DIHEDRALS
 
-RESI IB        0.00 ! 2-methylpropane (isobutane)
+RESI C4B        0.00 ! 2-methylpropane (isobutane)
 GROUP
 ATOM C1 CH1     0.00 !   C2  C3 
 ATOM C2 CH3b    0.00 !    \  / 
@@ -20,4 +20,3 @@ BOND C1 C2 C1 C3 C1 C4
 PATCHING FIRS NONE LAST NONE
 
 END
-

@@ -17,12 +17,12 @@ true_data_label=$9
 
 Nsnapshots="500"
 rerun_inp="none"                                                                                 # "none" or filename
-#GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
-GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame-UdepOnly4Rerun/bin/GOMC_CPU_NVT"
+GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
+#GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame-UdepOnly4Rerun/bin/GOMC_CPU_NVT"
 MW=$(grep "MW:" $HOME/Git/TranSFF/Molecules/${molecule}/${molecule}.itic | awk '{print $2}')
-z_wt="0.0"
-u_wt="0.5"
-n_wt="0.5"
+z_wt="0.34"
+u_wt="0.33"
+n_wt="0.33"
 number_of_lowest_Neff="1"
 target_Neff="25"
 

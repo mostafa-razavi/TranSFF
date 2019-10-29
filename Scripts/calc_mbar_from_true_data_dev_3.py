@@ -101,7 +101,7 @@ if n_wt != 0.0:
     lowest_m_Neff_index = Neff.argsort()[:number_of_lowest_Neff]
     lowest_m_Neff_dev = []
     for i in range(0, len(lowest_m_Neff_index)):
-        lowest_m_Neff_dev.append( neff_criteria_function_linear(target_Neff, Neff[lowest_m_Neff_index[i]]) )
+        lowest_m_Neff_dev.append( neff_criteria_function_2(target_Neff, Neff[lowest_m_Neff_index[i]]) )
     lowest_m_Neff_dev = numpy.asarray(lowest_m_Neff_dev)
     n_dev = numpy.mean(lowest_m_Neff_dev)
     n_score = n_wt * n_dev

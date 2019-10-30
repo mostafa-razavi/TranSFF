@@ -1,23 +1,25 @@
 MASS   1  CH4    16.043 C  ! 
-MASS   2  CH3    15.035 C  ! 
-MASS   3  CH2    14.027 C  !
-MASS   4  CH1    13.019 C  !
-MASS   5   CT    12.011 C  !
-MASS   6  CTT    12.011 C  ! CT used in 2,2,3,3-tetramethylbutane to distinguish angles
+MASS   2  CH3e   15.035 C  ! 
+MASS   3  CH3a   15.035 C  ! 
+MASS   4  CH3b   15.035 C  ! 
+MASS   5  CH3c   15.035 C  ! 
+MASS   6  CH2    14.027 C  !
+MASS   7  CH1    13.019 C  !
+MASS   8   CT    12.011 C  !
 
 DEFA FIRS none LAST none
 AUTOGENERATE ANGLES DIHEDRALS
 
 RESI C8A        0.00 ! n-octane
 GROUP
-ATOM C1 CH3     0.00 !
+ATOM C1 CH3a    0.00 !
 ATOM C2 CH2     0.00 !
 ATOM C3 CH2     0.00 !
 ATOM C4 CH2     0.00 ! C1    C3    C5    C7
 ATOM C5 CH2     0.00 !   \  /  \  /  \  /  \
 ATOM C6 CH2     0.00 !    C2    C4    C6    C8
 ATOM C7 CH2     0.00 !
-ATOM C8 CH3     0.00 !
+ATOM C8 CH3a    0.00 !
 BOND C1 C2 C2 C3 C3 C4
 BOND C4 C5 C5 C6 C6 C7
 BOND C7 C8

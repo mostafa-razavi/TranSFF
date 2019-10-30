@@ -1,13 +1,13 @@
 #!/bin/bash
 CD=${PWD}
 
-molecules_array="C1 C2 C4 C8 C12 C16"
-Forcefiled_name="TranSFF0"
-para_file="$HOME/Git/TranSFF/Forcefields/TranSFF0_Alkanes.par"
-config_filename="FSHIFT_BULK_4M.conf"
+molecules_array="C2 C4 C8 C12"
+Forcefiled_name="MiPPE"
+para_file="$HOME/Git/TranSFF/Forcefields/MiPPE-GEN_Alkanes.par"
+config_filename="VDW_BULK_4M.conf"
 
 nblocks="5"
-Nproc=$(nproc)
+Nproc=8 #$(nproc)
 OutputName="nvt"
 
 rm -rf ${CD}/COMMANDS.parallel
@@ -15,12 +15,12 @@ molecules_array=($molecules_array)
 for molec in "${molecules_array[@]}"
 do 
     mkdir ${CD}/${Forcefiled_name}_${molec}
-    cp $HOME/Git/TranSFF/Molecules/${molec}/${molec}_Files.zip ${CD}/TranSFF0_${molec}
-    cd ${CD}/TranSFF0_${molec}
+    cp $HOME/Git/TranSFF/Molecules/${molec}/${molec}_Files.zip ${CD}/${Forcefiled_name}_${molec}
+    cd ${CD}/${Forcefiled_name}_${molec}
     unzip ${molec}_Files.zip
     eval "bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh $molec $para_file $config_filename all no"
     cat COMMANDS.parallel >> ${CD}/COMMANDS.parallel
-   rm ${molec}_Files.zip
+    rm ${molec}_Files.zip
     cd $CD
 done
 

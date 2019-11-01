@@ -60,6 +60,7 @@ Potential       some_Potential
 LRC		some_LRC
 Rcut		some_Rcut 
 RcutFactor	3.0     
+Rswitch		7 
 Exclude		1-4
 
 #############################

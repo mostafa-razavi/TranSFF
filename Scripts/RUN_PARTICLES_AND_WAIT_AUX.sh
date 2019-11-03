@@ -13,6 +13,7 @@ Z_WT=$7
 U_WT=$8
 true_data_file=$9
 true_data_label=${10}
+raw_par=${11}
 
 keyword_array=($keyword_array)
 sig_eps_nnn_array=($sig_eps_nnn_array)
@@ -20,7 +21,7 @@ sig_eps_nnn_array=($sig_eps_nnn_array)
 for i in $(seq 0 $(echo "${#sig_eps_nnn_array[@]}-1" | bc)) # Iterate through sites
 do
 	if [ ! -e "${keyword_array[i]}_${sig_eps_nnn_array[i]}" ]; then
-		generate_par_output=$(bash $HOME/Git/TranSFF/Scripts/generate_par.sh "${keyword_array[i]}" "${molecule}" "there" "${sig_eps_nnn_array[i]}")
+		generate_par_output=$(bash $HOME/Git/TranSFF/Scripts/generate_par3.sh "${keyword_array[i]}" "${molecule}" "there" "${sig_eps_nnn_array[i]}" 2 "$raw_par")
 		sim_name[i]=$(echo $generate_par_output | awk '{print $1}')
 		par_file_name[i]=$(echo $generate_par_output | awk '{print $2}')
 

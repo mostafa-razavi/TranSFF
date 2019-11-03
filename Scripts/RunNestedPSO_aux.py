@@ -6,35 +6,43 @@ import numpy
 
 
 
-
 # Input parameters ##################
-molecule="C12"
-NS=2
-config_filename="FSHIFT_BULK_2M.conf"
-nproc="5"
-selected_itic_points = "0.5336/547.99 0.6937/368.10 691.00/0.2135 691.00/0.5336 691.00/0.6937"  # C12 select5
-true_data_file="$HOME/Git/TranSFF/Data/C12/REFPROP_select5.res" 
-true_data_label="REFPROP"                                                              
-Z_WT="0.5"
-U_WT="0.5"
+molecule = "C2"
+NS = 1
+config_filename = "FSWITCH_BULK_2M.conf"
+raw_par = "C2_MiPPE-GEN_Alkanes_sSOMEeSOME.par"
+nproc = "5"
+selected_itic_points = "0.4286/259.42 0.5571/174.46 360.00/0.1714 360.00/0.4286 360.00/0.5571"  # C2 select5
+true_data_file = "$HOME/Git/TranSFF/Data/C2/MiPPE_select5.res" 
+true_data_label = "MiPPE"                                                              
+Z_WT = "0.5"
+U_WT = "0.5"
 
 
-# Set PSO parameters ################
-SWARM_SIZE = 3
-MAX_ITERATIONS = 20
-TOL = 1e-3
+# Set outer PSO parameters ################
+SWARM_SIZE = 5
+MAX_ITERATIONS = 100
+TOL = 1e-2
+AUX_COEF = 0.7
 
-swarm_size = 6
-max_iterations = 100
+# Set inner PSO parameters ################
+swarm_size = 5
+max_iterations = 20
 tol = 1e-3
 
-LB = [3.60, 100.0, 3.80, 40.0]
-UB = [4.00, 140.0, 4.20, 80.0]
-INITIAL_GUESS = [[3.61, 105.0, 3.81, 45.0],[3.61, 105.0, 4.19, 75.0],[3.80, 123.0, 4.00, 58.0]]
+# Set PSO bounds and initial guesses ################
+LB = [3.65, 110.0]
+UB = [3.90, 140.0]
+INITIAL_GUESS = [[3.74, 127.0], [3.70, 130.0, [3.71, 120.0], [3.80, 128.0], [3.85, 115.0]]
 
-#MP = numpy.average(numpy.array([LB, UB]), axis=0)   # Average of LB and UB
-#INITIAL_GUESS = [LB, UB, MP]
-#INITIAL_GUESS = [[3.798439938521785, 112.96044772170356],[3.7232740107259135, 120.53420612478035],[3.756567056242516, 123.93603301460698]]
+
+
+
+
+
+
+
+
 
 
 #============================================================================================
@@ -87,7 +95,7 @@ def OBJECTIVE_FUNCTION(X):
 
     COMMAND = "bash $HOME/Git/TranSFF/Scripts/RUN_PARTICLES_AND_WAIT_AUX.sh" + " " + ITER_PARTICLE_PREFIX_STRING \
          + " " + molecule + " " + selected_itic_points + " " + config_filename + " " + nproc + " " + SIG_EPS_NNN_ARRAY_STRING \
-         + " " + Z_WT + " " + U_WT + " " + true_data_file + " " + true_data_label
+         + " " + Z_WT + " " + U_WT + " " + true_data_file + " " + true_data_label + " " + raw_par
     print("COMMAND: ", COMMAND)
     print()
 
@@ -144,7 +152,8 @@ def OBJECTIVE_FUNCTION(X):
             arg7 = "I-" + str(ITERATION) + "_P-" + str(PARTICLE) + "_" + str(SIG_EPS_NNN_ARRAY[PARTICLE-1])         # reference_foldernames_array
             arg8 = true_data_file                                                                                   
             arg9 = true_data_label
-            command = arg0 + " " + arg1 + " " + arg2 + " " + arg3 + " " + arg4 + " " + arg5 + " " + arg6 + " " + arg7 + " " + arg8 + " " + arg9
+            arg10 = raw_par
+            command = arg0 + " " + arg1 + " " + arg2 + " " + arg3 + " " + arg4 + " " + arg5 + " " + arg6 + " " + arg7 + " " + arg8 + " " + arg9 + " " + arg10
             print(command)
             print()
 
@@ -217,7 +226,7 @@ def OBJECTIVE_FUNCTION(X):
 print("INITIAL_GUESS: ", INITIAL_GUESS)
 print()
 
-XOPT, FOPT = parallel_pso_auxiliary(OBJECTIVE_FUNCTION, LB, UB, ig = INITIAL_GUESS ,swarmsize=SWARM_SIZE, omega=0.5, phip=0.5, phig=0.5, phia=0.5, maxiter=MAX_ITERATIONS, minstep=TOL, minfunc=TOL, debug=False, outFile = LOG)
+XOPT, FOPT = parallel_pso_auxiliary(OBJECTIVE_FUNCTION, LB, UB, ig = INITIAL_GUESS ,swarmsize=SWARM_SIZE, omega=0.5, phip=0.5, phig=0.5, phia=AUX_COEF, maxiter=MAX_ITERATIONS, minstep=TOL, minfunc=TOL, debug=False, outFile = LOG)
 
 print("XOPT:", XOPT)
 print("FOPT:", FOPT)

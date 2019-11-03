@@ -57,10 +57,10 @@ Structure 0  	 ../../../Files/rhoGCC_NNN/rhoGCC_NNN.psf
 #############################
 Temperature     some_Temperature
 Potential       some_Potential
-LRC		some_LRC
+LRC		    some_LRC
 Rcut		some_Rcut 
 RcutFactor	3.0     
-Rswitch		7 
+Rswitch		8.0 
 Exclude		1-4
 
 #############################

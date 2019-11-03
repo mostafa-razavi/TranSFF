@@ -14,6 +14,7 @@ U_WT=$8
 true_data_file=$9
 true_data_label=${10}
 raw_par=${11}
+gomc_exe_address=${12}
 
 keyword_array=($keyword_array)
 sig_eps_nnn_array=($sig_eps_nnn_array)
@@ -30,7 +31,7 @@ do
 			cp $HOME/Git/TranSFF/Molecules/${molecule}/${molecule}_Files.zip .
 			unzip ${molecule}_Files.zip
 			rm ${molecule}_Files.zip 
-			bash $HOME/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh "${molecule}" "${par_file_name[i]}" "$config_filename" "$selected_itic_points" "yes" "$Nproc" &
+			bash $HOME/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh "${molecule}" "${par_file_name[i]}" "$config_filename" "$selected_itic_points" "$gomc_exe_address" "yes" "$Nproc" &
 		cd ..
 	else
 		echo "The reference simulation" "${keyword_array[i]}_${sig_eps_nnn_array[i]}" "was used. No simulation will be run."

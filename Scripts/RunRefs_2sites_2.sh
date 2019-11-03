@@ -6,6 +6,7 @@ selected_itic_points="0.5336/547.99 0.6937/368.10 691.00/0.2135 691.00/0.5336 69
 config_filename="FSHIFT_BULK_2M.conf"
 nnbp="2"
 ncores="10"
+gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
 
 OutputName="nvt" 
 nblocks="5" 
@@ -56,7 +57,7 @@ do
         cp $HOME/Git/TranSFF/Molecules/${molecule}/${molecule}_Files.zip .
         unzip ${molecule}_Files.zip
         rm ${molecule}_Files.zip     
-        bash $HOME/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh $molecule $par_file_name $config_filename "$selected_itic_points" "no"
+        bash $HOME/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh $molecule $par_file_name $config_filename "$selected_itic_points" "$gomc_exe_address" "no"
     cd $CD
 done
 
@@ -72,4 +73,4 @@ do
     cd ..
 done
 
-bash ~/Git/TranSFF/Scripts/Test_MBAR_accuracy_all.sh "$molecule" "$nnbp" s3.850-e50.0_s4.000-e30.0 "$selected_itic_points"
+bash ~/Git/TranSFF/Scripts/Test_MBAR_accuracy_all.sh "$molecule" "$nnbp" s3.850-e50.0_s4.000-e30.0 "$selected_itic_points" $gomc_exe_address

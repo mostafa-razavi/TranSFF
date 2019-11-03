@@ -5,7 +5,7 @@
 # bash RunITIC_GOMC_Parallel.sh C4 C4_TraPPE-UA.par FSHIFT_BULK_LONG.conf all no
 # bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh 22DMH 22DMH_TranSFF0.par FSHIFT_BULK_4M.conf all yes 8
 # bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh 22DMH 22DMH_TranSFF0.par FSHIFT_BULK_4M.conf all yes 8
-# bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh 22DMH /home/mostafa/myProjects/TransFF/bAlkanes/TranSFF0_Alkanes.par FSHIFT_BULK_4M.conf all yes 8
+# bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh 22DMH /home/mostafa/myProjects/TransFF/bAlkanes/TranSFF0_Alkanes.par FSHIFT_BULK_4M.conf all "$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT" yes 8
 
 # S. Mostafa Razavi (sr87@zips.uakron.edu)
 
@@ -15,7 +15,8 @@ molecule=$1										# E.g. C1, C2, C4, C12, etc
 force_field_file=$2								# E.g. C2_TraPPE-UA.par (in Forcefileds_path) or /path/to/file/TraPPE-UA.par
 config_filename=$3								# A file containing GOMC settings (a list of key value pairs e.g. Potential	FSHIFT\n LRC false)
 Trho_rhoT_pairs_array=$4						# "all" or pairs of temperature/density (for IT) and density/temperatures (for IC) that we want to run, e.g. 360.00/0.6220 or 0.6220/95.00
-should_run=$5									# "yes" or "no" (lower case)
+gomc_exe_address=$5								# "$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
+should_run=$6									# "yes" or "no" (lower case)
 
 ITIC_file_name="${molecule}.itic"
 pdb_file_name="${molecule}.pdb"
@@ -24,7 +25,7 @@ config_file="$HOME/Git/TranSFF/Config/${config_filename}"
 
 #===== Number of CPU cores to use ===== 
 Nproc=$(nproc)
-if [ "$6" != "" ]; then Nproc="$6"; fi
+if [ "$7" != "" ]; then Nproc="$7"; fi
 
 #===== Simulation Parameters =====
 Restart=$(grep -R "Restart" $config_file | head -n1 | awk '{print $2}')
@@ -47,7 +48,6 @@ Molecules_path="$HOME/Git/TranSFF/Molecules/$molecule"
 Forcefileds_path="$HOME/Git/TranSFF/Forcefields/$molecule"
 
 #===== Executable files =====
-gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
 packmol_exe_address="$HOME/Git/packmol/packmol-18.169-precise/bin/packmol"
 vmd_exe_address="vmd"
 

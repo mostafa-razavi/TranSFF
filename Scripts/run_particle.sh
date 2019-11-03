@@ -13,9 +13,10 @@ reference_foldernames_array=$7
 true_data_file=$8 #"$HOME/Git/TranSFF/Data/C2/REFPROP_select4.res" 
 true_data_label=$9 #"REFPROP"                                                              
 raw_par=${10}
+gomc_exe_address=${11}
 
 mkdir "${keyword}"
 generate_par_output=$(bash $HOME/Git/TranSFF/Scripts/generate_par.sh "${keyword}" "${molecule}" "here" "${sig_eps_nnn}" 2 "$raw_par")
 sim_name=$(echo $generate_par_output | awk '{print $1}')
 par_file_name=$(echo $generate_par_output | awk '{print $2}')
-bash $HOME/Git/TranSFF/Scripts/ReRunITIC_GOMC_Parallel.sh "$keyword" "${molecule}" "$selected_itic_points" "${par_file_name}" "$config_filename" "$Nproc" "$reference_foldernames_array" "$true_data_file" "$true_data_label"
+bash $HOME/Git/TranSFF/Scripts/ReRunITIC_GOMC_Parallel.sh "$keyword" "${molecule}" "$selected_itic_points" "${par_file_name}" "$config_filename" "$Nproc" "$reference_foldernames_array" "$true_data_file" "$true_data_label" "$gomc_exe_address"

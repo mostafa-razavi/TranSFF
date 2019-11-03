@@ -8,6 +8,7 @@ nnbp=$2
 reference_folder=$3
 selected_itic_points=$4
 marker_variation_title=$5
+gomc_exe_address=$6
 
 CD=${PWD}
 rm -rf $CD/all.scores
@@ -17,7 +18,7 @@ echo "T_DSIM RHO_DSIM Z_DSIM Z_std_DSIM Ures_DSIM Ures_std_DSIM N_DSIM T_MABR RH
 for i in s*/
 do
     prediction_folder=${i::-1}
-    bash $HOME/Git/TranSFF/Scripts/Test_MBAR_accuracy.sh ${molecule} ${nnbp} $reference_folder $prediction_folder "$selected_itic_points"
+    bash $HOME/Git/TranSFF/Scripts/Test_MBAR_accuracy.sh ${molecule} ${nnbp} $reference_folder $prediction_folder "$selected_itic_points" $gomc_exe_address
 
     keyword="N1000_MBAR_${prediction_folder}"
     cd $keyword

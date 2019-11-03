@@ -17,7 +17,8 @@ true_data_file = "$HOME/Git/TranSFF/Data/C2/MiPPE_select5.res"
 true_data_label = "MiPPE"                                                              
 Z_WT = "0.5"
 U_WT = "0.5"
-
+inner_pso_gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame-UdepOnly4Rerun/bin/GOMC_CPU_NVT"
+OUTER_PSO_GOMC_EXE_ADDRESS="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
 
 # Set outer PSO parameters ################
 SWARM_SIZE = 5
@@ -33,7 +34,7 @@ tol = 1e-3
 # Set PSO bounds and initial guesses ################
 LB = [3.65, 110.0]
 UB = [3.90, 140.0]
-INITIAL_GUESS = [[3.74, 127.0], [3.70, 130.0, [3.71, 120.0], [3.80, 128.0], [3.85, 115.0]]
+INITIAL_GUESS = [[3.74, 127.0], [3.70, 130.0], [3.71, 120.0], [3.80, 128.0], [3.85, 115.0]]
 
 
 
@@ -95,7 +96,7 @@ def OBJECTIVE_FUNCTION(X):
 
     COMMAND = "bash $HOME/Git/TranSFF/Scripts/RUN_PARTICLES_AND_WAIT_AUX.sh" + " " + ITER_PARTICLE_PREFIX_STRING \
          + " " + molecule + " " + selected_itic_points + " " + config_filename + " " + nproc + " " + SIG_EPS_NNN_ARRAY_STRING \
-         + " " + Z_WT + " " + U_WT + " " + true_data_file + " " + true_data_label + " " + raw_par
+         + " " + Z_WT + " " + U_WT + " " + true_data_file + " " + true_data_label + " " + raw_par + " " + OUTER_PSO_GOMC_EXE_ADDRESS
     print("COMMAND: ", COMMAND)
     print()
 
@@ -153,7 +154,8 @@ def OBJECTIVE_FUNCTION(X):
             arg8 = true_data_file                                                                                   
             arg9 = true_data_label
             arg10 = raw_par
-            command = arg0 + " " + arg1 + " " + arg2 + " " + arg3 + " " + arg4 + " " + arg5 + " " + arg6 + " " + arg7 + " " + arg8 + " " + arg9 + " " + arg10
+            arg11 = inner_pso_gomc_exe_address
+            command = arg0 + " " + arg1 + " " + arg2 + " " + arg3 + " " + arg4 + " " + arg5 + " " + arg6 + " " + arg7 + " " + arg8 + " " + arg9 + " " + arg10 + " " + arg11
             print(command)
             print()
 

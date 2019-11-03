@@ -5,6 +5,7 @@ molecules_array="C4 C8 C12"
 ref_array="3.78-120_4.01-60	3.82-126_3.99-56 3.76-120_4.02-60 3.84-126_3.98-56 3.78-126_3.99-60 3.82-120_4.01-56 3.76-126_4.02-56 3.84-120_3.98-60"
 config_filename="FSHIFT_BULK_2M.conf"
 Nproc=$(nproc)
+gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
 
 
 rm -rf ${CD}/COMMANDS.parallel
@@ -29,7 +30,7 @@ do
 
         select_itic_points=$(cat $HOME/Git/TranSFF/Molecules/${molec}/${molec}_select5.trho)
 
-        bash $HOME/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh "$molec" ${CD}/${molec}/$ref/$par_file_name $config_filename "$select_itic_points" no
+        bash $HOME/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh "$molec" ${CD}/${molec}/$ref/$par_file_name $config_filename "$select_itic_points" "$gomc_exe_address" no
 
         rm $par_file_name
         cat COMMANDS.parallel >> ${CD}/COMMANDS.parallel

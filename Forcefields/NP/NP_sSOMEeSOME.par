@@ -32,7 +32,7 @@ CH3e CH3e      9999999999      1.540   ! TraPPE I  (ethane)
 CH3a CH2       9999999999      1.540   ! TraPPE I  (ex. n-propane)
 CH2 CH2        9999999999      1.540   ! TraPPE I  (ex. n-butane)
 CH3b CH1       9999999999      1.540   ! TraPPE II (ex. 2-methylpropane) 
-CH3c CT        9999999999      1.540   ! TraPPE II (ex. 2,2-dimethylpropane)
+CH3b CT        9999999999      1.540   ! TraPPE II (ex. 2,2-dimethylpropane)
 CH2 CH1        9999999999      1.540   ! TraPPE II (ex. 2-methylbutane)
 CH2 CT         9999999999      1.540   ! TraPPE II (ex. 2,2-dimethylbutane)
 CH1 CH1        9999999999      1.540   ! TraPPE II (ex. 2,3-dimethylbutane) 
@@ -66,11 +66,11 @@ CH2 CH1 CH2    31250     112.00  ! TraPPE II (ex. 2,3-dimethylbutane)
 CH2 CH1 CH1    31250     112.00  ! TraPPE II (ex. 2,3-dimethylpentane)
 CH2 CH1 CT     31250     112.00  ! TraPPE II (ex. 2,2,3-trimethylbutane)
 CH1 CH1 CH1    31250     112.00  ! TraPPE II (ex. 2,3,4-trimethylpentane)
-CH3c CT  CH3c  31250     109.47  ! TraPPE II (ex. 2,2-dimethylpropane)
-CH3c CT  CH2   31250     109.47  ! TraPPE II (ex. 2,2-dimethylbutane)
-CH3c CT  CH1   31250     109.47  ! TraPPE II (ex. 2,2,3-trimethylbutane)
+CH3b CT  CH3b  31250     109.47  ! TraPPE II (ex. 2,2-dimethylpropane)
+CH3b CT  CH2   31250     109.47  ! TraPPE II (ex. 2,2-dimethylbutane)
+CH3b CT  CH1   31250     109.47  ! TraPPE II (ex. 2,2,3-trimethylbutane)
 CH2 CT  CH2    31250     109.47  ! TraPPE II (ex. 3,3-dimethylpentane)
-CH3c CT  CT    31250     109.47  ! (ex. 2,2,3,3-tetramethylbutane)
+CH3b CT  CT    31250     109.47  ! (ex. 2,2,3,3-tetramethylbutane)
 
 
 
@@ -122,5 +122,5 @@ NONBONDED_MIE
 ! F_Mie(r) = -d E_Mie / dr
 
 !atom   eps     sig_ij  n    description
-CH3c    some_nbp2_site1   some_nbp1_site1   12
+CH3b    some_nbp2_site1   some_nbp1_site1   12
 CT      some_nbp2_site2   some_nbp1_site2   12 

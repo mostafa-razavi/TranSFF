@@ -2,10 +2,9 @@ MASS   1  CH4    16.043 C  !
 MASS   2  CH3e   15.035 C  ! 
 MASS   3  CH3a   15.035 C  ! 
 MASS   4  CH3b   15.035 C  ! 
-MASS   5  CH3c   15.035 C  ! 
-MASS   6  CH2    14.027 C  !
-MASS   7  CH1    13.019 C  !
-MASS   8   CT    12.011 C  !
+MASS   5  CH2    14.027 C  !
+MASS   6  CH1    13.019 C  !
+MASS   7   CT    12.011 C  !
 
 DEFA FIRS none LAST none
 AUTOGENERATE ANGLES DIHEDRALS
@@ -13,10 +12,10 @@ AUTOGENERATE ANGLES DIHEDRALS
 RESI NP        0.00 ! 2,2-dimethylpropane (neopentane)
 GROUP
 ATOM C1 CT      0.00 ! C2  C5
-ATOM C2 CH3c    0.00 !  \  /
-ATOM C3 CH3c    0.00 !   C1
-ATOM C4 CH3c    0.00 !  /  \
-ATOM C5 CH3c    0.00 ! C3   C4
+ATOM C2 CH3b    0.00 !  \  /
+ATOM C3 CH3b    0.00 !   C1
+ATOM C4 CH3b    0.00 !  /  \
+ATOM C5 CH3b    0.00 ! C3   C4
 BOND C1 C2 C1 C3 C1 C4
 BOND C1 C5
 PATCHING FIRS NONE LAST NONE

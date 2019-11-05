@@ -5,7 +5,7 @@ molecules_array="C2 C4 C12"
 Forcefiled_name="MiPPE"
 para_file="$HOME/Git/TranSFF/Forcefields/MiPPE-GEN_Alkanes_3.740-118_4.03-62.par"
 config_filename="VDW_BULK_2M.conf"
-gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
+gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
 
 nblocks="5"
 Nproc=4 #$(nproc)

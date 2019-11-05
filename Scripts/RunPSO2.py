@@ -140,4 +140,4 @@ print("xopt, fopt: ", xopt, fopt)
 
 os.system( "mkdir Results; mv i-* Results" )
 
-os.system("cd Results; for folder in `ls -d i-* | sort -V`; do score=$(cat $folder/*.score); par=$(ls $folder/*.par); echo $par $score; done | tee iterations.res")
+os.system("cd Results; for folder in `ls -d i-* | sort -V`; do score=$(cat $folder/*.score); par=$(ls $folder/*.par); ref=$(cat $folder/*.ref); echo $score $ref; done | tee iterations.res")

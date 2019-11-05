@@ -911,7 +911,7 @@ def parallel_pso_auxiliary_chain(func, lb, ub, ig=[], ieqcons=[], f_ieqcons=None
         
     return g, fg
 
-def parallel_pso_const(func, lb, ub, ig=[], const=[], ieqcons=[], f_ieqcons=None, args=(), kwargs={}, 
+def parallel_pso_const(func, lb, ub, ig=[], const_list=[], ieqcons=[], f_ieqcons=None, args=(), kwargs={}, 
         swarmsize=100, omega=0.5, phip=0.5, phig=0.5, maxiter=100, 
         minstep=1e-8, minfunc=1e-8, debug=False, outFile=None):
     """
@@ -993,10 +993,17 @@ def parallel_pso_const(func, lb, ub, ig=[], const=[], ieqcons=[], f_ieqcons=None
     else:
         assert len(ig)==swarmsize, 'The size of initial guess list should be the same as number of particles'
 
-    if not const:
+    if not const_list:
         pass
     else:
-        assert len(const)==len(ub), 'The size of constant list should be the same as the number of variables'
+        assert len(const_list)==len(ub), 'The size of constant list should be the same as the number of variables'
+        # Check validity of constant list
+        for j in range(len(ub)):
+            if const_list[j] != "NA":
+                try:
+                    float(const_list[j])
+                except:
+                    raise ValueError('A value in constant array is not valid')
 
     # Check for constraint function(s) #########################################
     obj = lambda x: func(x, *args, **kwargs)
@@ -1043,20 +1050,15 @@ def parallel_pso_const(func, lb, ub, ig=[], const=[], ieqcons=[], f_ieqcons=None
         # Initialize the particle's best known position
         p[i, :] = x[i, :]
 
-    # Check validity of constant list
-    for j in range(D):
-        if const[j] != "NA":
-            try:
-                float(const[j])
-            except:
-                raise ValueError('A value in constant array is not valid')
-
-    # Apply constant list
-    for i in range(S):
-        for j in range(D):
-            if const[j] != "NA":
-                x[i, j] = float(const[j])
-        p[i, :] = x[i, :]
+    if not const_list:
+        pass
+    else:
+        # Apply constant list
+        for i in range(S):
+            for j in range(D):
+                if const_list[j] != "NA":
+                    x[i, j] = float(const_list[j])
+            p[i, :] = x[i, :]
 
     # Calculate the objective's value for all particles
     fp = obj(p[:, :])
@@ -1079,9 +1081,13 @@ def parallel_pso_const(func, lb, ub, ig=[], const=[], ieqcons=[], f_ieqcons=None
         # Initialize the particle's velocity
         v[i, :] = vlow + np.random.rand(D)*(vhigh - vlow)
 
-    for j in range(D):
-        if const[j] != "NA":
-            g[j] = float(const[j])       
+    if not const_list:
+        pass
+    else:
+        # Apply constant list
+        for j in range(D):
+            if const_list[j] != "NA":
+                g[j] = float(const_list[j])       
 
 
     # Iterate until termination criterion met ##################################
@@ -1147,10 +1153,15 @@ def parallel_pso_const(func, lb, ub, ig=[], const=[], ieqcons=[], f_ieqcons=None
                     else:
                         g = tmp.copy()
                         fg = fx[i]
-            for j in range(D):
-                if const[j] != "NA":
-                    x[i:j] = float(const[j])  
-                    g[j] = float(const[j])     
+
+            if not const_list:
+                pass
+            else:
+                # Apply constant list                        
+                for j in range(D):
+                    if const_list[j] != "NA":
+                        x[i:j] = float(const_list[j])  
+                        g[j] = float(const_list[j])     
 
         if outFile != None:  
             print('Best after iteration: {:} {:} {:}'.format(it, g, fg), file = log)

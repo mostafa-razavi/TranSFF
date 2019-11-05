@@ -11,44 +11,44 @@ molecule = "C2"
 NS = 1
 config_filename = "FSWITCH_BULK_2M.conf"
 raw_par = "C2_MiPPE-GEN_Alkanes_sSOMEeSOME.par"
-nproc = "5"
+nbatch = "5"
 selected_itic_points = "0.4286/259.42 0.5571/174.46 360.00/0.1714 360.00/0.4286 360.00/0.5571"  # C2 select5
 true_data_file = "$HOME/Git/TranSFF/Data/C2/MiPPE_select5.res" 
 true_data_label = "MiPPE"                                                              
-Z_WT = "0.5"
-U_WT = "0.5"
 inner_pso_gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame-UdepOnly4Rerun/bin/GOMC_CPU_NVT"
 all_ref_array="3.7198731025187500-140.00690290691065 3.7417084099511273-142.42506367833323 3.7561399186002613-140.46656492592060 3.7684148637830310-143.17368280832508 3.7717825349188350-141.14290962908598 3.7785209156049646-142.26730328455260 3.7801005170043966-141.62302432139552 3.7914962764333520-139.33874886906526 3.8003016974811280-139.74864272042353 3.8049057331951290-136.03604895676100"
 n_closest = "4"
-coeff_aray = "50 1"
+coeff_aray = "20 1"
+Nsnapshots = "500"
+rerun_inp = "none"                                                                                 # "none" or filename
+z_wt = "0.50"
+u_wt = "0.40"
+n_wt = "0.10"
+number_of_lowest_Neff = "1"
+target_Neff = "25"
 
-# Set inner PSO parameters ################
-swarm_size = 5
+# Set PSO parameters ################
+swarm_size = 6
 max_iterations = 100
 tol = 1e-3
 
 # Set PSO bounds and initial guesses ################
 lb = [3.69, 135.0]
 ub = [3.81, 145.0]
-initial_guess = [[3.7785209156049646, 142.26730328455260], [], [], [], []]
+initial_guess = [[3.7785209156049646, 142.26730328455260], [], [], [], [], []]
 
 
 
 #============================================================================================
-log = "inner.out"
+log = "pso.log"
 
 selected_itic_points =  "\"" + selected_itic_points + "\""
 all_ref_array =  "\"" + all_ref_array + "\""
 coeff_aray =  "\"" + coeff_aray + "\""
 
 it = 0
-ITER = 1
-SIMULATED_P = 0
-
-
 
 def objective_function(x):
-    global SIMULATED_P
     global it
     it = it + 1  
 
@@ -78,7 +78,7 @@ def objective_function(x):
         arg2 = molecule                                                                                         # molecule
         arg3 = selected_itic_points                                                                             # selected_itic_points
         arg4 = config_filename                                                                                  # config_filename
-        arg5 = nproc                                                                                            # Nproc
+        arg5 = nbatch                                                                                            # nbatch
         arg6 = sig_eps_nnn_string                                                                               # sig_eps_nnn_string
         arg7 = all_ref_array
         arg8 = coeff_aray
@@ -87,7 +87,15 @@ def objective_function(x):
         arg11 = true_data_label
         arg12 = raw_par
         arg13 = inner_pso_gomc_exe_address
-        command = arg0 + " " + arg1 + " " + arg2 + " " + arg3 + " " + arg4 + " " + arg5 + " " + arg6 + " " + arg7 + " " + arg8 + " " + arg9 + " " + arg10 + " " + arg11 + " " + arg12 + " " + arg13
+        arg14 = Nsnapshots
+        arg15 = rerun_inp
+        arg16 = z_wt
+        arg17 = u_wt
+        arg18 = n_wt
+        arg19 = number_of_lowest_Neff
+        arg20 = target_Neff        
+
+        command = arg0 + " " + arg1 + " " + arg2 + " " + arg3 + " " + arg4 + " " + arg5 + " " + arg6 + " " + arg7 + " " + arg8 + " " + arg9 + " " + arg10 + " " + arg11 + " " + arg12 + " " + arg13 + " " + arg14 + " " + arg15 + " " + arg16 + " " + arg17 + " " + arg18 + " " + arg19 + " " + arg20
         print(command)
         print()
 
@@ -129,3 +137,5 @@ print()
 xopt, fopt = parallel_pso(objective_function, lb, ub, ig = initial_guess ,swarmsize=swarm_size, omega=0.5, phip=0.5, phig=0.5, maxiter=max_iterations, minstep=tol, minfunc=tol, debug=False, outFile = log)
 
 print("xopt, fopt: ", xopt, fopt)
+
+os.system( "mkdir Results; mv i-* Results" )

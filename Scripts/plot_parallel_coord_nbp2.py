@@ -70,7 +70,7 @@ for ITERATION in range(0, NI):
             P = df.iloc[idx,1]
             if I == ITERATION + 1:
                 y = df.loc[idx, cols]
-                ax.plot(x, y, color=PCOLORS[P-1], alpha=0.05)    # plot particles
+                ax.plot(x, y, color=PCOLORS[P-1], alpha=0.15)    # plot particles
 
                 i = df.iloc[idx,2] 
                 p = df.iloc[idx,3] 

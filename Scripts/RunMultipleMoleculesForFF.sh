@@ -1,12 +1,12 @@
 #!/bin/bash
 CD=${PWD}
 
-molecules_array="IC4 IC5 23DMB"
+molecules_array="NP 22DMB 22DMH"
 Forcefiled_name="MiPPE"
 para_file="$HOME/Git/TranSFF/Forcefields/MiPPE-GEN_Alkanes.par"
 config_filename="VDW_BULK_6M.conf"
 gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
-
+select="all"    # either "all" or select keyword e.g. "select5" etc.
 nblocks="5"
 Nproc=8 #$(nproc)
 OutputName="nvt"
@@ -19,7 +19,11 @@ do
     cp $HOME/Git/TranSFF/Molecules/${molec}/${molec}_Files.zip ${CD}/${Forcefiled_name}_${molec}
     cd ${CD}/${Forcefiled_name}_${molec}
     unzip ${molec}_Files.zip
-    select_itic_points=$(cat $HOME/Git/TranSFF/Molecules/${molec}/${molec}_select5.trho)
+    if [ "$select" == "all" ]; then
+        select_itic_points="all"
+    else
+        select_itic_points=$(cat $HOME/Git/TranSFF/Molecules/${molec}/${molec}_${select}.trho)
+    fi
     bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh $molec $para_file $config_filename "$select_itic_points" "$gomc_exe_address" no
     cat COMMANDS.parallel >> ${CD}/COMMANDS.parallel
     rm ${molec}_Files.zip

@@ -1,14 +1,14 @@
 #!/bin/bash
 CD=${PWD}
 
-molecules_array="C2 C4 C12"
+molecules_array="IC4 IC5 23DMB"
 Forcefiled_name="MiPPE"
-para_file="$HOME/Git/TranSFF/Forcefields/MiPPE-GEN_Alkanes_3.740-118_4.03-62.par"
-config_filename="VDW_BULK_2M.conf"
+para_file="$HOME/Git/TranSFF/Forcefields/MiPPE-GEN_Alkanes.par"
+config_filename="VDW_BULK_6M.conf"
 gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
 
 nblocks="5"
-Nproc=4 #$(nproc)
+Nproc=8 #$(nproc)
 OutputName="nvt"
 
 rm -rf ${CD}/COMMANDS.parallel
@@ -36,5 +36,6 @@ for molec in "${molecules_array[@]}"
 do 
     cd ${CD}/${Forcefiled_name}_${molec}
     bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_BlockAvg.sh Blk_${OutputName}_BOX_0.dat $ndataskip $nblocks
+    bash ~/Git/GONvtRdr/GONvtRdr.sh nvt.inp ${OutputName}
     cd $CD
 done

@@ -77,7 +77,14 @@ bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_3.sh "FFT" "$keyword" "$reference_
 mbar_data_file=$(ls "${keyword}"*".target.res")
 score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev_3.py $MW ${true_data_file} $mbar_data_file $z_wt $u_wt $n_wt $number_of_lowest_Neff $target_Neff)
 echo $score > ${keyword}.score
-python3.6 $HOME/Git/TranSFF/Scripts/plot_mbar_vs_true_data_2.py $MW ${true_data_file} $mbar_data_file ${true_data_label} ${mbar_data_file}.png
+
+if [ -e "$HOME/Git/TranSFF/Data/${molecule}/${true_data_label}.res" ]; then # We want to plot as many true data as possible
+    plot_true_data="$HOME/Git/TranSFF/Data/${molecule}/${true_data_label}.res"
+else
+    plot_true_data="$true_data_file"
+fi
+
+python3.6 $HOME/Git/TranSFF/Scripts/plot_mbar_vs_true_data_2.py $MW "$plot_true_data" $mbar_data_file ${true_data_label} ${mbar_data_file}.png
 
 python3.6 $HOME/Git/TranSFF/Scripts/GOMC_MBAR_res_to_trhozures.py $MW $mbar_data_file "${keyword}.trhozures.res"
 

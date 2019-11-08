@@ -123,4 +123,4 @@ NONBONDED_MIE
 
 !atom   eps     sig_ij  n    description
 CH3b    some_nbp2_site1    some_nbp1_site1      12
-CH1     some_nbp2_site2	   some_nbp1_site2      12
+CT     some_nbp2_site2	   some_nbp1_site2      12

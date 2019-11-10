@@ -29,7 +29,7 @@ then
 	exit
 fi
 
-cp ${GOMC_PDB} "${keyword}_for_rerun.pdb"
+#cp ${GOMC_PDB} "${keyword}_for_rerun.pdb"	# Commented this out because of i/o problems when using GNU parallel
 
 # GOMC assumes that the first snapshot has the frame number of 1. I modified GOMC code so that it reads the starting frame from StartFrame.txt. Here we create this file
 N_total_snapshots=$(grep -c "REMARK" "${GOMC_PDB}")	# Number of snapshots in the modified PDB file
@@ -56,7 +56,7 @@ parameters_line=$(grep -R "Parameters" "${keyword}_nvt-rerun.inp")
 sed -i "s:$parameters_line:Parameters ${keyword}_rerun.par:g" "${keyword}_nvt-rerun.inp"
 
 coordinates_line=$(grep -R "Coordinates 0" "${keyword}_nvt-rerun.inp")
-sed -i "s:$coordinates_line:Coordinates 0 ${keyword}_for_rerun.pdb:g" "${keyword}_nvt-rerun.inp"
+sed -i "s:$coordinates_line:Coordinates 0 ${GOMC_PDB}:g" "${keyword}_nvt-rerun.inp"
 
 runsteps_line=$(grep -R "RunSteps" "${keyword}_nvt-rerun.inp")
 sed -i "s/$runsteps_line/RunSteps 0/g" "${keyword}_nvt-rerun.inp"

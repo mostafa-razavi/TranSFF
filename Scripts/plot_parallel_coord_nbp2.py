@@ -44,9 +44,9 @@ if NP == 3:
 if NP == 4: 
     PCOLORS = ['red', 'green', 'blue', 'orange']
 if NP == 5: 
-    PCOLORS = ['red', 'green', 'blue', 'orange', 'cyan']
+    PCOLORS = ['red', 'green', 'blue', 'orange', 'purple']
 if NP == 6: 
-    PCOLORS = ['red', 'green', 'blue', 'orange', 'cyan', 'purple']
+    PCOLORS = ['red', 'green', 'blue', 'orange', 'purple', 'cyan']
 
 # Create sublots along x axis
 fig, axes = plt.subplots(NI, len(x)-1, sharey=False, figsize=(5*len(x)-1, 5*NI), squeeze=0)
@@ -76,7 +76,7 @@ for ITERATION in range(0, NI):
                 p = df.iloc[idx,3] 
                 if i == 1 and p == 1:
                     Y = df.loc[idx, COLS]
-                    ax.plot(x, Y, color=PCOLORS[P-1], alpha=0.8, dashes=[2, 5, 3, 5])   # plot PARTICLES
+                    ax.plot(x, Y, color=PCOLORS[P-1], alpha=1.0, linewidth=5, dashes=[2, 5, 3, 5])   # plot PARTICLES
             
         ax.set_xlim([x[iax], x[iax+1]])
       

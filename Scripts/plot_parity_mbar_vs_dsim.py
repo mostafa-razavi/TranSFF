@@ -16,8 +16,8 @@ output_figure_filename = sys.argv[2]        # Output file name
 marker_variation_title = sys.argv[3]
 T_RHO_PAIR_ARRAY = sys.argv[4].split(" ")
 
-mark_array=["^", "<", "o", "x", "+", "s", "d", ">", "v", "p", "P", "*", "h", "H", "X"]
-color_array = ["k", "g", "b", "r", "c", "orange", "yello", "purple"]
+mark_array=["^", ">", "o", "<", "v", "o", "s", ">", "v", "x", "+", "*", "h", "H", "X"]
+color_array = ["k", "g", "b", "r", "orange", "c", "yello", "purple"]
 
 # Import data
 #T_DSIM RHO_DSIM Z_DSIM Z_std_DSIM Ures_DSIM Ures_std_DSIM N_DSIM T_MABR RHO_MABR Z_MABR Z_std_MABR Ures_MABR Ures_std_MABR N_MABR Neff_MBAR SIG1 EPS1 SIG2 EPS2
@@ -49,15 +49,15 @@ EPS2 = df['EPS2']
 dsim_zminus1overRho = ( dsim_z - 1 ) / dsim_rho_gcc
 mbar_zminus1overRho = ( mbar_z - 1 ) / mbar_rho_gcc
 
-x1=numpy.linspace(min(dsim_zminus1overRho),max(dsim_zminus1overRho),10) 
-x2=numpy.linspace(min(mbar_u_res),max(mbar_u_res),10) 
+x1=numpy.linspace(min(dsim_zminus1overRho)-50,max(dsim_zminus1overRho)+50,10) 
+x2=numpy.linspace(min(mbar_u_res)-50,max(mbar_u_res)+50,10) 
 
 EPS2_unique = df[marker_variation_title].unique() 
 
 ############### Initiate plot #############################################
 plt.figure(num=None, figsize=(15, 7), dpi=100, facecolor='w', edgecolor='w')
-#plt.subplots_adjust(left=0.04, bottom=None, right=0.99, top=None, wspace=0.3, hspace=None)
-font = {'weight' : 'normal', 'size' : 14}
+plt.subplots_adjust(left=0.1, bottom=0.14, right=0.99, top=0.91, wspace=0.3, hspace=None)
+font = {'weight' : 'normal', 'size' : 22}
 matplotlib.rc('font', **font)    
 
 ############### (Z-1)/rho vs. rho plot ##############################
@@ -71,6 +71,7 @@ for idx in df.index:
     for i in range(0, len(EPS2_unique)):
         if EPS2 == EPS2_unique[i]:
             mark = mark_array[i] 
+            print(EPS2)
 
 
     T_DSIM = df.iloc[idx,0]
@@ -83,10 +84,11 @@ for idx in df.index:
             color = color_array[i]
         
     #data_label=str(RHO_DSIM) + " $\mathrm{g/cm^3}$" + ", " + str(T_DSIM) + " K"
-    plt.scatter(mbar_zminus1overRho[idx], dsim_zminus1overRho[idx], marker=mark, s=100, facecolors="none", edgecolors=color, alpha=1.0)
+    plt.scatter(mbar_zminus1overRho[idx], dsim_zminus1overRho[idx], marker=mark, s=200, facecolors="none", edgecolors=color, alpha=1.0)
 
 plt.plot(x1,x1,'k-') # parity line
-
+plt.xlim([-5.5,15])
+plt.ylim([-5.5,15])
 
 ############### Z vs. 1000/T plot #############################################
 plt.subplot(1, 2, 2 )
@@ -110,11 +112,13 @@ for idx in df.index:
             color = color_array[i]
         
     #data_label=str(RHO_DSIM) + " $\mathrm{g/cm^3}$" + ", " + str(T_DSIM) + " K"
-    plt.scatter(mbar_u_res[idx], dsim_u_res[idx], marker=mark, s=100, facecolors="none", edgecolors=color, alpha=1.0)
+    plt.scatter(mbar_u_res[idx], dsim_u_res[idx], marker=mark, s=200, facecolors="none", edgecolors=color, alpha=1.0)
 
 plt.plot(x2,x2,'k-') # parity line
-
-
+plt.xlim(-19,-2)
+plt.ylim(-19,-2)
+matplotlib.pyplot.xticks([-5, -10, -15])
+matplotlib.pyplot.yticks([-5, -10, -15])
 
 plt.savefig(output_figure_filename)
 plt.close()

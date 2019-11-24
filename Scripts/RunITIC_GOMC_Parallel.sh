@@ -31,7 +31,9 @@ if [ "$7" != "" ]; then Nproc="$7"; fi
 Restart=$(grep -R "Restart" $config_file | head -n1 | awk '{print $2}')
 Potential=$(grep -R "Potential" $config_file | awk '{print $2}')
 LRC=$(grep -R "LRC" $config_file | awk '{print $2}')
-Rcut=$(grep -R "Rcut" $config_file | awk '{print $2}')
+Rcut=$(grep -R "Rcut " $config_file | awk '{print $2}')		# The space in "Rcut " is important to distinguish it from RcutFactor hen sed replacing
+RcutFactor=$(grep -R "RcutFactor" $config_file | awk '{print $2}')
+Rswitch=$(grep -R "Rswitch" $config_file | awk '{print $2}')
 PressureCalc=$(grep -R "PressureCalc" $config_file | awk '{print $2}')
 RunSteps=$(grep -R "RunSteps" $config_file | awk '{print $2}')
 EqSteps=$(grep -R "EqSteps" $config_file | awk '{print $2}')
@@ -44,6 +46,7 @@ OutputName=$(grep -R "OutputName" $config_file | awk '{print $2}')
 
 #===== Important paths =====
 Scripts_path="$HOME/Git/TranSFF/Scripts"
+Config_path="$HOME/Git/TranSFF/Config"
 Molecules_path="$HOME/Git/TranSFF/Molecules/$molecule"
 Forcefileds_path="$HOME/Git/TranSFF/Forcefields/$molecule"
 
@@ -127,14 +130,14 @@ then
 else
 	ITIC_file_address="$Molecules_path/$ITIC_file_name" 
 	cp $ITIC_file_address Files
-	cp $Scripts_path/$gomc_input_file_name Files
+	cp $Config_path/$gomc_input_file_name Files
 	if [ "${force_field_file::1}" == "/" ]; then # If force_field_file is an absolute path (starts with "/") 
 		cp $force_field_file Files
 	else	# Or just a file name (the file should be in Forcefileds_path)
 		cp $Forcefileds_path/$force_field_file Files
 	fi
 	parameter_file=$(basename "$force_field_file") 
-	gomc_input_file_replacements=( ${gomc_input_file_name} ${Restart} ${parameter_file} $Potential $LRC $Rcut $PressureCalc $RunSteps $EqSteps $AdjSteps $CoordinatesFreq $RestartFreq $ConsoleFreq $BlockAverageFreq $OutputName )
+	gomc_input_file_replacements=( ${gomc_input_file_name} ${Restart} ${parameter_file} $Potential $LRC $Rcut $RcutFactor $Rswitch $PressureCalc $RunSteps $EqSteps $AdjSteps $CoordinatesFreq $RestartFreq $ConsoleFreq $BlockAverageFreq $OutputName )
 	bash $Scripts_path/MakeITIC_GOMC.sh "$CD/Files/$ITIC_file_name" "${gomc_input_file_replacements[@]}"
 
 	rm -rf COMMANDS.parallel

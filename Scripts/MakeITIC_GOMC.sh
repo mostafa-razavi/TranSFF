@@ -24,7 +24,9 @@ then
 	parameter_file=$(basename -- "$(ls Files/*.par)")
 	Potential="VDW"
 	LRC="true"
-	Rcut="14"
+	Rcut="12"
+	RcutFactor="3.0"
+	Rswitch="10.0"
 	PressureCalc="1000"
 	RunSteps="10000000"
 	EqSteps="500000"
@@ -46,15 +48,17 @@ else	# If the script is called with at least one arguments, it is assumed that a
 	Potential="${gomc_input_file_replacements[3]}"
 	LRC="${gomc_input_file_replacements[4]}"
 	Rcut="${gomc_input_file_replacements[5]}"
-	PressureCalc="${gomc_input_file_replacements[6]}"
-	RunSteps="${gomc_input_file_replacements[7]}"
-	EqSteps="${gomc_input_file_replacements[8]}"
-	AdjSteps="${gomc_input_file_replacements[9]}"
-	CoordinatesFreq="${gomc_input_file_replacements[10]}"
-	RestartFreq="${gomc_input_file_replacements[11]}"
-	ConsoleFreq="${gomc_input_file_replacements[12]}"
-	BlockAverageFreq="${gomc_input_file_replacements[13]}"
-	OutputName="${gomc_input_file_replacements[14]}"
+	RcutFactor="${gomc_input_file_replacements[6]}"
+	Rswitch="${gomc_input_file_replacements[7]}"
+	PressureCalc="${gomc_input_file_replacements[8]}"
+	RunSteps="${gomc_input_file_replacements[9]}"
+	EqSteps="${gomc_input_file_replacements[10]}"
+	AdjSteps="${gomc_input_file_replacements[11]}"
+	CoordinatesFreq="${gomc_input_file_replacements[12]}"
+	RestartFreq="${gomc_input_file_replacements[13]}"
+	ConsoleFreq="${gomc_input_file_replacements[14]}"
+	BlockAverageFreq="${gomc_input_file_replacements[15]}"
+	OutputName="${gomc_input_file_replacements[16]}"
 fi
 #========Isochores Settings=================
 
@@ -172,6 +176,8 @@ for rho in "${rhosIC[@]}"
 			sed -i -e "s/some_Potential/${Potential}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_LRC/${LRC}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_Rcut/${Rcut}/g" ${gomc_input_file_name}
+			sed -i -e "s/some_R_cut_Factor/${RcutFactor}/g" ${gomc_input_file_name}
+			sed -i -e "s/some_Rswitch/${Rswitch}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_PressureCalc/${PressureCalc}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_RunSteps/${RunSteps}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_EqSteps/${EqSteps}/g" ${gomc_input_file_name}
@@ -245,6 +251,8 @@ for T in "${TsIT[@]}"
 			sed -i -e "s/some_Potential/${Potential}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_LRC/${LRC}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_Rcut/${Rcut}/g" ${gomc_input_file_name}
+			sed -i -e "s/some_R_cut_Factor/${RcutFactor}/g" ${gomc_input_file_name}
+			sed -i -e "s/some_Rswitch/${Rswitch}/g" ${gomc_input_file_name}			
 			sed -i -e "s/some_PressureCalc/${PressureCalc}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_RunSteps/${RunSteps}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_EqSteps/${EqSteps}/g" ${gomc_input_file_name}

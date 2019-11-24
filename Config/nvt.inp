@@ -59,8 +59,8 @@ Temperature     some_Temperature
 Potential       some_Potential
 LRC		    some_LRC
 Rcut		some_Rcut 
-RcutFactor	3.0     
-Rswitch		8.0 
+RcutFactor	some_R_cut_Factor     
+Rswitch		some_Rswitch 
 Exclude		1-4
 
 #############################

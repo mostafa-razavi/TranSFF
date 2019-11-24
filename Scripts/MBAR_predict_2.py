@@ -2,11 +2,11 @@
 This script takes reference simulation data and outputs the MBAR predictions for desired properties.
 '''
 
-from pymbar import MBAR
-import numpy as np
-import sys
+import sys, os
 from scipy import stats
-import sys
+import numpy as np
+sys.path.insert(1, os.path.expanduser('~') +'/Git/TranSFF/Scripts/')
+from pymbar import MBAR
 
 Temp = float(sys.argv[1])               # Temperature
 rho = float(sys.argv[2])                # Density

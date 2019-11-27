@@ -76,6 +76,7 @@ plt.ylabel("$T\hat{U}^\mathrm{res}$ [K]")
 plt.scatter(1000.0 / true_temp_k, true_u_res * true_temp_k, marker="s", s=70, facecolors='none', edgecolors='k')
 
 plt.scatter(1000.0 / dsim_temp_k, dsim_u_res * dsim_temp_k, marker="^", s=70, facecolors='none', edgecolors='g')
+plt.errorbar(1000.0 / dsim_temp_k, dsim_u_res * dsim_temp_k, yerr=dsim_u_res_std * dsim_temp_k, color='g', capsize=5, marker=None, linewidth=0, elinewidth=1, ms=0)
 
 plt.savefig(output_figure_filename)
 plt.close()

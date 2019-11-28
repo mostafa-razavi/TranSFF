@@ -7,16 +7,16 @@ sig_eps_nnn=$6
 reference_foldernames_array=$7
 true_data_file=$8 
 true_data_label=$9                                                              
-GOMC_exe=${10}
-z_wt=${11}
-u_wt=${12}
-n_wt=${13}
-Nsnapshots=${14}
-rerun_inp=${15}
-number_of_lowest_Neff=${16}
-target_Neff=${17}
+raw_par_path=${10}
+GOMC_exe=${11}
+z_wt=${12}
+u_wt=${13}
+n_wt=${14}
+Nsnapshots=${15}
+rerun_inp=${16}
+number_of_lowest_Neff=${17}
+target_Neff=${18}
 
-raw_par_path="$HOME/Git/TranSFF/Forcefields/TranSFF0_Alkanes_SOME.par"
 generate_par_output=$(bash $HOME/Git/TranSFF/Scripts/generate_par4.sh "nokey" "${molecule}" "here" "${sig_eps_nnn}" "$raw_par_path")
 
 sim_name=$(echo $generate_par_output | awk '{print $1}')

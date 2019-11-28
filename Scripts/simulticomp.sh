@@ -4,12 +4,14 @@ CD=${PWD}
 sig_eps_nnn0=$1
 prefix=$2
 
-molecules_array="IC4 NP"
-all_ref_array[0]="3.780-123.00_4.730-25.00 3.790-120.00_4.680-10.00 3.810-122.00_4.660-16.00 3.820-120.00_4.720-18.00 3.840-118.00_4.740-20.00"
-all_ref_array[1]="3.780-123.00_6.320-5.00 3.790-120.00_6.340-10.00 3.810-122.00_6.350-8.00 3.820-120.00_6.280-3.00 3.840-118.00_6.260-6.00"
+molecules_array="C2 C4 C8 C12"
+all_ref_array[0]="3.81-127 3.79-134 3.78-131 3.77-133 3.75-129" #C2 
+all_ref_array[1]="3.81-127_3.95-74 3.79-134_3.97-67 3.78-131_3.99-70 3.77-133_4.01-68 3.75-129_4.03-72" #C4
+all_ref_array[2]="3.81-127_3.95-74 3.79-134_3.97-67 3.78-131_3.99-70 3.77-133_4.01-68 3.75-129_4.03-72" #C8
+all_ref_array[3]="3.81-127_3.95-74 3.79-134_3.97-67 3.78-131_3.99-70 3.77-133_4.01-68 3.75-129_4.03-72" #C12
 
-config_filename="FSHIFT_2M.conf"
-datafile_keyword="REFPROP"
+raw_par_path="$HOME/Git/TranSFF/Forcefields/MiPPE-GEN_Alkanes_SOME.par"
+datafile_keyword="MiPPE"
 GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
 n_closest="5"
 z_wt="0.60"
@@ -24,6 +26,9 @@ Nproc=$(nproc)
 
 sig_eps_nnn[0]=$sig_eps_nnn0
 sig_eps_nnn[1]=$sig_eps_nnn0
+sig_eps_nnn[2]=$sig_eps_nnn0
+sig_eps_nnn[3]=$sig_eps_nnn0
+
 
 
 i=-1
@@ -39,11 +44,10 @@ do
     key="${prefix}"
     echo "${prefix}_${sig_eps_nnn[i]}" "$ref_array" >> $CD/reference_list.log        
 
-    raw_par_path="$HOME/Git/TranSFF/Forcefields/TranSFF0_Alkanes_SOME.par"
     select_itic_points=$(cat $HOME/Git/TranSFF/Molecules/${molec}/${molec}_select9.trho)
     data_file="$HOME/Git/TranSFF/Data/${molec}/${datafile_keyword}_select9.res"
 
-    eval "bash $HOME/Git/TranSFF/Scripts/simulticomp_pre.sh $key ${molec} \"$select_itic_points\" $config_filename $Nproc ${sig_eps_nnn[i]} \"$ref_array\" $data_file ${datafile_keyword} $raw_par_path $GOMC_exe $z_wt $u_wt $n_wt" "$Nsnapshots" "$rerun_inp" "$number_of_lowest_Neff" "$target_Neff"
+    eval "bash $HOME/Git/TranSFF/Scripts/simulticomp_pre.sh $key ${molec} \"$select_itic_points\" $Nproc ${sig_eps_nnn[i]} \"$ref_array\" $data_file ${datafile_keyword} $raw_par_path $GOMC_exe $z_wt $u_wt $n_wt" "$Nsnapshots" "$rerun_inp" "$number_of_lowest_Neff" "$target_Neff"
 done
 
 rm -rf "$CD/COMMANDS.parallel"
@@ -64,7 +68,7 @@ do
     if [ -e "$key" ]; then
         echo "There is a folder associated to this parameter set. simulticomp_post.sh script will not run!"
     else
-        bash $HOME/Git/TranSFF/Scripts/simulticomp_post.sh $key ${molec} "$select_itic_points" $config_filename $Nproc "${sig_eps_nnn[i]}" "$ref_array" $HOME/Git/TranSFF/Data/${molec}/${datafile_keyword}_select9.res ${datafile_keyword} $GOMC_exe $z_wt $u_wt $n_wt "$Nsnapshots" "$rerun_inp" "$number_of_lowest_Neff" "$target_Neff" &
+        bash $HOME/Git/TranSFF/Scripts/simulticomp_post.sh $key ${molec} "$select_itic_points" $Nproc "${sig_eps_nnn[i]}" "$ref_array" $HOME/Git/TranSFF/Data/${molec}/${datafile_keyword}_select9.res ${datafile_keyword} $raw_par_path $GOMC_exe $z_wt $u_wt $n_wt "$Nsnapshots" "$rerun_inp" "$number_of_lowest_Neff" "$target_Neff" &
     fi
 done
 

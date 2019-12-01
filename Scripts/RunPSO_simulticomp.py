@@ -5,7 +5,7 @@ from multiprocessing import Process, Pool
 import numpy
 
 # Input parameters ##################
-run_name = "Simultaneous_PSO_test"
+run_name = "SimultaneousPSO_C2-C12_N1000_select9"
 molecules_array = [ "C2", "C12" ]
 site_names_array = ["CH3", "CH2"]
 
@@ -15,28 +15,27 @@ ref_array2="3.81-127_3.95-74 3.79-134_3.97-67 3.78-131_3.99-70 3.77-133_4.01-68 
 raw_par_path="$HOME/Git/TranSFF/Forcefields/MiPPE-GEN_Alkanes_SOME.par"
 datafile_keyword="MiPPE"
 GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
-n_closest="5"
 z_wt="0.80"
 u_wt="0.20"
 n_wt="0.0001"
-Nsnapshots="500"
+Nsnapshots="1000"
 rerun_inp="none"
 number_of_lowest_Neff="1"
-target_Neff="25"
-Nproc_per_particle="8"
+target_Neff="50"
+Nproc_per_particle="5"
 ITIC_subset_name="select9"
 n_exp = 16
 
 
 # Set PSO parameters ################
-swarm_size = 3
+swarm_size = 5
 max_iterations = 100
 tol = 1e-3
 
 # Set PSO bounds and initial guesses ################
-lb = [3.69, 135.0, 3.95, 60]
-ub = [3.81, 145.0, 4.05, 80]
-initial_guess = [[], [], []]
+lb = [3.75, 127.0, 3.95, 67.0]
+ub = [3.81, 134.0, 4.03, 74.0]
+initial_guess = [[3.78, 131.0, 3.99, 70.0], [], []]
 nnbp = 2
 
 

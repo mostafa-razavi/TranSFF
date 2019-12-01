@@ -15,7 +15,6 @@ ref_array2="3.81-127_3.95-74 3.79-134_3.97-67 3.78-131_3.99-70 3.77-133_4.01-68 
 raw_par_path="$HOME/Git/TranSFF/Forcefields/MiPPE-GEN_Alkanes_SOME.par"
 datafile_keyword="MiPPE"
 GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
-n_closest="5"
 z_wt="0.80"
 u_wt="0.20"
 n_wt="0.0001"

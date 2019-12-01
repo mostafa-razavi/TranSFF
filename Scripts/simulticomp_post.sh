@@ -22,6 +22,7 @@ sim_name=$(echo $generate_par_output | awk '{print $1}')
 par_file_name=$(echo $generate_par_output | awk '{print $2}')
 
 echo $par_file_name $sig_eps_nnn
+echo
 
 MW=$(grep "MW:" $HOME/Git/TranSFF/Molecules/${molecule}/${molecule}.itic | awk '{print $2}')
 
@@ -80,7 +81,7 @@ mv "${keyword}"*".parallel" "${keyword}_${sig_eps_nnn}"
 mv "${keyword}"*".res" "${keyword}_${sig_eps_nnn}"
 #mv "${keyword}"*".log" "${keyword}_${sig_eps_nnn}"
 #mv "${keyword}"*".par" "${keyword}_${sig_eps_nnn}"
-mv *.par "${keyword}_${sig_eps_nnn}"
+mv $par_file_name "${keyword}_${sig_eps_nnn}"
 mv "${keyword}"*".score" "${keyword}_${sig_eps_nnn}"
 mv "${keyword}"*".png" "${keyword}_${sig_eps_nnn}"
 if [ "$rerun_inp" != "none" ]; then mv $rerun_inp "${keyword}_${sig_eps_nnn}"; fi

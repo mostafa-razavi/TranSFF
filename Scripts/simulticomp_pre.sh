@@ -23,6 +23,7 @@ sim_name=$(echo $generate_par_output | awk '{print $1}')
 par_file_name=$(echo $generate_par_output | awk '{print $2}')                                                             
 
 echo $par_file_name $sig_eps_nnn
+echo
 
 MW=$(grep "MW:" $HOME/Git/TranSFF/Molecules/${molecule}/${molecule}.itic | awk '{print $2}')
 
@@ -58,7 +59,6 @@ do
 done
 
 bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_3.sh "TFF" "$keyword" "$reference_foldernames_array" $par_file_name $rerun_inp $Nsnapshots $Nproc $GOMC_exe "$Selected_Ts" "$Selected_rhos" "$ures_or_pures"
-echo bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_3.sh "TFF" "$keyword" "$reference_foldernames_array" $par_file_name $rerun_inp $Nsnapshots $Nproc $GOMC_exe "$Selected_Ts" "$Selected_rhos" "$ures_or_pures"
 
 rm -rf "${keyword}.parallel"
 cat "${keyword}"*".parallel" >> "${keyword}.parallel"

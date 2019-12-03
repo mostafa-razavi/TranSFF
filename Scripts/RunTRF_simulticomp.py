@@ -5,7 +5,7 @@ import scipy
 
 
 # Input parameters ##################
-run_name = "Simultaneous_TRF_test"
+run_name = "SimultaneousRTF_C2-C12_N500_select9"
 molecules_array = [ "C2", "C12" ]
 site_names_array = ["CH3", "CH2"]
 
@@ -22,19 +22,19 @@ Nsnapshots="500"
 rerun_inp="none"
 number_of_lowest_Neff="1"
 target_Neff="25"
-Nproc_per_particle="8"
+Nproc_per_particle="6"
 ITIC_subset_name="select9"
 n_exp = 16
 
 
 # Set TRF parameters ################
-DIFF_STEP = [0.03, 2.0, 0.03, 2.0]
-TOL = 1e-03
+DIFF_STEP = [1e-2, 1e-1]
+TOL = 1e-06
 
 # Set TRF bounds and initial guesses ################
-lb = [3.73, 125, 3.93, 65]
-ub = [3.83, 136, 4.05, 76]
-initial_guess = [3.78, 129, 4.00, 72]
+lb = [3.70, 127.0, 3.95, 67.0]
+ub = [3.81, 134.0, 4.03, 74.0]
+initial_guess = [3.78, 130, 4.00, 70.0]
 nnbp = 2
 
 
@@ -118,6 +118,7 @@ def objective_function(x):
 
 
 result = least_squares(objective_function, initial_guess, jac='2-point', bounds=(lb, ub), method='trf', ftol=TOL, xtol=TOL, gtol=TOL, x_scale='jac', loss='linear', diff_step=DIFF_STEP, tr_solver=None, tr_options={}, jac_sparsity=None, max_nfev=None, verbose=2, args=(), kwargs={})
+
 
 print(result)
 

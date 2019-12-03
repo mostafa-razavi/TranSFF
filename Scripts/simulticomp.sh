@@ -49,16 +49,17 @@ done
 
 
 #============== Generate input file for Gnu Parallel ================
-rm -rf "$CD/COMMANDS.parallel"
+IFS='-_' read -ra element <<< "$prefix"
+iteration_pefix="${element[0]}-${element[1]}"
+#rm -rf "$CD/${prefix}_COMMANDS.parallel"
 for molec in "${molecules_array[@]}"
 do 
-    cd ${CD}/${molec}
-    cat ${key::-1}*.target.parallel >> "$CD/COMMANDS.parallel"
+    cat ${CD}/${molec}/${prefix}*.target.parallel >> "$CD/${prefix}_COMMANDS.parallel"
 done
 
 
 #============================== Rerun ================================
-parallel --willcite --jobs $Nproc < "$CD/COMMANDS.parallel"
+parallel --willcite --jobs $Nproc < "$CD/${prefix}_COMMANDS.parallel"
 
 
 #============================== Post-process ================================

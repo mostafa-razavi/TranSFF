@@ -5,7 +5,7 @@ from multiprocessing import Process, Pool
 import numpy
 
 # Input parameters ##################
-run_name = "SimultaneousPSO_C2-C12_N1000_select9"
+run_name = "SimultaneousRTF_C2_N50_select9_test"
 molecules_array = [ "C2", "C12" ]
 site_names_array = ["CH3", "CH2"]
 
@@ -18,24 +18,24 @@ GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_C
 z_wt="0.80"
 u_wt="0.20"
 n_wt="0.0001"
-Nsnapshots="1000"
+Nsnapshots="500"
 rerun_inp="none"
 number_of_lowest_Neff="1"
-target_Neff="50"
-Nproc_per_particle="5"
+target_Neff="25"
+Nproc_per_particle="6"
 ITIC_subset_name="select9"
 n_exp = 16
 
 
 # Set PSO parameters ################
-swarm_size = 5
+swarm_size = 4
 max_iterations = 100
-tol = 1e-3
+tol = 1e-6
 
 # Set PSO bounds and initial guesses ################
-lb = [3.75, 127.0, 3.95, 67.0]
+lb = [3.70, 127.0, 3.95, 67.0]
 ub = [3.81, 134.0, 4.03, 74.0]
-initial_guess = [[3.78, 131.0, 3.99, 70.0], [], []]
+initial_guess = [[3.78, 131], [], [], []]
 nnbp = 2
 
 
@@ -82,7 +82,7 @@ def objective_function(x):
         for isite in range(0, len(site_names_array)):
             site_sig_eps_nnn = site_sig_eps_nnn + site_names_array[isite] + "-" +  str(vars()['sig' + str(isite)]) + "-" + str(vars()['eps' + str(isite)]) + "-" + str(n_exp) + "_"
         site_sig_eps_nnn = site_sig_eps_nnn[:-1]
-        prefix = "i-" + str(iter) + "_p-" + str(particle)
+        prefix = "i-" + str(iteration) + "_p-" + str(particle)
 
         arg1 = site_sig_eps_nnn
         arg2 = prefix

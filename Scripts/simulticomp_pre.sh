@@ -59,6 +59,3 @@ do
 done
 
 bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_3.sh "TFF" "$keyword" "$reference_foldernames_array" $par_file_name $rerun_inp $Nsnapshots $Nproc $GOMC_exe "$Selected_Ts" "$Selected_rhos" "$ures_or_pures"
-
-rm -rf "${keyword}.parallel"
-cat "${keyword}"*".parallel" >> "${keyword}.parallel"

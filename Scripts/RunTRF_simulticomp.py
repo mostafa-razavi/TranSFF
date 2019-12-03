@@ -5,7 +5,7 @@ import scipy
 
 
 # Input parameters ##################
-run_name = "SimultaneousRTF_C2-C12_N500_select9"
+run_name = "SimultaneousTRF_C2_N500_select9"
 molecules_array = [ "C2", "C12" ]
 site_names_array = ["CH3", "CH2"]
 

@@ -5,7 +5,7 @@ from multiprocessing import Process, Pool
 import numpy
 
 # Input parameters ##################
-run_name = "SimultaneousRTF_C2_N50_select9_test"
+run_name = "SimultaneousPSO_C2_N500_select9"
 molecules_array = [ "C2", "C12" ]
 site_names_array = ["CH3", "CH2"]
 

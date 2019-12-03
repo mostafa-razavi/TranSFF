@@ -72,7 +72,7 @@ def objective_function(x):
 
     site_sig_eps_nnn = ""
     for isite in range(0, len(site_names_array)):
-        site_sig_eps_nnn = site_sig_eps_nnn + site_names_array[isite] + "-" +  str(vars()['sig' + str(isite)]) + "-" + str(vars()['eps' + str(isite)]) + "-16" + "_"
+        site_sig_eps_nnn = site_sig_eps_nnn + site_names_array[isite] + "-" +  str(vars()['sig' + str(isite)]) + "-" + str(vars()['eps' + str(isite)]) + "-" + str(n_exp) + "_"
     site_sig_eps_nnn = site_sig_eps_nnn[:-1]
     
     prefix = "i-" + str(iter)

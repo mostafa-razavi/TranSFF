@@ -22,7 +22,7 @@ Nsnapshots="500"
 rerun_inp="none"
 number_of_lowest_Neff="1"
 target_Neff="25"
-Nproc_per_particle="6"
+Nproc="6"
 ITIC_subset_name="select9"
 n_exp = 16
 
@@ -90,7 +90,7 @@ def objective_function(x):
     arg11 = rerun_inp                                                                             
     arg12 = number_of_lowest_Neff
     arg13 = target_Neff
-    arg14 = Nproc_per_particle
+    arg14 = Nproc
     arg15 = ITIC_subset_name
     arg16 = all_molecules_ref_string
 

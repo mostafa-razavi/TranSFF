@@ -16,14 +16,14 @@ true_data_label=$9
 gomc_exe_address=${10}
 
 
-Nsnapshots="500"
+Nsnapshots="1000"
 rerun_inp="none"                                                                                 # "none" or filename
 MW=$(grep "MW:" $HOME/Git/TranSFF/Molecules/${molecule}/${molecule}.itic | awk '{print $2}')
 z_wt="0.50"
 u_wt="0.40"
 n_wt="0.10"
 number_of_lowest_Neff="1"
-target_Neff="25"
+target_Neff="50"
 
 if [ "$(echo "$z_wt" | bc)" == 0 ]; then
     ures_or_pures="ures"

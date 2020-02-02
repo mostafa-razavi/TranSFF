@@ -40,6 +40,6 @@ for molec in "${molecules_array[@]}"
 do 
     cd ${CD}/${Forcefiled_name}_${molec}
     bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_BlockAvg.sh Blk_${OutputName}_BOX_0.dat $ndataskip $nblocks
-    bash ~/Git/GONvtRdr/GONvtRdr.sh nvt.inp ${OutputName}
+    bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GONvtRdr.sh nvt.inp ${OutputName}
     cd $CD
 done

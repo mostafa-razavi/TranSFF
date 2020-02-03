@@ -16,10 +16,10 @@ Litsat[0]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[0]}"
 Litsat[1]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[1]}"
 
 PT=(8 8 8)
-PC=("green" "blue" "orange")
+PC=("blue" "green" "orange")
 
 CASN=$(grep 'CASN:' ${ITICfile} | awk '{print $2}')
-$HOME/Git/TranSFF/Scripts/ITIC_post-process/ITIC $CASN $ITICraw $ITICfile | tee $ITICres
+$HOME/Git/TranSFF/Scripts/ITIC/ITIC $CASN $ITICraw $ITICfile | tee $ITICres
 
 keyword3="Saturation Info"
 keyword4="Critical Properties"

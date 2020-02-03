@@ -17,5 +17,5 @@ HighestT=$(grep 'T_HIGH:' ${ITICfile} | awk '{print $2}')
 
 
 ~/Git/DipprProp/DipprProp $CASN SVR "cm^3|gm" auto 100 "$molec.dipb2"
-DipprSatProp $CASN $DipprLow 50 $DipprHigh "$molec.dipsat"
+~/Git/DipprSatProp/DipprSatProp $CASN $DipprLow 50 $DipprHigh "$molec.dipsat"
 

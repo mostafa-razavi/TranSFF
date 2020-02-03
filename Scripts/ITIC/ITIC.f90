@@ -34,7 +34,6 @@ program	main
 		Zstd_IC(maxICs,maxICTs),ePot_IC(maxICs,maxICTs),&
 		eBond_IC(maxICs,maxICTs),eVdw_IC(maxICs,maxICTs),eIntraVdw_IC(maxICs,maxICTs), &
 		simTime_IC(maxICs,maxICTs), eqTime_IC(maxICs,maxICTs)
-	double precision :: N(15),Npick(50),Npick_vir(50),Nfile(50),N_IT(50),N_IC(maxICs,maxICTs),N_IT_vr(50),N_IT2_vr(50)
 	integer :: convergeStatus(maxICs)
 	double precision :: Zmin1OverRho_IT(0:15),aDep_IT(0:15),uDepT_IT(15),ThousandOverT_IT(15),aDep_IT2(0:15)
 	double precision :: Zmin1OverRho_IC(maxICs,maxICTs),aDep_IC(maxICs,maxICTs),uDepT_IC(maxICs,maxICTs), &
@@ -144,16 +143,11 @@ program	main
 	nICs = 5
 	do loopline=1,100	
 		read(2231,*,ioStat=ioErr) dumString1,dumString2
-		!write(*,*) dumString1,dumString2
 		String = trim(dumString1)
 		if(String.eq."RHO_HIGH:") then
 			read(dumString2,*,iostat=ioErr)highestRho
 		elseif(String.eq."T_HIGH:") then
 			read(dumString2,*,iostat=ioErr)HighestT
-!			elseif(String.eq."N_IT:") then
-!				read(dumString2,*,iostat=ioErr)nItPts
-!			elseif(String.eq."N_IC:") then
-!				read(dumString2,*,iostat=ioErr)nICs
 		elseif(String.eq."T_IC1:") then
 			write(*,*)
 			iFirstIcPt=nItPts-nICs+1
@@ -214,13 +208,13 @@ program	main
 	open(4321,file=LammpsRdrOut)
 	read(4321,*)
 	do i=1,nMaxData	
-		read(4321,*,ioStat=ioErr) Tfile(i),rhofile(i),Zfile(i), Uresfile(i), Zstdfile(i), UresStdfile(i), Nfile(i)
+		read(4321,*,ioStat=ioErr) Tfile(i),rhofile(i),Zfile(i), Uresfile(i)
 		if(ioErr == -1)then !End of file reached
 			nData=i-1
 			exit
 		endif
 		write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f9.3,1x),2(f15.3,1x),f6.1)') &
-			i, Tfile(i),rhofile(i),Zfile(i), Uresfile(i), Zstdfile(i), UresStdfile(i), Nfile(i)
+			i, Tfile(i),rhofile(i),Zfile(i), Uresfile(i)
 	enddo
 	close(4321)
 
@@ -235,9 +229,6 @@ program	main
 				rho_IT(j)=rhofile(i)
 				Z_IT(j)=Zfile(i)
 				Ures_IT(j) = Uresfile(i)
-				Zstd_IT(j)=Zstdfile(i)
-				Uresstd_IT(j) = UresStdfile(i)
-				N_IT(j)=Nfile(i)
 			exit
 			endif
 		enddo
@@ -252,9 +243,6 @@ program	main
 					rho_IC(j)=rhofile(i)
 					Z_IC(j,k)=Zfile(i)
 					Ures_IC(j,k) = Uresfile(i)
-					Zstd_IC(j,k)=Zstdfile(i)
-					Uresstd_IC(j,k) = UresStdfile(i)
-					N_IC(j,k)=Nfile(i)
 				exit
 				endif
 			enddo
@@ -269,9 +257,6 @@ program	main
 				rho_IT_vr(j)=rhofile(i)
 				Z_IT_vr(j)=Zfile(i)
 				Ures_IT_vr(j) = Uresfile(i)
-				Zstd_IT_vr(j)=Zstdfile(i)
-				Uresstd_IT_vr(j) = UresStdfile(i)				
-				N_IT_vr(j)=Nfile(i)
 			exit
 			endif
 		
@@ -286,9 +271,6 @@ program	main
 				rho_IT2_vr(j)=rhofile(i)
 				Z_IT2_vr(j)=Zfile(i)
 				Ures_IT_vr2(j) = Uresfile(i)
-				Zstd_IT2_vr(j)=Zstdfile(i)
-				Uresstd_IT_vr2(j) = UresStdfile(i)				
-				N_IT2_vr(j)=Nfile(i)
 			exit
 			endif
 		
@@ -322,7 +304,7 @@ program	main
 			write(*,'(A31,1x,I2,A6,1x,2F10.5)') "Warning: Data lacks row number",i,'T,rho:',T_IT_calc(i),rho_IT_calc(i)
 			cycle
 		endif
-		write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f15.6,1x),f6.1)') i,T_IT(i),rho_IT(i),Z_IT(i),Ures_IT(i), N_IT(i)
+		write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f15.6,1x),f6.1)') i,T_IT(i),rho_IT(i),Z_IT(i),Ures_IT(i)
 	enddo
 
 	do j=iFirstIcPt,nItPts
@@ -335,7 +317,7 @@ program	main
 				write(*,'(A31,1x,2I2,A6,1x,2F10.5)') "Warning: Data lacks row number",j,k,'T,rho:',T_IC_calc(j,k),rho_IC_calc(j)
 				cycle
 			endif
-			write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f15.6,1x),f6.1)') k,T_IC(j,k),rho_IC(j),Z_IC(j,k),Ures_IC(j,k), N_IC(j,k)
+			write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f15.6,1x),f6.1)') k,T_IC(j,k),rho_IC(j),Z_IC(j,k),Ures_IC(j,k)
 		enddo
 	enddo
 
@@ -350,7 +332,7 @@ if(doesVirialCalcITpointsExist) then
 			cycle
 		endif
 		write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f15.7,1x),f6.1)')&
-		i,T_IT_vr(i),rho_IT_vr(i),Z_IT_vr(i),Ures_IT_vr(i),N_IT_vr(i)
+		i,T_IT_vr(i),rho_IT_vr(i),Z_IT_vr(i),Ures_IT_vr(i)
 
 	enddo
 endif
@@ -367,7 +349,7 @@ if(doesVirialCalcIT2pointsExist) then
 			cycle
 		endif
 		write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f15.7,1x),f6.1)')&
-		i,T_IT2_vr(i),rho_IT2_vr(i),Z_IT2_vr(i),Ures_IT_vr2(i), N_IT2_vr(i)
+		i,T_IT2_vr(i),rho_IT2_vr(i),Z_IT2_vr(i),Ures_IT_vr2(i)
 
 	enddo
 endif
@@ -376,8 +358,8 @@ endif
 		Zmin1OverRho_IT(i)=(Z_IT(i)-1.0)/rho_IT(i)
 		uDepT_IT(i) = Ures_IT(i) * T_IT(i)
 		ThousandOverT_IT(i)=1000.d0/T_IT(i)
-
 	enddo
+	
 	do j=iFirstIcPt,nItPts
 		do k=1,nPointsOnIC
 			Zmin1OverRho_IC(j,k)=(Z_IC(j,k)-1.0)/rho_IC(j)
@@ -783,12 +765,9 @@ endif
 	write(*,'(A9,1x,F8.4,1x,A7)') "RHOC:",1.d0/VC !,"(g/ml)"
 	write(*,*)
 	write(*,'(A9,1x,15(F8.2))')"T_IT:",HighestT
-	write(*,'(A9,1x,15(I8))')"N_IT:",nItPts
 	write(*,'(A9,1x,15(F8.4))')"RHO_IT:",(rho_IT(j),j=1,nItPts)
-	write(*,'(A9,1x,15(f6.1))')"NMOL:",(N_IT(j),j=1,nItPts)
 	write(*,*)
 	write(*,'(A9,1x,15(F8.4))')"RHO_HIGH:",highestRho
-	write(*,'(A9,1x,15(I8))')"N_IC:",nICs
 	write(*,'(A9,1x,15(F8.4))')"RHO_IC:",(rho_IC(j),j=iFirstIcPt,nItPts)
 	icount=0
 	do i=iFirstIcPt,nItPts

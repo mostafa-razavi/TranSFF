@@ -4,23 +4,16 @@ program	main
 	double precision TsatSL(9),rhoLSL(9),rhoVSL(9),PsatSL(9)
 	common TsatSL,rhoLSL,rhoVSL,PsatSL
 
-	character :: LammpsRdrOut*88,RunITICinp*88,parFile*88,dumString*155,ExeName*155, &
-			VirialTreatmentApplied*5,keyword*10,strInteger*2,yesOrno*3
-	character :: dumString3*15,rhoText*10
+	character :: LammpsRdrOut*88,RunITICinp*88,parFile*88,dumString*155, dumString3*15
 	character(len=100) :: arg1,arg2,arg3,arg4,arg5
-	integer, dimension (0:9) :: isVisited
-	character (len=8), dimension (0:9) :: IntegrationMethod
 	parameter(maxICs=11)
 	parameter(maxICTs=5)
 	parameter(nPointsOnIC=3)
 	parameter(nMaxData=150)
-	logical b0_5,b1_0,b1_5,b2_0,b2_5,b3_0
-	logical f0_5,f1_0,f1_5,f2_0,f2_5,f3_0,here
-	logical isNist,isLammps,isGromscs,doesVirialCalcITpointsExist,doesVirialCalcIT2pointsExist,isCriticalNeeded, isMoleculeUnknown
-	logical isLinearuDepT,isQU,isLU,isRichUdep,isUdepReadFromFile,is3rdOrderPolZ,isLT,isQT,isUdepkcalReadFromFile
+	logical doesVirialCalcITpointsExist,doesVirialCalcIT2pointsExist,isCriticalNeeded, isMoleculeUnknown
+	logical isLinearuDepT,isQU,isLU,isLT,isQT
 	logical isMixedLQ,isMixedLQ2,isThereB2ITHardCoded,isB2FromDippr,isConvergencePathNeeded
-	logical isUdepFromEpotMinusSingle,isUdepFromEpotMinusSingleN
-	logical isB2Applied,isB3Applied,isB4Applied,isB5Applied,isB6Applied,disableExtrapolation,isThereB2correlationFromLiterature
+	
 	double precision :: Tfile(nMaxData),rhofile(nMaxData),Pfile(nMaxData),Zfile(nMaxData),Zstdfile(nMaxData), &
 			ePotfile(nMaxData),eBondfile(nMaxData),eVdwfile(nMaxData),eIntraVdwfile(nMaxData),simTimefile(nMaxData),eqTimefile(nMaxData)
 	
@@ -75,23 +68,9 @@ program	main
  	integer date_time(8)
 	character*30 d(6)
 
-	integer RunITITinpFormat
-
-	RunITITinpFormat = 2
-!	0 = Original RunITIC.inp (nItPts and nICs = 5 are read from file
-!	1 = ITICinfo
-!	2 = modified RunITIC.info (nItPts = 9, nICs = 5 are hardcoded)
-!	3 = modified RunITIC.info (nItpts = 12, nICs = 10 are hardcoded) !TODO: design and add a pick3 option
-
 	maxTolerance = 1.0d0
 
 	isMoleculeUnknown = .false.
-	isUdepFromEpotMinusSingle=.false.
-	isUdepFromEpotMinusSingleN=.false.
-	isRichUdep = .false.	
-	isUdepReadFromFile=.false.
-	isUdepkcalReadFromFile=.false.
-	isCriticalNeeded = .true.
 
 	isMixedLQ = .false.
 	isMixedLQ2 = .true.
@@ -102,24 +81,11 @@ program	main
 	isLU = .false.
 	isQU = .true.
 
-	isConvergencePathNeeded=.false.
-
 	isLinearuDepT = .false.
-	is3rdOrderPolZ = .false.
 
-	isNist=.false. !SMR: was here
-	isThereB2correlationFromLiterature = .false. 
 	isThereB2ITHardCoded = .false.
-	disableExtrapolation=.false.	!disableExtrapolation is used for ITIC testing via NIST data: 
-				!false: extrapolation is done, true: exact NIST values of zLiq, Tsat, uDepSat, and aDepSat are used
-	
-	isB2FromDippr=.false.
 
-	isB2Applied=.true.	
-	isB3Applied=.false.
-	isB4Applied=.false.
-	isB5Applied=.false.
-	isB6Applied=.false.
+	isB2FromDippr=.false.
 	
 	call getarg(1,arg1)
 	call getarg(2,arg2)
@@ -132,6 +98,8 @@ program	main
 	endif
 
 	CASN=arg1
+	LammpsRdrOut=arg2
+	RunITICinp=arg3
 
 	if(isMoleculeUnknown.eqv..false.) then
 		call Dippr(CASN,"CASN",dum,dum,CASN)
@@ -150,7 +118,6 @@ program	main
 		call Dippr(CASN,"VC",dum,VC,"cm^3|gm")
 		!call Dippr(CASN,"ZC",dum,ZC,"1")
 		!call Dippr(CASN,"TPT",dum,TPT,"K")
-
 	else
 		write(*,*)"Molecule is unknown!"
 		write(*,*)"Enter critical temperature (K):"
@@ -172,484 +139,51 @@ program	main
 		FORM=""
 	endif
 
-	if(trim(arg2).eq."pick".OR.trim(arg2).eq."PICK") then
-		write(*,*) "Pick option was selected:"
-		write(*,*)
-		call Dippr(CASN,"TC",dum,TC,"K")
-		call MaxMinT(CASN,"LDN",Tmin,Tmax)
-		!write(*,*) Tmin/TC,Tmax/TC
-		!write(*,*) Tmin,Tmax
-
-		write(*,*) "Do you want to choose IT temperature and the density of highest IC manually?"
-		read(*,*) yesOrno
-		if(yesOrNo .eq. "yes" .Or. yesOrNo .eq. "YES") then
-			write(*,*) "Enter isotherm T and density of highest IC:"
-			read(*,*) HighestT,highestRho
-		elseif(yesOrNo .eq. "no" .Or. yesOrNo .eq. "NO") then
-			write(*,*) "Enter isotherm Tr and minimum Tr on binodal:"
-			read(*,*) HighestTr,TrSatHighestIC
-			HighestT = HighestTr * TC
-			TSatHighestIC = TrSatHighestIC * TC
-			call Dippr(CASN,"LDN",TSatHighestIC,highestRho,"gm|cm^3")
-		else
-			write(*,*) "Invalid answer. Try again!"
-			stop
-		endif
-		write(*,*) "Enter # of isochores, and # of virial points:"
-		read(*,*) nICs,nItVir
-		write(*,*) "Enter # of molecules:"
-		read(*,*) Nread
-
-		nItPts=9	
-		!nICs=5
-		!nItVir=3
-		iFirstIcPt=nItPts-nICs+1
-
-		rho_IT_calc(9)=highestRho
-		rho_increment=highestRho/7.0
-		rho_IT_calc(1)=rho_increment
-		rho_IT_calc(2)=rho_IT_calc(1)+rho_increment
-		rho_IT_calc(3)=rho_IT_calc(2)+rho_increment
-		rho_IT_calc(4)=rho_IT_calc(3)+rho_increment
-		rho_IT_calc(5)=rho_IT_calc(4)+rho_increment
-		rho_IT_calc(6)=rho_IT_calc(5)+rho_increment*0.5
-		rho_IT_calc(7)=rho_IT_calc(6)+rho_increment*0.5
-		rho_IT_calc(8)=rho_IT_calc(7)+rho_increment*0.5
-		do i=1,nItVir
-			rho_IT_calc_vr(i)=highestRho/(i+1)/7
-			Npick_vir(i)=4*Nread
-		enddo
-
-		do i=iFirstIcPt,nItPts
-			rho_IC_calc(i)=rho_IT_calc(i)
-		enddo
-
-	 	do i=iFirstIcPt,nItPts
-			call DipprTfinder(CASN,"LDN",T_IC_calc(i,1),rho_IC_calc(i),"gm|cm^3")
-			rec_T_increment=(1000.0/T_IC_calc(i,1)-1000.0/HighestT)/2.0
-			do j=2,3
-				T_IC_calc(i,j)=1000.0/(1000.0/T_IC_calc(i,1)-(j-1)*rec_T_increment)
-			enddo
-		enddo
-
-		do i=1,nItPts
-			T_IT_calc(i)=HighestT
-			if(i .le. 3) then
-				Npick(i)=4*Nread
-			else
-				Npick(i)=Nread
-			endif
-		enddo
-
-		write(*,*)
-		!write(*,'(A,A)')"Folder Name: ",trim(FolderName)
-		!write(*,*)
-		!write(*,'(A12,A50)')"Address:",trim(Address)
-		!write(*,'(A)')trim(d(1))
-		write(*,'(A5,3x,A)')"CASN:",trim(CASN)
-		write(*,'(A5,3x,A)')"CNAM:",trim(CNAM)
-		write(*,'(A5,3x,A)')"FAM:",trim(FAM)
-		write(*,'(A5,3x,A)')"FORM:",trim(FORM)
-		write(*,'(A5,3x,A)')"INAM:",trim(INAM)
-		write(*,'(A5,3x,A)')"NAME:",trim(COMP_NAME)
-		write(*,'(A5,3x,A)')"SMIL:",trim(SMIL)
-		write(*,'(A5,3x,A)')"STRU:",trim(STRU)
-		!write(*,'(A5,3x,A)')"SYN",trim(SYN)
-		write(*,*)
-		write(*,'(A5,F12.5,1x,A7)') "MW:",MW !,"(g/mol)"
-		write(*,'(A5,F12.5,1x,A7)') "TC:",TC !,"(K)"
-		write(*,'(A5,F12.5,1x,A7)') "PC:",PC !,"(Mpa)"
-		write(*,'(A5,F12.5,1x,A7)') "RHOC:",1.d0/VC !,"(g/ml)"
-
-		write(*,*)
-		write(*,'(A9,1x,15(F8.2))')"T_IT:",HighestT
-		write(*,'(A9,1x,15(I8))')"N_IT:",nItPts
-		write(*,'(A9,1x,15(F8.4))')"RHO_IT:",(rho_IT_calc(j),j=1,nItPts)
-		write(*,'(A9,1x,15(I8))')"NMOL:",(Npick(j),j=1,nItPts)
-		write(*,*)
-		write(*,'(A9,1x,15(F8.4))')"RHO_HIGH:",highestRho
-		write(*,'(A9,1x,15(I8))')"N_IC:",nICs
-		write(*,'(A9,1x,15(F8.4))')"RHO_IC:",(rho_IC_calc(j),j=iFirstIcPt,nItPts)
-		icount=0
-		do i=iFirstIcPt,nItPts
-			icount=icount+1
-			write(*,'(A7,I1,A,1x,15F8.2)') "T_IC",icount,":",T_IC_calc(i,1),T_IC_calc(i,2)
-		enddo
-		write(*,*)
-		write(*,'(A9,1x,15(I8))')"N_VR:",nItVir
-		write(*,'(A9,1x,15(F8.4))')"RHO_VR:",(rho_IT_calc_vr(j),j=1,nItVir)
-		write(*,'(A9,1x,15(I8))')"NMOL_VR:",(Npick_vir(j),j=1,nItVir)
-		write(*,*)
-
-		open(87,file="RunITIC.inp")
-		write(87,*)
-		write(87,'(A5,3x,A)')"CASN:",trim(CASN)
-		write(87,'(A5,3x,A)')"CNAM:",trim(CNAM)
-		write(87,'(A5,3x,A)')"FAM:",trim(FAM)
-		write(87,'(A5,3x,A)')"FORM:",trim(FORM)
-		write(87,'(A5,3x,A)')"INAM:",trim(INAM)
-		write(87,'(A5,3x,A)')"NAME:",trim(COMP_NAME)
-		write(87,'(A5,3x,A)')"SMIL:",trim(SMIL)
-		write(87,'(A5,3x,A)')"STRU:",trim(STRU)
-		write(87,*)
-		write(87,'(A5,F12.5,1x,A7)') "MW:",MW !,"(g/mol)"
-		write(87,'(A5,F12.5,1x,A7)') "TC:",TC !,"(K)"
-		write(87,'(A5,F12.5,1x,A7)') "PC:",PC !,"(Mpa)"
-		write(87,'(A5,F12.5,1x,A7)') "RHOC:",1.d0/VC !,"(g/ml)"
-		write(87,*)
-		write(87,'(A9,1x,15(F8.2))')"T_IT:",HighestT
-		write(87,'(A9,1x,15(I8))')"N_IT:",nItPts
-		write(87,'(A9,1x,15(F8.4))')"RHO_IT:",(rho_IT_calc(j),j=1,nItPts)
-		write(87,'(A9,1x,15(I8))')"NMOL:",(Npick(j),j=1,nItPts)
-		write(87,*)
-		write(87,'(A9,1x,15(F8.4))')"RHO_HIGH:",highestRho
-		write(87,'(A9,1x,15(I8))')"N_IC:",nICs
-		write(87,'(A9,1x,15(F8.4))')"RHO_IC:",(rho_IC_calc(j),j=iFirstIcPt,nItPts)
-		icount=0
-		do i=iFirstIcPt,nItPts
-			icount=icount+1
-			write(87,'(A7,I1,A,1x,15F8.2)') "T_IC",icount,":",T_IC_calc(i,1),T_IC_calc(i,2)
-		enddo
-		write(87,*)
-		write(87,'(A9,1x,15(I8))')"N_VR:",nItVir
-		write(87,'(A9,1x,15(F8.4))')"RHO_VR:",(rho_IT_calc_vr(j),j=1,nItVir)
-		write(87,'(A9,1x,15(I8))')"NMOL_VR:",(Npick_vir(j),j=1,nItVir)
-		write(87,*)
-		close(87)
-
-		stop
-	elseif(trim(arg2).eq."pick2".OR.trim(arg2).eq."PICK2") then
-		write(*,*) "Pick option was selected:"
-		write(*,*)
-		call Dippr(CASN,"TC",dum,TC,"K")
-		call MaxMinT(CASN,"LDN",Tmin,Tmax)
-		write(*,*) "Tr min,max=",Tmin/TC,Tmax/TC
-		write(*,*) "T min,max",Tmin,Tmax
-
-		write(*,*) "Do you want to choose IT temperature and the density of highest IC manually?"
-		read(*,*) yesOrno
-		if(yesOrNo .eq. "yes" .Or. yesOrNo .eq. "YES") then
-			write(*,*) "Enter isotherm T and density of highest IC:"
-			read(*,*) HighestT,highestRho
-		!HighestT = 600
-		!highestRho = 0.7
-		elseif(yesOrNo .eq. "no" .Or. yesOrNo .eq. "NO") then
-			write(*,*) "Enter isotherm Tr and minimum Tr on binodal:"
-			read(*,*) HighestTr,TrSatHighestIC
-			HighestT = HighestTr * TC
-			TSatHighestIC = TrSatHighestIC * TC
-			call Dippr(CASN,"LDN",TSatHighestIC,highestRho,"gm|cm^3")
-		else
-			write(*,*) "Invalid answer. Try again!"
-			stop
-		endif
-		!write(*,*) "Enter # of isochores "
-		!read(*,*) nICs
-		write(*,*) "Enter # of molecules:"
-		read(*,*) Nread
-		!Nread = 600
-		nItPts=9	
-		nICs=5
-		nItVir=3
-		iFirstIcPt=nItPts-nICs+1
-
-		rho_IT_calc(9)=highestRho
-		rho_increment=highestRho/7.0
-		rho_IT_calc(1)=rho_increment
-		rho_IT_calc(2)=rho_IT_calc(1)+rho_increment
-		rho_IT_calc(3)=rho_IT_calc(2)+rho_increment
-		rho_IT_calc(4)=rho_IT_calc(3)+rho_increment
-		rho_IT_calc(5)=rho_IT_calc(4)+rho_increment
-
-		rho_IT_calc(6)=rho_IT_calc(5)+rho_increment*0.5
-		rho_IT_calc(7)=rho_IT_calc(6)+rho_increment*0.5
-		rho_IT_calc(8)=rho_IT_calc(7)+rho_increment*0.5
-		do i=1,nItVir
-			rho_IT_calc_vr(i)=highestRho/(i+1)/7
-			Npick_vir(i)=4*Nread
-		enddo
-
-		do i=iFirstIcPt,nItPts
-			rho_IC_calc(i)=rho_IT_calc(i)
-		enddo
-
-	 	do i=iFirstIcPt,nItPts
-			call DipprTfinder(CASN,"LDN",T_IC_calc(i,1),rho_IC_calc(i),"gm|cm^3")
-			rec_T_increment=(1000.0/T_IC_calc(i,1)-1000.0/HighestT)/2.0
-			do j=2,3
-				T_IC_calc(i,j)=1000.0/(1000.0/T_IC_calc(i,1)-(j-1)*rec_T_increment)
-			enddo
-		enddo
-
-		do i=1,nItPts
-			T_IT_calc(i)=HighestT
-			if(i .le. 1) then
-				Npick(i)=4*Nread
-			else
-				Npick(i)=Nread
-			endif
-		enddo
-
-		write(*,*)
-		write(*,'(A5,3x,A)')"CASN:",trim(CASN)
-		write(*,'(A5,3x,A)')"CNAM:",trim(CNAM)
-		write(*,'(A5,3x,A)')"FAM:",trim(FAM)
-		write(*,'(A5,3x,A)')"FORM:",trim(FORM)
-		write(*,'(A5,3x,A)')"INAM:",trim(INAM)
-		write(*,'(A5,3x,A)')"NAME:",trim(COMP_NAME)
-		write(*,'(A5,3x,A)')"SMIL:",trim(SMIL)
-		write(*,'(A5,3x,A)')"STRU:",trim(STRU)
-		!write(*,'(A5,3x,A)')"SYN",trim(SYN)
-		write(*,*)
-		write(*,'(A5,F12.5,1x,A7)') "MW:",MW !,"(g/mol)"
-		write(*,'(A5,F12.5,1x,A7)') "TC:",TC !,"(K)"
-		write(*,'(A5,F12.5,1x,A7)') "PC:",PC !,"(Mpa)"
-		write(*,'(A5,F12.5,1x,A7)') "RHOC:",1.d0/VC !,"(g/ml)"
-		write(*,*)
-		write(*,'(A9,1x,15(F8.4))')"RHO_HIGH:",highestRho
-		write(*,'(A9,1x,15(F8.2))')"T_HIGH:",HighestT
-		write(*,*)
-		write(*,*) "Isotherms:"
-		write(*,*)
-		write(*,'(A9,1x,15(F8.2))')"T_IT:",HighestT,TC*0.9
-		write(*,*)
-		write(*,'(A9,1x,15(F8.4))')"RHO_IT1:",(rho_IT_calc_vr(j),j=3,1,-1),(rho_IT_calc(j),j=1,nItPts)
-		write(*,'(A9,1x,15(F8.4))')"RHO_IT2:",(rho_IT_calc_vr(j),j=3,1,-1),rho_IT_calc(1)
-		write(*,*)
-		write(*,'(A9,1x,15(I8))')"NMOL_IT1:",(Npick_vir(j),j=1,nItVir),(Npick(j),j=1,nItPts)
-		write(*,'(A9,1x,15(I8))')"NMOL_IT2:",(Npick_vir(j),j=1,nItVir),Npick(1)
-		write(*,*)
-		write(*,*) "Isochores:"
-		write(*,*)
-		write(*,'(A9,1x,15(F8.4))')"RHO_IC:",(rho_IC_calc(j),j=iFirstIcPt,nItPts)
-		write(*,*)
-		icount=0
-		do i=iFirstIcPt,nItPts
-			icount=icount+1
-			write(*,'(A7,I1,A,1x,15F8.2)') "T_IC",icount,":",T_IC_calc(i,1),T_IC_calc(i,2)
-		enddo
-		icount=0
-		write(*,*)
-		do i=iFirstIcPt,nItPts
-			icount=icount+1
-			write(*,'(A7,I1,A,1x,15(I8))')"NMOL_IC",icount,":",Nread,Nread
-		enddo
-
-
-		open(87,file="RunITIC.inp")
-		write(87,*)
-		write(87,'(A5,3x,A)')"CASN:",trim(CASN)
-		write(87,'(A5,3x,A)')"CNAM:",trim(CNAM)
-		write(87,'(A5,3x,A)')"FAM:",trim(FAM)
-		write(87,'(A5,3x,A)')"FORM:",trim(FORM)
-		write(87,'(A5,3x,A)')"INAM:",trim(INAM)
-		write(87,'(A5,3x,A)')"NAME:",trim(COMP_NAME)
-		write(87,'(A5,3x,A)')"SMIL:",trim(SMIL)
-		write(87,'(A5,3x,A)')"STRU:",trim(STRU)
-		!write(87,'(A5,3x,A)')"SYN",trim(SYN)
-		write(87,*)
-		write(87,'(A5,F12.5,1x,A7)') "MW:",MW !,"(g/mol)"
-		write(87,'(A5,F12.5,1x,A7)') "TC:",TC !,"(K)"
-		write(87,'(A5,F12.5,1x,A7)') "PC:",PC !,"(Mpa)"
-		write(87,'(A5,F12.5,1x,A7)') "RHOC:",1.d0/VC !,"(g/ml)"
-		write(87,*)
-		write(87,'(A9,1x,15(F8.4))')"RHO_HIGH:",highestRho
-		write(87,'(A9,1x,15(F8.2))')"T_HIGH:",HighestT
-		write(87,*)
-		write(87,*) "Isotherms:"
-		write(87,*)
-		write(87,'(A9,1x,15(F8.2))')"T_IT:",HighestT,TC*0.9
-		write(87,*)
-		write(87,'(A9,1x,15(F8.4))')"RHO_IT1:",(rho_IT_calc_vr(j),j=3,1,-1),(rho_IT_calc(j),j=1,nItPts)
-		write(87,'(A9,1x,15(F8.4))')"RHO_IT2:",(rho_IT_calc_vr(j),j=3,1,-1),rho_IT_calc(1)
-		write(87,*)
-		write(87,'(A9,1x,15(I8))')"NMOL_IT1:",(Npick_vir(j),j=1,nItVir),(Npick(j),j=1,nItPts)
-		write(87,'(A9,1x,15(I8))')"NMOL_IT2:",(Npick_vir(j),j=1,nItVir),Npick(1)
-		write(87,*)
-		write(87,*) "Isochores:"
-		write(87,*)
-		write(87,'(A9,1x,15(F8.4))')"RHO_IC:",(rho_IC_calc(j),j=iFirstIcPt,nItPts)
-		write(87,*)
-		icount=0
-		do i=iFirstIcPt,nItPts
-			icount=icount+1
-			write(87,'(A7,I1,A,1x,15F8.2)') "T_IC",icount,":",T_IC_calc(i,1),T_IC_calc(i,2)
-		enddo
-		icount=0
-		write(87,*)
-		do i=iFirstIcPt,nItPts
-			icount=icount+1
-			write(87,'(A7,I1,A,1x,15(I8))')"NMOL_IC",icount,":",Nread,Nread
-		enddo
-		close(87)
-
-		stop
-	endif
-	LammpsRdrOut=arg2
-	RunITICinp=arg3
-	parFile=arg4
-	write(*,*)'Using: ',TRIM(CASN),' ',TRIM(LammpsRdrOut),' ',TRIM(RunITICinp),' ',TRIM(parFile)
-	write(*,*)'Compound is: ',TRIM(COMP_NAME)
-	call date_and_time(d(1), d(2), d(3), date_time) 
-
-	if(parFile .ne. "")then
-	open(21,file=parFile)
-		read(21,*)dumString,potentialName
-		read(21,*)dumString,nSiteTypes
-		read(21,*)dumString,(SiteTypeNames(j),j=1,nSiteTypes)
-		read(21,*)dumString,(sigma(j),j=1,nSiteTypes)
-		read(21,*)dumString,(epsilon(j),j=1,nSiteTypes)
-		read(21,*)dumString,(AorN(j),j=1,nSiteTypes)
-		read(21,*)dumString,rWidth
-		read(21,*)dumString,rInit
-	close(21)
-	endif
 	open(2231,file=RunITICinp)
-	if(RunITITinpFormat .eq. 0)then
-		do loopline=1,100	
-			read(2231,*,ioStat=ioErr) dumString1,dumString2
-			!write(*,*) dumString1,dumString2
-			String = trim(dumString1)
-			if(String.eq."RHO_HIGH:") then
-				read(dumString2,*,iostat=ioErr)highestRho
-			elseif(String.eq."T_IT:") then
-				read(dumString2,*,iostat=ioErr)HighestT
-			elseif(String.eq."N_IT:") then
-				read(dumString2,*,iostat=ioErr)nItPts
-			elseif(String.eq."N_IC:") then
-				read(dumString2,*,iostat=ioErr)nICs
-			elseif(String.eq."T_IC1:") then
-				write(*,*)
-				iFirstIcPt=nItPts-nICs+1
-				read(dumString2,*,iostat=ioErr)T_IC_calc(iFirstIcPt,1)
-				do i=iFirstIcPt+1,nItPts
-					read(2231,*,ioStat=ioErr) dumString1,dumString2
-					read(dumString2,*,iostat=ioErr)T_IC_calc(i,1)
-				enddo
-			endif
-
-		end do
-	elseif(RunITITinpFormat .eq. 1)then
-		nItPts = 9
-		nICs = 3
-		iFirstIcPt = 7 !nItPts-nICs+1
-
-		read(2231,*,ioStat=ioErr) dumString1
-		read(dumString1,*,iostat=ioErr)HighestT
-
-		read(2231,*,ioStat=ioErr)
-
-		read(2231,*,ioStat=ioErr) dumString1
-		read(dumString1,*,iostat=ioErr) highestRho
-
-
+	nItPts = 9
+	nICs = 5
+	do loopline=1,100	
 		read(2231,*,ioStat=ioErr) dumString1,dumString2
-		read(dumString2,*,iostat=ioErr) T_IC_calc(9,1)
-
-		read(2231,*,ioStat=ioErr) dumString1,dumString2
-		read(dumString2,*,iostat=ioErr) T_IC_calc(8,1)
-
-		read(2231,*,ioStat=ioErr) dumString1,dumString2
-		read(dumString2,*,iostat=ioErr) T_IC_calc(7,1)
-
-	elseif(RunITITinpFormat .eq. 2)then
-		nItPts = 9
-		nICs = 5
-		do loopline=1,100	
-			read(2231,*,ioStat=ioErr) dumString1,dumString2
-			!write(*,*) dumString1,dumString2
-			String = trim(dumString1)
-			if(String.eq."RHO_HIGH:") then
-				read(dumString2,*,iostat=ioErr)highestRho
-			elseif(String.eq."T_HIGH:") then
-				read(dumString2,*,iostat=ioErr)HighestT
+		!write(*,*) dumString1,dumString2
+		String = trim(dumString1)
+		if(String.eq."RHO_HIGH:") then
+			read(dumString2,*,iostat=ioErr)highestRho
+		elseif(String.eq."T_HIGH:") then
+			read(dumString2,*,iostat=ioErr)HighestT
 !			elseif(String.eq."N_IT:") then
 !				read(dumString2,*,iostat=ioErr)nItPts
 !			elseif(String.eq."N_IC:") then
 !				read(dumString2,*,iostat=ioErr)nICs
-			elseif(String.eq."T_IC1:") then
-				write(*,*)
-				iFirstIcPt=nItPts-nICs+1
-				read(dumString2,*,iostat=ioErr)T_IC_calc(iFirstIcPt,1)
-				do i=iFirstIcPt+1,nItPts
-					read(2231,*,ioStat=ioErr) dumString1,dumString2
-					read(dumString2,*,iostat=ioErr)T_IC_calc(i,1)
-				enddo
-			endif
-
-		end do
-	elseif(RunITITinpFormat .eq. 3)then
-		nItPts = 11
-		nICs = 9
-		do loopline=1,100	
-			read(2231,*,ioStat=ioErr) dumString1,dumString2
-			!write(*,*) dumString1,dumString2
-			String = trim(dumString1)
-			if(String.eq."RHO_HIGH:") then
-				read(dumString2,*,iostat=ioErr)highestRho
-			elseif(String.eq."T_HIGH:") then
-				read(dumString2,*,iostat=ioErr)HighestT
-!			elseif(String.eq."N_IT:") then
-!				read(dumString2,*,iostat=ioErr)nItPts
-!			elseif(String.eq."N_IC:") then
-!				read(dumString2,*,iostat=ioErr)nICs
-			elseif(String.eq."T_IC1:") then
-				write(*,*)
-				iFirstIcPt=nItPts-nICs+1
-				read(dumString2,*,iostat=ioErr)T_IC_calc(iFirstIcPt,1)
-				do i=iFirstIcPt+1,nItPts
-					read(2231,*,ioStat=ioErr) dumString1,dumString2
-					read(dumString2,*,iostat=ioErr)T_IC_calc(i,1)
-				enddo
-			endif
-
-		end do
-	endif
+		elseif(String.eq."T_IC1:") then
+			write(*,*)
+			iFirstIcPt=nItPts-nICs+1
+			read(dumString2,*,iostat=ioErr)T_IC_calc(iFirstIcPt,1)
+			do i=iFirstIcPt+1,nItPts
+				read(2231,*,ioStat=ioErr) dumString1,dumString2
+				read(dumString2,*,iostat=ioErr)T_IC_calc(i,1)
+			enddo
+		endif
+	end do
 	close(2231)	
 
 
-	!write(*,*)nItPts,iFirstIcPt,highestRho,HighestT,nICs,(T_IC_calc(i,1),i=iFirstIcPt,nItPts)
+	rho_IT_calc(9)=highestRho
+	rho_increment=highestRho/7.0
+	rho_IT_calc(1)=rho_increment
+	rho_IT_calc(2)=rho_IT_calc(1)+rho_increment
+	rho_IT_calc(3)=rho_IT_calc(2)+rho_increment
+	rho_IT_calc(4)=rho_IT_calc(3)+rho_increment
+	rho_IT_calc(5)=rho_IT_calc(4)+rho_increment
+	rho_IT_calc(6)=rho_IT_calc(5)+rho_increment*0.5
+	rho_IT_calc(7)=rho_IT_calc(6)+rho_increment*0.5
+	rho_IT_calc(8)=rho_IT_calc(7)+rho_increment*0.5
+	
+	rho_IT_calc_vr(4)=highestRho/7.0
+	rho_IT_calc_vr(3)=highestRho/14.0
+	rho_IT_calc_vr(2)=highestRho/21.0
+	rho_IT_calc_vr(1)=highestRho/28.0
 
-	if(nItPts .eq. 9) then
-		rho_IT_calc(9)=highestRho
-		rho_increment=highestRho/7.0
-		rho_IT_calc(1)=rho_increment
-		rho_IT_calc(2)=rho_IT_calc(1)+rho_increment
-		rho_IT_calc(3)=rho_IT_calc(2)+rho_increment
-		rho_IT_calc(4)=rho_IT_calc(3)+rho_increment
-		rho_IT_calc(5)=rho_IT_calc(4)+rho_increment
-		rho_IT_calc(6)=rho_IT_calc(5)+rho_increment*0.5
-		rho_IT_calc(7)=rho_IT_calc(6)+rho_increment*0.5
-		rho_IT_calc(8)=rho_IT_calc(7)+rho_increment*0.5
-		
-		rho_IT_calc_vr(4)=highestRho/7.0
-		rho_IT_calc_vr(3)=highestRho/14.0
-		rho_IT_calc_vr(2)=highestRho/21.0
-		rho_IT_calc_vr(1)=highestRho/28.0
-
-
-	elseif (nItPts .eq. 11) then
-		rho_IT_calc(11)=highestRho
-		rho_increment=highestRho/7.0
-		rho_IT_calc(1)=rho_increment
-		rho_IT_calc(2)=rho_IT_calc(1)+rho_increment*1.0
-		rho_IT_calc(3)=rho_IT_calc(2)+rho_increment*1.0
-		rho_IT_calc(4)=rho_IT_calc(3)+rho_increment*0.5
-		rho_IT_calc(5)=rho_IT_calc(4)+rho_increment*0.5
-		rho_IT_calc(6)=rho_IT_calc(5)+rho_increment*0.5
-		rho_IT_calc(7)=rho_IT_calc(6)+rho_increment*0.5
-		rho_IT_calc(8)=rho_IT_calc(7)+rho_increment*0.5
-		rho_IT_calc(9)=rho_IT_calc(8)+rho_increment*0.5
-		rho_IT_calc(10)=rho_IT_calc(9)+rho_increment*0.5
-
-		rho_IT_calc_vr(4)=highestRho/7.0
-		rho_IT_calc_vr(3)=highestRho/14.0
-		rho_IT_calc_vr(2)=highestRho/21.0
-		rho_IT_calc_vr(1)=highestRho/28.0
-
-	endif
-
-	 do i=iFirstIcPt,nItPts
+	do i=iFirstIcPt,nItPts
 		rec_T_increment=(1000.0/T_IC_calc(i,1)-1000.0/HighestT)/(nPointsOnIC-1)
 		do j=2,nPointsOnIC
 			T_IC_calc(i,j)=1000.0/(1000.0/T_IC_calc(i,1)-(j-1)*rec_T_increment)
@@ -675,27 +209,18 @@ program	main
 	write(*,*)
 	write(*,*)'===============================Reading From Simulator Output====================================='
 	write(*,*)
-	!write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)','eMol(kcal/mol)','&
-	!	eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
 	write(*,'(A2,1x,A9,1x,A9,1x,2(A9,1x),2(A15,1x),A6)')'i','T(K)','rho(g/ml)','Z','Zstd','Ures', 'UresStd','nMolec'
 
 	open(4321,file=LammpsRdrOut)
 	read(4321,*)
 	do i=1,nMaxData	
-
-		!read(4321,*,ioStat=ioErr) Tfile(i),rhofile(i),Pfile(i),Zfile(i),Zstdfile(i),ePotfile(i), &
-		!		eBondfile(i),eVdwfile(i),eIntraVdwfile(i),simTimefile(i),eqTimefile(i),Nfile(i)
-		read(4321,*,ioStat=ioErr) Tfile(i),rhofile(i),Zfile(i),Zstdfile(i),Uresfile(i), UresStdfile(i), Nfile(i)
+		read(4321,*,ioStat=ioErr) Tfile(i),rhofile(i),Zfile(i), Uresfile(i), Zstdfile(i), UresStdfile(i), Nfile(i)
 		if(ioErr == -1)then !End of file reached
 			nData=i-1
 			exit
 		endif
-		!write(*,'(I2,1x,f9.2,1x,f9.5,1x,3(f9.3,1x),4(f15.3,1x),2(f15.1,1x),I6)') &
-		!		i,Tfile(i),rhofile(i),Pfile(i),Zfile(i),Zstdfile(i),ePotfile(i), &
-		!		eBondfile(i),eVdwfile(i),eIntraVdwfile(i),simTimefile(i),eqTimefile(i),Nfile(i)
 		write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f9.3,1x),2(f15.3,1x),f6.1)') &
-		i, Tfile(i),rhofile(i),Zfile(i),Zstdfile(i),Uresfile(i), UresStdfile(i), Nfile(i)
-
+			i, Tfile(i),rhofile(i),Zfile(i), Uresfile(i), Zstdfile(i), UresStdfile(i), Nfile(i)
 	enddo
 	close(4321)
 
@@ -705,28 +230,16 @@ program	main
 	do i=1,nData
 		do j=1,nItPts
 			tolerance=(abs(Tfile(i)-T_IT_calc(j))/Tfile(i)*100.0+abs(rhofile(i)-rho_IT_calc(j))/rhofile(i)*100.0)
-			!write(*,*)tolerance
-			!pause
 			if(tolerance .lt. maxTolerance) then
-
-			
 				T_IT(j)=Tfile(i)
 				rho_IT(j)=rhofile(i)
-				!P_IT(j)=Pfile(i)
 				Z_IT(j)=Zfile(i)
-				Zstd_IT(j)=Zstdfile(i)
 				Ures_IT(j) = Uresfile(i)
+				Zstd_IT(j)=Zstdfile(i)
 				Uresstd_IT(j) = UresStdfile(i)
-				!ePot_IT(j)=ePotfile(i)
-				!eBond_IT(j)=eBondfile(i)
-				!eVdw_IT(j)=eVdwfile(i)
-				!eIntraVdw_IT(j)=eIntraVdwfile(i)
-				!simTime_IT(j)=simTimefile(i) 
-				!eqTime_IT(j)=eqTimefile(i)
 				N_IT(j)=Nfile(i)
 			exit
 			endif
-		
 		enddo
 	enddo
 
@@ -737,17 +250,10 @@ program	main
 				if(tolerance .lt. maxTolerance) then
 					T_IC(j,k)=Tfile(i)
 					rho_IC(j)=rhofile(i)
-					!P_IC(j,k)=Pfile(i)
 					Z_IC(j,k)=Zfile(i)
-					Zstd_IC(j,k)=Zstdfile(i)
 					Ures_IC(j,k) = Uresfile(i)
+					Zstd_IC(j,k)=Zstdfile(i)
 					Uresstd_IC(j,k) = UresStdfile(i)
-					!ePot_IC(j,k)=ePotfile(i)
-					!eBond_IC(j,k)=eBondfile(i)
-					!eVdw_IC(j,k)=eVdwfile(i)
-					!eIntraVdw_IC(j,k)=eIntraVdwfile(i)
-					!simTime_IC(j,k)=simTimefile(i)
-					!eqTime_IC(j,k)=eqTimefile(i)
 					N_IC(j,k)=Nfile(i)
 				exit
 				endif
@@ -758,25 +264,13 @@ program	main
 	do i=1,nData
 		do j=1,4
 			tolerance=(abs(Tfile(i)-HighestT)/Tfile(i)*100.0+abs(rhofile(i)-rho_IT_calc_vr(j))/rhofile(i)*100.0)
-			!write(*,*)tolerance
-			!pause
 			if(tolerance .lt. maxTolerance) then
-
-			
 				T_IT_vr(j)=Tfile(i)
-
 				rho_IT_vr(j)=rhofile(i)
-				!P_IT_vr(j)=Pfile(i)
 				Z_IT_vr(j)=Zfile(i)
-				Zstd_IT_vr(j)=Zstdfile(i)
 				Ures_IT_vr(j) = Uresfile(i)
+				Zstd_IT_vr(j)=Zstdfile(i)
 				Uresstd_IT_vr(j) = UresStdfile(i)				
-				!ePot_IT_vr(j)=ePotfile(i)
-				!eBond_IT_vr(j)=eBondfile(i)
-				!eVdw_IT_vr(j)=eVdwfile(i)
-				!eIntraVdw_IT_vr(j)=eIntraVdwfile(i)
-				!simTime_IT_vr(j)=simTimefile(i) 
-				!eqTime_IT_vr(j)=eqTimefile(i)
 				N_IT_vr(j)=Nfile(i)
 			exit
 			endif
@@ -787,24 +281,13 @@ program	main
 	do i=1,nData
 		do j=1,4
 			tolerance=(abs(Tfile(i)-TC*SubCritReducedTemp)/Tfile(i)*100.0+abs(rhofile(i)-rho_IT_calc_vr(j))/rhofile(i)*100.0)
-			!write(*,*)tolerance
-			!pause
 			if(tolerance .lt. maxTolerance) then
-
 				T_IT2_vr(j)=Tfile(i)
-
 				rho_IT2_vr(j)=rhofile(i)
-				!P_IT2_vr(j)=Pfile(i)
 				Z_IT2_vr(j)=Zfile(i)
-				Zstd_IT2_vr(j)=Zstdfile(i)
 				Ures_IT_vr2(j) = Uresfile(i)
+				Zstd_IT2_vr(j)=Zstdfile(i)
 				Uresstd_IT_vr2(j) = UresStdfile(i)				
-				!ePot_IT2_vr(j)=ePotfile(i)
-				!eBond_IT2_vr(j)=eBondfile(i)
-				!eVdw_IT2_vr(j)=eVdwfile(i)
-				!eIntraVdw_IT2_vr(j)=eIntraVdwfile(i)
-				!simTime_IT2_vr(j)=simTimefile(i) 
-				!eqTime_IT2_vr(j)=eqTimefile(i)
 				N_IT2_vr(j)=Nfile(i)
 			exit
 			endif
@@ -832,59 +315,37 @@ program	main
 
 
 	write(*,*) "Isothermic Points"
-	!write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)','eMol(kcal/mol)','&
-	!			eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
 	write(*,'(A2,1x,A9,1x,A9,1x,2(A15,1x),A6)') 'i','T(K)','rho(g/ml)','Z','Ures','nMolec'				
 	do i=1,nItPts
-
 		multi_IT(i)=T_IT(i)*rho_IT(i)
 		if(multi_IT(i) < 1e-11) then
-			!isoThermErr=1
 			write(*,'(A31,1x,I2,A6,1x,2F10.5)') "Warning: Data lacks row number",i,'T,rho:',T_IT_calc(i),rho_IT_calc(i)
 			cycle
 		endif
-		!write(*,'(I2,1x,f9.2,1x,f9.5,1x,3(f9.3,1x),4(f15.3,1x),2(f15.1,1x),I6)')&
-		!i,T_IT(i),rho_IT(i),P_IT(i),Z_IT(i),Zstd_IT(i),ePot_IT(i),eBond_IT(i),eVdw_IT(i),&
-		!eIntraVdw_IT(i),simTime_IT(i),eqTime_IT(i),N_IT(i)
 		write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f15.6,1x),f6.1)') i,T_IT(i),rho_IT(i),Z_IT(i),Ures_IT(i), N_IT(i)
-
 	enddo
 
 	do j=iFirstIcPt,nItPts
 		write(*,*)
 		write(*,'(A28,2x,I2)') "Isochoric Points on Isochore",j
-		!write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)',&
-		!		'eMol(kcal/mol)','&
-		!		eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
 		write(*,'(A2,1x,A9,1x,A9,1x,2(A15,1x),A6)')'i','T(K)','rho(g/ml)','Z','Ures', 'nMolec'
-
 		do k=1,nPointsOnIC
 			multi_IC(j,k)=T_IC(j,k)*rho_IC(j)
 			if(multi_IC(j,k) < 1e-11) then
-				!isoThermErr=1
 				write(*,'(A31,1x,2I2,A6,1x,2F10.5)') "Warning: Data lacks row number",j,k,'T,rho:',T_IC_calc(j,k),rho_IC_calc(j)
 				cycle
 			endif
-		!write(*,'(I2,1x,f9.2,1x,f9.5,1x,3(f9.3,1x),4(f15.3,1x),2(f15.1,1x),I6)')&
-		!k,T_IC(j,k),rho_IC(j),P_IC(j,k),Z_IC(j,k),Zstd_IC(j,k),ePot_IC(j,k),eBond_IC(j,k),eVdw_IC(j,k),&
-		!eIntraVdw_IC(j,k),simTime_IC(j,k),eqTime_IC(j,k),N_IC(j,k)
-		write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f15.6,1x),f6.1)') k,T_IC(j,k),rho_IC(j),Z_IC(j,k),Ures_IC(j,k), N_IC(j,k)
-
+			write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f15.6,1x),f6.1)') k,T_IC(j,k),rho_IC(j),Z_IC(j,k),Ures_IC(j,k), N_IC(j,k)
 		enddo
 	enddo
-
-
 
 if(doesVirialCalcITpointsExist) then
 	write(*,*)
 	write(*,*) "Supercritical Virial Calculation Points"
-	!write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)','eMol(kcal/mol)','&
-	!			eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
 	write(*,'(A2,1x,A9,1x,A9,1x,2(A15,1x),A6)')'i','T(K)','rho(g/ml)','Z','Ures','nMolec'				
 	do i=1,4
 		multi_IT(i)=T_IT_vr(i)*rho_IT_vr(i)
 		if(multi_IT(i) < 1e-11) then
-			!isoThermErr=1
 			write(*,'(A31,1x,I2,A6,1x,2F10.5)') "Warning: Data lacks row number",i,'T,rho:',HighestT,rho_IT_calc_vr(i)
 			cycle
 		endif
@@ -897,14 +358,11 @@ endif
 if(doesVirialCalcIT2pointsExist) then
 	write(*,*)
 	write(*,*) "Subcritical Virial Calculation  Points"
-	!write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)','eMol(kcal/mol)','&
-	!			eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
 	write(*,'(A2,1x,A9,1x,A9,1x,2(A15,1x),A6)')'i','T(K)','rho(g/ml)','Z','Ures','nMolec'				
 
 	do i=1,4
 		multi_IT(i)=T_IT2_vr(i)*rho_IT2_vr(i)
 		if(multi_IT(i) < 1e-11) then
-			!isoThermErr=1
 			write(*,'(A31,1x,I2,A6,1x,2F10.5)') "Warning: Data lacks row number",i,'T,rho:',T_IT2_vr(i),rho_IT_calc_vr(i)
 			cycle
 		endif
@@ -916,28 +374,14 @@ endif
 
 	do i=1,nItPts
 		Zmin1OverRho_IT(i)=(Z_IT(i)-1.0)/rho_IT(i)
-		!uDepT_IT(i)=(ePot_IT(i)-eBond_IT(i)-eIntraVdw_IT(i))/1.987d0*1000.d0/N_IT(i)
 		uDepT_IT(i) = Ures_IT(i) * T_IT(i)
-
-		if(isRichUdep)                uDepT_IT(i)=(ePot_IT(i))/1.987d0*1000.d0/N_IT(i)	!Based on Rich's inputfile
-		if(isUdepReadFromFile)        uDepT_IT(i)=(ePot_IT(i))*T_IT(i)
-		if(isUdepkcalReadFromFile)    uDepT_IT(i)=(ePot_IT(i)-eBond_IT(i))/1.987d0*1000.d0/N_IT(i)
-		if(isUdepFromEpotMinusSingle) uDepT_IT(i)=(ePot_IT(i)-Zstd_IT(i)*N_IT(i))/1.987d0*1000.d0/N_IT(i)
-		if(isUdepFromEpotMinusSingleN)uDepT_IT(i)=(ePot_IT(i)-Zstd_IT(i))/1.987d0*1000.d0/N_IT(i)
 		ThousandOverT_IT(i)=1000.d0/T_IT(i)
 
 	enddo
 	do j=iFirstIcPt,nItPts
 		do k=1,nPointsOnIC
 			Zmin1OverRho_IC(j,k)=(Z_IC(j,k)-1.0)/rho_IC(j)
-			!uDepT_IC(j,k)=(ePot_IC(j,k)-eBond_IC(j,k)-eIntraVdw_IC(j,k))/1.987d0*1000.d0/N_IC(j,k)
 			uDepT_IC(j,k)= Ures_IC(j,k) * T_IC(j,k)
-
-			if(isRichUdep) uDepT_IC(j,k)=(ePot_IC(j,k))/1.987d0*1000.d0/N_IC(j,k)	!Based on Rich's inputfile
-			if(isUdepReadFromFile) uDepT_IC(j,k)=(ePot_IC(j,k)-eBond_IC(j,k))*T_IC(j,k)
-			if(isUdepkcalReadFromFile) uDepT_IC(j,k)=(ePot_IC(j,k))/1.987d0*1000.d0/N_IC(j,k)
-			if(isUdepFromEpotMinusSingle) uDepT_IC(j,k)=(ePot_IC(j,k)-Zstd_IC(j,k)*N_IC(j,k))/1.987d0*1000.d0/N_IC(j,k)
-			if(isUdepFromEpotMinusSingleN) uDepT_IC(j,k)=(ePot_IC(j,k)-Zstd_IC(j,k))/1.987d0*1000.d0/N_IC(j,k)
 			ThousandOverT_IC(j,k)=1000.d0/T_IC(j,k)
 		enddo
 	enddo	
@@ -947,26 +391,6 @@ endif
 
 	if(isMoleculeUnknown.eqv..false.) then
 		call Dippr(CASN,"SVR",HighestT,B2atHighestT,"cm^3|gm")	!second virial coeff
-	endif
-
-	if(isThereB2ITHardCoded) then
-		if(trim(CASN).eq."74-84-0") then
-			B2atHighestT=-3.588	!Test of TraPPE-C2 with KofkeVirial
-		elseif(trim(CASN).eq."111-65-9") then
-		!===========TraPPE-C8 Kofke==========
-			B2A=-7.4672	
-			B2B=17.7516 	
-			B2C=-25.9879	
-			B2D=10.659
-			Tr_rec_IT=TC/600.0
-			B2atHighestT=B2A*Tr_rec_IT**3+B2B*Tr_rec_IT**2+B2C*Tr_rec_IT+B2D
-		elseif(trim(CASN).eq."112-40-3") then
-			B2atHighestT=-4.7983	!Test of TraPPE-C12 with KofkeVirial
-		elseif(trim(CASN).eq."7732-18-5") then
-			B2athighestT=-4.4483	!TIP4p linear regression
-		elseif(trim(CASN).eq."106-97-8") then
-			B2athighestT=-2.86	!TraPPE-C4
-		endif
 	endif
 
 	write(*,*)
@@ -1002,15 +426,7 @@ endif
 		call getInterceptSlope(X1,X2,X3,X4,Y1,Y2,Y3,Y4,B2atSubcriticalIT,B3atSubcriticalIT)
 
 		do i=1,4
-			!Zmin1OverRho_IT2(i)=(Z_IT2_vr(i)-1.0)/rho_IT2_vr(i)
-			!uDep_over_rho_vr(i)=(ePot_IT2_vr(i)-eBond_IT2_vr(i)-eIntraVdw_IT2_vr(i))/1.987d0*1000.d0/N_IT2_vr(i)/T_IT2_vr(i)/rho_IT2_vr(i)
 			uDep_over_rho_vr(i)=Ures_IT_vr2(i)/rho_IT2_vr(i)
-
-			if(isRichUdep)then
-				uDep_over_rho_vr(i)=(ePot_IT2_vr(i))/1.987d0*1000.d0/N_IT2_vr(i)/T_IT2_vr(i)/rho_IT2_vr(i)
-			endif
-			if(isUdepReadFromFile) uDep_over_rho_vr(i)=(ePot_IT2_vr(i))/rho_IT2_vr(i)
-			!write(*,*)N_IT2_vr(i),T_IT2_vr(i),rho_IT2_vr(i),uDep_over_rho_vr(i)
 		enddo
 
 		Y1 = uDep_over_rho_vr(1)
@@ -1047,9 +463,6 @@ endif
 		xmatrix(2)=bmatrix(1)/amatrix(1,2)-amatrix(1,3)/amatrix(1,2)*xmatrix(3)
 		xmatrix(1)=bmatrix(3)-amatrix(3,2)*xmatrix(2)-amatrix(3,3)*xmatrix(3)
 
-		!write(*,*)amatrix(1,1),amatrix(1,2),amatrix(1,3)
-		!write(*,*)amatrix(2,1),amatrix(2,2),amatrix(2,3)
-		!write(*,*)amatrix(3,1),amatrix(3,2),amatrix(3,3)
 		write(*,*)
 		write(*,*) "Virial A coef=",xmatrix(1)
 		write(*,*) "Virial B coef=",xmatrix(2)
@@ -1062,29 +475,8 @@ endif
 
 	if(isB2FromDippr) call Dippr(CASN,"SVR",HighestT,B2atHighestT,"cm^3|gm")	!second virial coeff
 
-	B2ITfactor=1.00+0.00
-	if((isNist .eqv. .true.) .AND. (doesVirialCalcITpointsExist .eqv. .false.)) then
-		B2atHighestT=Zstd_IT(1) !SMR was here !-6.286700 !
-	endif
-
-	B2atHighestT=B2atHighestT*B2ITfactor
-
 	write(*,'(A9,1x,2(F10.4,3x))')"B2_IT:",B2atHighestT,HighestT
 	write(*,'(A9,1x,2(F10.4,3x))')"B2_IT2:",B2atSubcriticalIT,TofSubCriticalIT
-
-!	VirialTreatmentApplied="No"
-!	if(multi_IT(1)*multi_IT(2) .lt. 1e-11) then	!change it to only consider point 2 on IT to check if virial is needed
-!		write(*,*) "Warning: First and/or second lowest densities are missing in isotherm, virial treatment will apply"
-!		rho_IT(1)=rho_IT_calc(1)
-!		rho_IT(2)=rho_IT_calc(2)
-!		Z_IT(1)=1.0/(1.0-B2atHighestT*rho_IT(1))
-!		Z_IT(2)=1.0+rho_IT(2)*(Zmin1OverRho_IT(3)+(Z_IT(1)-1.0)/rho_IT(1))/2.0
-!		Zmin1OverRho_IT(1)=(Z_IT(1)-1.0)/rho_IT(1)
-!		Zmin1OverRho_IT(2)=(Z_IT(2)-1.0)/rho_IT(2)
-!		T_IT(1)=HighestT
-!		T_IT(2)=HighestT
-!		VirialTreatmentApplied="Yes"
-!	endif
 
 	Zmin1OverRho_IT(0)=B2atHighestT
 
@@ -1114,213 +506,19 @@ endif
 		aDep_IT(4)= -1.0*(rho_IT(6)-rho_IT(4))/6.0*(Zmin1OverRho_IT(4)+4.0*Zmin1OverRho_IT(5)+Zmin1OverRho_IT(6))+aDep_IT(6)
 	endif
 
-	if(is3rdOrderPolZ .eqv. .true.) then
-		!(z-1)/rho vs rho polynomial from rich's Gromacs results
-!		afac = 82.47439886
-!		bfac = -56.37106044
-!		cfac = 16.51999812
-!		dfac = -4.442779206
-
-
-		!(z-1)/rho vs rho polynomial from NIST C12
-
-		afac = 138.6509574
-		bfac = -110.3823253
-		cfac = 33.95336758
-		dfac = -6.448337999
-
-	!	y = a*x**3+b*x**2+c*x+d
-	!	Yint = a/4.0*x**4+b/3.0*x**3+c/2.0*x**2+d*x
-
-		x = rho_IT(1)
-		Yint = afac/4.0*x**4+bfac/3.0*x**3+cfac/2.0*x**2+dfac*x
-		aDep_IT(1) = Yint
-
-		x = rho_IT(2)
-		Yint = afac/4.0*x**4+bfac/3.0*x**3+cfac/2.0*x**2+dfac*x
-		aDep_IT(2) = Yint
-
-		x = rho_IT(3)
-		Yint = afac/4.0*x**4+bfac/3.0*x**3+cfac/2.0*x**2+dfac*x
-		aDep_IT(3) = Yint
-
-		x = rho_IT(4)
-		Yint = afac/4.0*x**4+bfac/3.0*x**3+cfac/2.0*x**2+dfac*x
-		aDep_IT(4) = Yint
-
-		x = rho_IT(5)
-		Yint = afac/4.0*x**4+bfac/3.0*x**3+cfac/2.0*x**2+dfac*x
-		aDep_IT(5) = Yint
-
-		x = rho_IT(6)
-		Yint = afac/4.0*x**4+bfac/3.0*x**3+cfac/2.0*x**2+dfac*x
-		aDep_IT(6) = Yint
-
-		x = rho_IT(7)
-		Yint = afac/4.0*x**4+bfac/3.0*x**3+cfac/2.0*x**2+dfac*x
-		aDep_IT(7) = Yint
-
-		x = rho_IT(8)
-		Yint = afac/4.0*x**4+bfac/3.0*x**3+cfac/2.0*x**2+dfac*x
-		aDep_IT(8) = Yint
-
-		x = rho_IT(9)
-		Yint = afac/4.0*x**4+bfac/3.0*x**3+cfac/2.0*x**2+dfac*x
-		aDep_IT(9) = Yint
-	endif
-
 	do j=iFirstIcPt,nItPts
-			!if(isLinearuDepT .eqv. .true.) then
-			!	aDep_IC(j,1)= ( ThousandOverT_IC(j,1)-ThousandOverT_IC(j,3) )/1000.d0* &
-			!			( uDepT_IC(j,3)+ uDepT_IC(j,1) )/2.0d0+aDep_IT(j)
-			!elseif(isLU .eqv. .true.) then
-
-!				X1 = T_IC(j,1)
-!				X2 = T_IC(j,2)
-!				X3 = T_IC(j,3)
-!				X4 = T_IC(j,3)
-!				Y1 = uDepT_IC(j,1)
-!				Y2 = uDepT_IC(j,2)
-!				Y3 = uDepT_IC(j,3)
-!				Y4 = uDepT_IC(j,3)
-!				call getInterceptSlope(X1,X2,X3,X4,Y1,Y2,Y3,Y4,YINTERCEPT,SLOPE)
-!				aDep_IC(j,1) = aDep_IT(j) + ( SLOPE * log(X3) - YINTERCEPT / X3) - ( SLOPE * log(X1) - YINTERCEPT / X1 )
-
-			!	X1 = 1.0d0/T_IC(j,1)
-			!	X2 = 1.0d0/T_IC(j,2)
-			!	X3 = 1.0d0/T_IC(j,3)
-			!	X4 = 1.0d0/T_IC(j,3)
-			!	Y1 = uDepT_IC(j,1)/T_IC(j,1)
-			!	Y2 = uDepT_IC(j,2)/T_IC(j,2)
-			!	Y3 = uDepT_IC(j,3)/T_IC(j,3)
-			!	Y4 = uDepT_IC(j,3)/T_IC(j,3)
-
-			!	call getInterceptSlope(X1,X2,X3,X4,Y1,Y2,Y3,Y4,YINTERCEPT,SLOPE)
-			!	aDep_IC(j,1) = aDep_IT(j) + ( SLOPE * X1 + YINTERCEPT * log(X1)) - ( SLOPE * X3 + YINTERCEPT * log(X3))
-
-			!elseif(isQU .eqv. .true.) then
-				aDep_IC(j,1)= ( ThousandOverT_IC(j,1)-ThousandOverT_IC(j,3) )/6.d0* &
-						( uDepT_IC(j,3)+4.d0*uDepT_IC(j,2)+ uDepT_IC(j,1) )/1000.d0+aDep_IT(j)
-				if(nPointsOnIC==4) then
-				aDep_IC(j,1)= ( ThousandOverT_IC(j,1)-ThousandOverT_IC(j,4) )/8.d0* &
-						( uDepT_IC(j,4)+3.d0*uDepT_IC(j,3)+3.d0*uDepT_IC(j,2)+ uDepT_IC(j,1) )/1000.d0+aDep_IT(j)
-				endif
-			!endif
-
+		aDep_IC(j,1)= ( ThousandOverT_IC(j,1)-ThousandOverT_IC(j,3) )/6.d0* &
+				( uDepT_IC(j,3)+4.d0*uDepT_IC(j,2)+ uDepT_IC(j,1) )/1000.d0+aDep_IT(j)
+		if(nPointsOnIC==4) then
+		aDep_IC(j,1)= ( ThousandOverT_IC(j,1)-ThousandOverT_IC(j,4) )/8.d0* &
+				( uDepT_IC(j,4)+3.d0*uDepT_IC(j,3)+3.d0*uDepT_IC(j,2)+ uDepT_IC(j,1) )/1000.d0+aDep_IT(j)
+		endif
 	enddo
-
-
-!<===============================This section is for automating aDep calculation but it's incomplete=============================
-adep_IT2=0.0
-rho_IT(0)=0.0
-!write(*,'(14A7)') "i","b3_0","b2_5","b2_0","b1_5","b1_0","b0_5","here","f0_5","f1_0","f1_5","f2_0","f2_5","f3_0"
-isVisited=0 !.false.
-isVisited(0)= 1 !.true.
-!aDep_IT2(7)=-0.755
-!isVisited(7)=.true.
-do j=1,100
-do i=1,9
-	here=isMember(rho_IT,rho_IT(i)-rho_increment*0.0)
-	b0_5=isMember(rho_IT,rho_IT(i)-rho_increment*0.5)
-	b1_0=isMember(rho_IT,rho_IT(i)-rho_increment*1.0)
-	b1_5=isMember(rho_IT,rho_IT(i)-rho_increment*1.5)
-	b2_0=isMember(rho_IT,rho_IT(i)-rho_increment*2.0)
-	b2_5=isMember(rho_IT,rho_IT(i)-rho_increment*2.5)
-	b3_0=isMember(rho_IT,rho_IT(i)-rho_increment*3.0)
-	f0_5=isMember(rho_IT,rho_IT(i)+rho_increment*0.5)
-	f1_0=isMember(rho_IT,rho_IT(i)+rho_increment*1.0)
-	f1_5=isMember(rho_IT,rho_IT(i)+rho_increment*1.5)
-	f2_0=isMember(rho_IT,rho_IT(i)+rho_increment*2.0)
-	f2_5=isMember(rho_IT,rho_IT(i)+rho_increment*2.5)
-	f3_0=isMember(rho_IT,rho_IT(i)+rho_increment*3.0)
-
-	if(isVisited(i) .eq. 0) then
-		if(b1_0 .AND. b0_5 .AND. isVisited(i-2).ne. 0) then
-			aDep_IT2(i)= (rho_IT(i)-rho_IT(i-2))/6.0*(Zmin1OverRho_IT(i-2)+4.0*Zmin1OverRho_IT(i-1)+Zmin1OverRho_IT(i))+aDep_IT2(i-2)
-			IntegrationMethod(i)="1/6-b"
-			isVisited(i)=j
-			exit
-		endif
-		if(b3_0 .AND. b2_0 .AND. b1_0 .AND. isVisited(i-3) .ne. 0) then
-			aDep_IT2(i)= 3.0/8.0*(rho_IT(i)-rho_IT(i-3))/3.0*(Zmin1OverRho_IT(i-3)+3.0*Zmin1OverRho_IT(i-2)+3.0*Zmin1OverRho_IT(i-1)+&
-			Zmin1OverRho_IT(i))+aDep_IT2(i-3)
-
-			IntegrationMethod(i)="3/8-a"
-			isVisited(i)=j
-			exit
-		endif
-		if(b1_5 .AND. b1_0 .AND. b0_5 .AND. isVisited(i-3).ne. 0) then
-			aDep_IT2(i)= 3.0/8.0*(rho_IT(i)-rho_IT(i-3))/3.0*(Zmin1OverRho_IT(i-3)+3.0*Zmin1OverRho_IT(i-2)+3.0*Zmin1OverRho_IT(i-1)+&
-			Zmin1OverRho_IT(i))+aDep_IT2(i-3)
-			IntegrationMethod(i)="3/8-b"
-			isVisited(i)=j
-			exit
-		endif
-		if(b2_0 .AND. b1_0 .AND. isVisited(i-2).ne. 0) then
-			aDep_IT2(i)= (rho_IT(i)-rho_IT(i-2))/6.0*(Zmin1OverRho_IT(i-2)+4.0*Zmin1OverRho_IT(i-1)+Zmin1OverRho_IT(i))+aDep_IT2(i-2)
-			IntegrationMethod(i)="1/6-a"
-			isVisited(i)=j
-			exit
-		endif
-		if(f2_0 .AND. f1_0 .AND. isVisited(i+2).ne. 0) then
-			aDep_IT2(i)= -1.0*(rho_IT(i+2)-rho_IT(i))/6.0*(Zmin1OverRho_IT(i)+4.0*Zmin1OverRho_IT(i+1)+Zmin1OverRho_IT(i+2))+aDep_IT2(i+2)
-			IntegrationMethod(i)="+2-1/6a"
-			isVisited(i)=j
-			exit
-		endif
-		if(f1_0 .AND. f0_5 .AND. isVisited(i+2).ne. 0) then
-			aDep_IT2(i)= -1.0*(rho_IT(i+2)-rho_IT(i))/6.0*(Zmin1OverRho_IT(i)+4.0*Zmin1OverRho_IT(i+1)+Zmin1OverRho_IT(i+2))+aDep_IT2(i+2)
-			IntegrationMethod(i)="+2-1/6b"
-			isVisited(i)=j
-			exit
-		endif
-	endif
-	!write(*,'(I7,13L7)') i,b3_0,b2_5,b2_0,b1_5,b1_0,b0_5,here,f0_5,f1_0,f1_5,f2_0,f2_5,f3_0
-enddo
-enddo
-	
-
-
-
-	!write(*,*) "i	aDep_IT	  aDep_IT2   dev%   Method  isVisited?"
-	!do i=1,9
-	!	write(*,'(I2,3F10.3,A10,I2)') 	i,aDep_IT(i),aDep_IT2(i),abs((aDep_IT2(i)-aDep_IT(i))/aDep_IT(i)*100),&
-	!					IntegrationMethod(i),isVisited(i)
-	!enddo
-
-
-!===================================================================================================================>
 	
 	write(*,*)
 	write(*,*)'===============================Psat Calculation====================================='
 	write(*,*)
 
-	if(isB2Applied) then 
-		B2factor = 1.0
-	else
-		B2factor = 0.0
-	endif
-	if(isB3Applied) then 
-		B3factor = 1.0
-	else
-		B3factor = 0.0
-	endif
-	if(isB4Applied) then 
-		B4factor = 1.0
-	else
-		B4factor = 0.0
-	endif
-	if(isB5Applied) then 
-		B5factor = 1.0
-	else
-		B5factor = 0.0
-	endif
-	if(isB6Applied) then 
-		B6factor = 1.0
-	else
-		B6factor = 0.0
-	endif
-	!T=0.0
 	iExpoErr=0
 	maxIter=500
 	convergeStatus=-2
@@ -1329,34 +527,16 @@ enddo
 		tempPsat=Psat(i) !tempPsat is used for Converge/Diverge check
 		tempRhov=rhoV(i) !tempRhoV is used for Converge/Diverge check
 
-		!====Write Convergence Plot===
-		write(rhoText,'(F7.5)')rho_IC(i)
-		dumString1='.path'
-		dumString2=trim(rhoText)//trim(dumString1)
-		open(7845,file=dumString2)
-		!====Write GvsRho Plot===
-		dumString3='.rhov'
-		dumString2=trim(rhoText)//trim(dumString3)
-		open(53,file=dumString2)
-		if(isConvergencePathNeeded)then
-			open(5553,file=trim(rhoText))
-			write(5553,*) T_IC(i,1), "0.0", rho_IC(i), "0.0"
-		endif
-
-		!=============================
-
 		WRITE(*,*)
 		Write(*,'(A,I2,A,F8.4,A)') "Iterations for Isochore",i,":",rho_IC(i)," (g/ml)"
 		write(*,'(2A3,50A12)')"j","i","Tsat","Psat","rhoV","B2sat",&
 				"aDepSat","uDep","zLiq","zVap","Hvap","drhoV","d2rhoV"	
 		do j=1,maxIter
-			!loopcounter = loopcounter + 1
 			if(j==1)then
 				zLiq(i)=0.001
 			else
 				zLiq(i)=Psat(i)/( rho_IC(i)/MW*8.3144598d0*Tsat(i) )
 			endif
-			!254 continue
 
 			if(isMixedLQ)then
 			if(i==iFirstIcPt)then
@@ -1408,20 +588,7 @@ enddo
 				Tsat(i) = 1000.d0/ ((zLiq(i) - YINTERCEPT)/SLOPE)
 			endif
 
-!			if(isLinearuDepT .eqv. .true.) then
-!				X1 = ThousandOverT_IC(i,1)
-!				X2 = ThousandOverT_IC(i,1)
-!				X3 = ThousandOverT_IC(i,3)
-!				X4 = ThousandOverT_IC(i,3)
-!				Y1 = uDepT_IC(i,1)
-!				Y2 = uDepT_IC(i,1)
-!				Y3 = uDepT_IC(i,3)
-!				Y4 = uDepT_IC(i,3)
-!				call getInterceptSlope(X1,X2,X3,X4,Y1,Y2,Y3,Y4,YINTERCEPT,SLOPE)
-!				uDepTsat(i)= 1000.d0/Tsat(i) * SLOPE + YINTERCEPT
-!				aDepSat(i)= ( 1000.d0/Tsat(i)-ThousandOverT_IC(i,1) )*( uDepTsat(i)+uDepT_IC(i,1) )/2000.d0 + aDep_IC(i,1)
 			if(isLU .eqv. .true.) then
-
 				X1 = T_IC(i,1)
 				X2 = T_IC(i,2)
 				X3 = T_IC(i,3)
@@ -1432,22 +599,7 @@ enddo
 				Y4 = uDepT_IC(i,3)
  				call getInterceptSlope(X1,X2,X3,X4,Y1,Y2,Y3,Y4,YINTERCEPT,SLOPE)
 				uDepTsat(i) = (SLOPE * Tsat(i) + YINTERCEPT)
-
-!				X1 = 1.0d0/T_IC(i,1)
-!				X2 = 1.0d0/T_IC(i,2)
-!				X3 = 1.0d0/T_IC(i,3)
-!				X4 = 1.0d0/T_IC(i,3)
-!				Y1 = uDepT_IC(i,1)/T_IC(i,1)
-!				Y2 = uDepT_IC(i,2)/T_IC(i,2)
-!				Y3 = uDepT_IC(i,3)/T_IC(i,3)
-!				Y4 = uDepT_IC(i,3)/T_IC(i,3)
-!				call getInterceptSlope(X1,X2,X3,X4,Y1,Y2,Y3,Y4,YINTERCEPT,SLOPE)
-!				uDepTsat(i) = (SLOPE / Tsat(i) + YINTERCEPT)*Tsat(i)
-
 			elseif(isQU .eqv. .true.) then
-!				uDepTsat(i)=QuadExtrapolate(T_IC(i,1),uDepT_IC(i,1),T_IC(i,2),uDepT_IC(i,2),&
-!					T_IC(i,3),uDepT_IC(i,3),Tsat(i))
-
 				uDepTsat(i)=QuadExtrapolate(ThousandOverT_IC(i,1),uDepT_IC(i,1),ThousandOverT_IC(i,2),uDepT_IC(i,2),&
 					ThousandOverT_IC(i,3),uDepT_IC(i,3),1000.d0/Tsat(i))	
 			endif
@@ -1460,142 +612,12 @@ enddo
 			TsatOld = Tsat(i)
 			
 
-			if(isThereB2correlationFromLiterature) then
-				if(trim(CASN).eq."74-84-0") then
-					Tr_rec=TC/Tsat(i)	
-					open(2548,file="/home/mostafa/myProjects/SchultzVirialValues/"//trim(CASN)//".Bx")
-					read(2548,*)
-					read(2548,*)B2A,B2B,B2C,B2D,B2E,B2F
-					read(2548,*)B3A,B3B,B3C,B3D,B3E,B3F
-					read(2548,*)B4A,B4B,B4C,B4D,B4E,B4F
-					read(2548,*)B5A,B5B,B5C,B5D,B5E,B5F
-					read(2548,*)B6A,B6B,B6C,B6D,B6E,B6F
-					close(2548)
-					B2sat(i)=B2A*Tr_rec**5+B2B*Tr_rec**4+B2C*Tr_rec**3+B2D*Tr_rec**2+B2E*Tr_rec**1+B2F*Tr_rec**0
-					B3sat(i)=B3A*Tr_rec**5+B3B*Tr_rec**4+B3C*Tr_rec**3+B3D*Tr_rec**2+B3E*Tr_rec**1+B3F*Tr_rec**0	
-					B4sat(i)=B4A*Tr_rec**5+B4B*Tr_rec**4+B4C*Tr_rec**3+B4D*Tr_rec**2+B4E*Tr_rec**1+B4F*Tr_rec**0
-					B5sat(i)=B5A*Tr_rec**5+B5B*Tr_rec**4+B5C*Tr_rec**3+B5D*Tr_rec**2+B5E*Tr_rec**1+B5F*Tr_rec**0
-					B6sat(i)=B6A*Tr_rec**5+B6B*Tr_rec**4+B6C*Tr_rec**3+B6D*Tr_rec**2+B6E*Tr_rec**1+B6F*Tr_rec**0
-				elseif(trim(CASN).eq."111-65-9") then
-			!		!===========Kofke correlation for TraPPE-C8 only================
-					!TC = 568.7308641592
-					Tr_rec=TC/Tsat(i)	
-
-					!B2(cc/g)=-7.4672*(1/Tr)^3+17.7516 (1/Tr)^2-25.9879 (1/Tr)+10.659
-					!T=300-600K
-					B2A=-7.4672	
-					B2B=17.7516 	
-					B2C=-25.9879	
-					B2D=10.659
-					B2sat(i)=B2A*Tr_rec**3+B2B*Tr_rec**2+B2C*Tr_rec+B2D
-
-
-
-					!B3(cc^2/g^2)=-678.8960*(1/Tr)^3+2356.0898*(1/Tr)^2-2729.2549*(1/Tr)+1064.2969
-					!T=350-520K 
-					B3A=-678.8960	
-					B3B=2356.0898	
-					B3C=-2729.2549	
-					B3D=1064.2969
-					B3sat(i)=B3A*Tr_rec**3+B3B*Tr_rec**2+B3C*Tr_rec+B3D	
-
-					!Tr=
-					!B4A=
-					!B4B=
-					!B4C=
-					!B4D=
-					!B4E=
-					!B4sat(i)=B4A*Tr_rec**4+B4B*Tr_rec**3+B4C*Tr_rec**2+B4D*Tr_rec+B4E	
-
-					!write(*,*)Tr_rec,B2sat(j),B3sat(j)
-			!		!==============================================================
-				elseif(trim(CASN).eq."112-40-3") then
-					!===========Kofke correlation for TraPPE-C12 only================
-					Tr_rec=TC/Tsat(i)	
-
-					!Tr=0.53-1.06
-					B2A=-18.0757137788	
-					B2B=50.4498624402	
-					B2C=-62.7312922978	
-					B2D=24.8250498773
-					B2sat(i)=B2A*Tr_rec**3+B2B*Tr_rec**2+B2C*Tr_rec+B2D
-
-					!Tr=
-					!B3A=	
-					!B3B=	
-					!B3C=	
-					!B3D=
-					!B3sat(i)=B3A*Tr_rec**3+B3B*Tr_rec**2+B3C*Tr_rec+B3D	
-
-					!Tr=
-					!B4A=	
-					!B4B=	
-					!B4C=	
-					!B4D=	
-					!B4E=
-					!B4sat(i)=B4A*Tr_rec**4+B4B*Tr_rec**3+B4C*Tr_rec**2+B4D*Tr_rec+B4E	
-
-					!write(*,*)Tr_rec,B2sat(i),B3sat(i)
-					!==============================================================
-				elseif(trim(CASN).eq."7732-18-5") then
-					!===========Kofke correlation for TraPPE-C12 only================
-					Tr_rec=TC/Tsat(i)	
-
-					!T=290-610
-					B2A=-223.8683788	
-					B2B=881.8127394	
-					B2C=-1190.822651	
-					B2D=534.3079787
-					B2sat(i)=B2A*Tr_rec**3+B2B*Tr_rec**2+B2C*Tr_rec+B2D
-
-					!Tr=
-					!B3A=	
-					!B3B=	
-					!B3C=	
-					!B3D=
-					!B3sat(i)=B3A*Tr_rec**3+B3B*Tr_rec**2+B3C*Tr_rec+B3D		
-
-					!write(*,*)Tr_rec,B2sat(i),B3sat(i)
-					!==============================================================
-				endif
-			endif
 			if(doesVirialCalcITpointsExist .AND. doesVirialCalcIT2pointsExist) then
 				B2sat(i) = Acoef + Bcoef/Tsat(i) + Ccoef / Tsat(i)**3
 			endif
 
 			if(isB2FromDippr) call Dippr(CASN,"SVR",Tsat(i),B2sat(i),"cm^3|gm")
 
-			if((isNist .eqv. .true.) .and. (doesVirialCalcITpointsExist .eqv. .false.)) then
-				if(disableExtrapolation) then
-					zLiq(i)=Z_IC(i,1)
-					Tsat(i)=T_IC(i,1)
-					uDepTsat(i)=uDepT_IC(i,1)
-					aDepSat(i)=aDep_IC(i,1)
-				endif
-				!B2sat(i)=Zstd_IC(i,1)
-				!B3sat(i)=P_IC(i,1)
-				!======These xB2 and xB3 coefficients are only for NIST C12=======
-				AB2=1.7146731789
-				BB2=-2499.9292130758
-				CB2=-1447246630.01158
-				DB2=-1.68E+21
-				EB2=3.06E+23
-
-				AB3=-15.7833039202
-				BB3=21971.615762915
-				CB3=3775034339.88898
-				DB3=-2.33E+21
-				EB3=4.31E+23
-				T=Tsat(i)
-				B2sat(i)=AB2+BB2/T+CB2/T**3+DB2/T**8+EB2/T**9
-				B3sat(i)=AB3+BB3/T+CB3/T**3+DB3/T**8+EB3/T**9	
-				!=================================================================
-			endif
-			B2sat(i)=B2sat(i)*B2factor
-			B3sat(i)=B3sat(i)*B3factor
-			B4sat(i)=B4sat(i)*B4factor
-			B5sat(i)=B5sat(i)*B5factor
-			B6sat(i)=B6sat(i)*B6factor
 			expArgAZ1=aDepSat(i)+zLiq(i)-1.d0
 			if(expArgAZ1 > 33)iExpoErr=1
 			if(j==1)then
@@ -1630,24 +652,7 @@ enddo
 				aDepSat(i),uDepTsat(i)/Tsat(i),zLiq(i),zVsat,Hvap(i),rhoVp(i),rhoVpp(i) &
 				,aDepSat(i) - aDep_IC(i,1)
 
-			!<====Write Convergence Plot===
-			write(7845,*) tempRhoV,tempRhoV
-			write(7845,*) tempRhoV,rhoV(i)
-			!=============================>
-
-			!<====Write GvsRho Plot===
-			do kk=1,1000
-				rhoVV=0.001*kk
-				GofRhov=rho_IC(i)*exp(expArgAZ1)*exp(-2.d0*B2sat(i)*rhoVV)*exp(-1.5d0*B3sat(i)*rhoVV**2)
-				GpofRhoV=rho_IC(i)*exp(expArgAZ1)*exp(-2.d0*B2sat(i)*rhoVV)*exp(-1.5d0*B3sat(i)*rhoVV**2) &
-					*( -2.d0*B2sat(i) -3.d0*B3sat(i)*rhoVV )
-				write(53,*) rhoVV,rhoVV,GofRhov !,GpofRhoV
-			enddo
-			write(53,*)
-			write(53,*)
-			!=============================>
-
-			!<====Convergence Check===
+			!<====Convergence Check==========================================
 			PsatIncrement=abs((tempPsat-Psat(i))/Psat(i)*100.0)
 			rhoVIncrement=abs((tempRhoV-rhoV(i))/rhoV(i)*100.0)
 			if(PsatIncrement .le. 1e-3 .and. rhoVIncrement .le. 1e-3) then
@@ -1669,14 +674,9 @@ enddo
 				endif
 			endif
 			if(j .eq. maxIter)then
-				!convergeStatus(i)=-1
 				convergeStatus(i)=1
 				Write(*,'(A,I2,A,F8.4,A)') "Isochore",i,":",rho_IC(i)," (g/ml):"
 				write(*,'(A19,I3,A)') "Convergence Status= ",convergeStatus(i)," (Maximum Iteration s reached)"				
-				
-				!zLiq(i)=0.1
-				!loopcounter = 1
-				!goto 254
 			endif
 
 			tempPsat = Psat(i)
@@ -1687,23 +687,11 @@ enddo
 				Write(*,'(A,I2,A,F8.4,A)') "Isochore",i,":",rho_IC(i)," (g/ml):"
 				write(*,'(A19,I3,A)') "Convergence Status= ",convergeStatus(i)," (Diverged)"				
 			endif
+			!>====================================================================
 
-			!if(rhoV(i) .gt. 1.d0/VC) then 
-				!write(*,*) "rhoV is bigger that critical density. Iteration will stop!"
-				!exit
-			!endif
-			!=============================>
-			if(isConvergencePathNeeded)then
-				write(5553,*) Tsat(i), Psat(i), rho_IC(i), rhoV(i) 
-			endif
 		enddo
-
-
 			close(53)
 			close(7845)
-			if(isConvergencePathNeeded)then
-				close(5553)
-			endif
 	enddo
 
 
@@ -1727,11 +715,7 @@ enddo
 			RhoLDip(i) = 0.0
 			HvapDip(i) = 0.0
 		endif
-		if(isNist) then
-			!PsatDip(i)=simTime_IC(i,1)
-			!RhoLDip(i)=rho_IC(i)
-			HvapDip(i)=eqTime_IC(i,1)
-		endif
+
 		PsatLnDev(i)=LOG(Psat(i)/PsatDip(i))*100.0
 		!For DIPPR compounds Tsat should be calculated at the imposed rho. T_IC(i,1) is not always equal to DIPPR, because initial Tsat is not always known
 		TsatLnDev(i)=LOG(Tsat(i)/T_IC(i,1))*100.0 
@@ -1812,7 +796,6 @@ enddo
 		write(*,'(A7,I1,A,1x,15F8.2)') "T_IC",icount,":",T_IC(i,1),T_IC(i,2)
 	enddo
 	write(*,*)	
-	!write(*,'(A9,1x,A8)')"Virial?",VirialTreatmentApplied
 
 
 	write(*,*)
@@ -1823,16 +806,10 @@ enddo
 	write(*,'(11(A12,1x))')"T","rho","Z","aDep","uDep"
 	do i=iFirstIcPt,nItPts
 		do k=1,3
-!			if(k==1)then
-!				T=Tsat(i)
-!			else
-!				T=T_IC(i,k)
-!			endif
+
 			write(*,'(F12.2,1x,10(F12.6,1x))') T_IC(i,k),rho_IC(i),Z_IC(i,k),&
 					aDep_IC(i,k),uDepT_IC(i,k)/T_IC(i,k)
 		enddo
-	!write(*,*)
-	!write(*,*)
 	enddo
 	write(*,*)
 	write(*,*)'===============================IT Info====================================='
@@ -1870,82 +847,26 @@ enddo
 			"Conv","Tr","Tsat","Dev%","Psat","Dev%","rhoL","Dev%","rhoV","Hvap","Dev%",&
 			"PsatDip","rhoLDip","HvapDip","B2sat","aDepSat","uDepSat"
 	do i=iFirstIcPt,nItPts
-		!if(convergeStatus(i)==1)&
 		write(*,'(I5,F7.3,F10.2,F7.2,F18.12,F9.2,F10.4,F7.2,F12.8,F10.4,F7.2,F10.6,F10.4,F10.4,F10.4,F10.4,F10.4)') &
 		convergeStatus(i),Tsat(i)/TC,Tsat(i),TsatLnDev(i),Psat(i),PsatLnDev(i),rho_IC(i),RhoLLnDev(i),rhoV(i),Hvap(i),HvapLnDev(i),&
 		PsatDip(i),RhoLDip(i), HvapDip(i),B2sat(i),aDepSat(i),uDepTSat(i)/Tsat(i)
 	enddo
 
-	if (isCriticalNeeded)then
-		write(*,*)
-		write(*,*)'===============================Critical Properties====================================='
-		write(*,*)
-
-		nDiverged = 0
-		do i=iFirstIcPt,nItPts
-			if(convergeStatus(i)/=1) nDiverged = nDiverged + 1
-		enddo
-		!write(*,*)nDiverged
-		do i=1,4	!SMR: 4pts
-			TsatSL(i) = Tsat(i-iFirstIcPt+nItPts-nDiverged)
-			rhoLSL(i) = rho_IC(i-iFirstIcPt+nItPts-nDiverged)
-			rhoVSL(i) = rhoV(i-iFirstIcPt+nItPts-nDiverged)
-			PsatSL(i) = Psat(i-iFirstIcPt+nItPts-nDiverged)
-		enddo
-
-
-	!	do i=1,5
-	!		write(*,*)TsatSL(i),rhoLSL(i),rhoVSL(i),PsatSL(i)
-	!	enddo
-		call ScalingLaw(CritT,CritRho)
-		CritTemp = CritT
-
-		Y1 = log(PsatSL(1))
-		Y2 = log(PsatSL(2))
-		Y3 = log(PsatSL(3))
-		Y4 = log(PsatSL(4))
-
-		X1 = 1000.0/TsatSL(1)
-		X2 = 1000.0/TsatSL(2)
-		X3 = 1000.0/TsatSL(3)
-		X4 = 1000.0/TsatSL(4)
-				
-		call getInterceptSlope(X1,X2,X3,X4,Y1,Y2,Y3,Y4,YINTERCEPT,SLOPE)
-		CritP = EXP(slope*1000.0/CritT+yintercept)
-		write(*,'(A49)')"Dev%"
-		write(*,'(A25,1x,F10.2,3x,F10.2)') "Critical Temperature[K]:",CritT,(CritT-TC)/TC*100
-		write(*,'(A25,1x,F10.4,3x,F10.2)') "Critical Density[g/ml]:",CritRho,(CritRho-1.d0/VC)/(1.d0/VC)*100
-		write(*,'(A25,1x,F10.4,3x,F10.2)') "Critical Pressure[MPa]:",CritP,(CritP-PC)/PC*100
-
-		call CriticalPcalc(CritTemp,CritPress,Accentric)
-		write(*,'(A25,1x,F10.4,3x,F10.2)') "Critical Pressure LK[MPa]:",CritPress,(CritPress-PC)/PC*100
-		write(*,'(A25,1x,F10.4,3x,F10.2)') "Accentric Factor:",Accentric
-	endif
-
-	write(*,*)
-	write(*,*)'===============================Final Results====================================='
-	write(*,*)
-!	if(isMoleculeUnknown.eqv..false.) then
-!		write(*,'(3(A10,1x),A1,8(A7,1x),A1,12(A9,1x))') &
-!			"POT","FAM","NAME","|","%PsatR","%PsatB","%TsatR" &
-!			,"%TsatB","%RhoLR","%RhoLB","%HvapR","%HvapB" &
-!			,"|",(trim(SigOfSite(j)),trim(EpsOfSite(j)),trim(AOfSite(j)),j=1,nSiteTypes)
-!		write(*,'(3(A10,1x),A1,8(f7.2,1x),A1,6(f9.4,1x,f9.2,1x,f9.2,1x))') &
-!			trim(potentialName),trim(FAM),trim(myName),"|",PsatRmsd &
-!			,PsatBIAS,TsatRmsd,TsatBIAS,RhoLRmsd,RhoLBIAS,HvapRmsd,HvapBIAS, &
-!			"|",(sigma(j),epsilon(j),AorN(j),j=1,nSiteTypes)
-!	else
-!		write(*,'(8(A7,1x),A1,12(A9,1x))') &
-!			"%PsatR","%PsatB","%TsatR" &
-!			,"%TsatB","%RhoLR","%RhoLB","%HvapR","%HvapB" &
-!			,"|",(trim(SigOfSite(j)),trim(EpsOfSite(j)),trim(AOfSite(j)),j=1,nSiteTypes)
-!		write(*,'(8(f7.2,1x),A1,6(f9.4,1x,f9.2,1x,f9.2,1x))') &
-!			PsatRmsd,PsatBIAS,TsatRmsd,TsatBIAS,RhoLRmsd,RhoLBIAS,HvapRmsd,HvapBIAS, &
-!			"|",(sigma(j),epsilon(j),AorN(j),j=1,nSiteTypes)
-!	endif
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+	
 contains
 
 logical function isMember(array,target)

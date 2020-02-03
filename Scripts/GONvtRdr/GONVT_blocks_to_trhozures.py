@@ -65,4 +65,4 @@ elif single_or_intra == "intra":
 
 print('T_K RHO_GCC Z Z_std Ures Ures_std N')
 for i in range(0, len(T_K)):
-	print(T_K[i], RHO_GCC[i], Z[i], Z_std[i], Ures[i], Ures_std[i], TOT_MOL[i])
+	print(T_K[i], RHO_GCC[i], Z[i], Ures[i], Z_std[i], Ures_std[i], TOT_MOL[i])

@@ -23,6 +23,12 @@ program	main
 	logical isB2Applied,isB3Applied,isB4Applied,isB5Applied,isB6Applied,disableExtrapolation,isThereB2correlationFromLiterature
 	double precision :: Tfile(nMaxData),rhofile(nMaxData),Pfile(nMaxData),Zfile(nMaxData),Zstdfile(nMaxData), &
 			ePotfile(nMaxData),eBondfile(nMaxData),eVdwfile(nMaxData),eIntraVdwfile(nMaxData),simTimefile(nMaxData),eqTimefile(nMaxData)
+	
+	double precision :: Uresfile(nMaxData), UresStdfile(nMaxData)
+	double precision :: Ures_IT(20), Uresstd_IT(20)
+	double precision :: Ures_IT_vr(20), Uresstd_IT_vr(20), Ures_IT_vr2(20), Uresstd_IT_vr2(20)
+	double precision :: Ures_IC(maxICs,maxICTs), Uresstd_IC(maxICs,maxICTs)		
+	
 	Double Precision rhoIsochore(maxICs),tIsochore(maxICs,maxICTs),zIsochore(maxICs,maxICTs),uDepIsochore(maxICs,maxICTs)
 	Double Precision rhoIsochoreCalc(maxICs),T_IC_calc(maxICs,maxICTs),zIsochoreCalc(maxICs,maxICTs),uDepIsochoreCalc(maxICs,maxICTs)
 	double precision :: T_IT(20),rho_IT(0:20),P_IT(20),Z_IT(20),Zstd_IT(20),ePot_IT(20),eBond_IT(20),eVdw_IT(20),&
@@ -35,7 +41,7 @@ program	main
 		Zstd_IC(maxICs,maxICTs),ePot_IC(maxICs,maxICTs),&
 		eBond_IC(maxICs,maxICTs),eVdw_IC(maxICs,maxICTs),eIntraVdw_IC(maxICs,maxICTs), &
 		simTime_IC(maxICs,maxICTs), eqTime_IC(maxICs,maxICTs)
-	integer :: N(15),Npick(50),Npick_vir(50),Nfile(50),N_IT(50),N_IC(maxICs,maxICTs),N_IT_vr(50),N_IT2_vr(50)
+	double precision :: N(15),Npick(50),Npick_vir(50),Nfile(50),N_IT(50),N_IC(maxICs,maxICTs),N_IT_vr(50),N_IT2_vr(50)
 	integer :: convergeStatus(maxICs)
 	double precision :: Zmin1OverRho_IT(0:15),aDep_IT(0:15),uDepT_IT(15),ThousandOverT_IT(15),aDep_IT2(0:15)
 	double precision :: Zmin1OverRho_IC(maxICs,maxICTs),aDep_IC(maxICs,maxICTs),uDepT_IC(maxICs,maxICTs), &
@@ -669,26 +675,26 @@ program	main
 	write(*,*)
 	write(*,*)'===============================Reading From Simulator Output====================================='
 	write(*,*)
-	write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)','eMol(kcal/mol)','&
-				eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
+	!write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)','eMol(kcal/mol)','&
+	!	eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
+	write(*,'(A2,1x,A9,1x,A9,1x,2(A9,1x),2(A15,1x),A6)')'i','T(K)','rho(g/ml)','Z','Zstd','Ures', 'UresStd','nMolec'
 
 	open(4321,file=LammpsRdrOut)
 	read(4321,*)
-	!ioErr=0
 	do i=1,nMaxData	
 
-		read(4321,*,ioStat=ioErr) Tfile(i),rhofile(i),Pfile(i),Zfile(i),Zstdfile(i),ePotfile(i), &
-				eBondfile(i),eVdwfile(i),eIntraVdwfile(i),simTimefile(i),eqTimefile(i),Nfile(i)
+		!read(4321,*,ioStat=ioErr) Tfile(i),rhofile(i),Pfile(i),Zfile(i),Zstdfile(i),ePotfile(i), &
+		!		eBondfile(i),eVdwfile(i),eIntraVdwfile(i),simTimefile(i),eqTimefile(i),Nfile(i)
+		read(4321,*,ioStat=ioErr) Tfile(i),rhofile(i),Zfile(i),Zstdfile(i),Uresfile(i), UresStdfile(i), Nfile(i)
 		if(ioErr == -1)then !End of file reached
-			!iEnd=1
-			!print*,'End of File reached'
 			nData=i-1
 			exit
 		endif
-		write(*,'(I2,1x,f9.2,1x,f9.5,1x,3(f9.3,1x),4(f15.3,1x),2(f15.1,1x),I6)') &
-				i,Tfile(i),rhofile(i),Pfile(i),Zfile(i),Zstdfile(i),ePotfile(i), &
-				eBondfile(i),eVdwfile(i),eIntraVdwfile(i),simTimefile(i),eqTimefile(i),Nfile(i)
-
+		!write(*,'(I2,1x,f9.2,1x,f9.5,1x,3(f9.3,1x),4(f15.3,1x),2(f15.1,1x),I6)') &
+		!		i,Tfile(i),rhofile(i),Pfile(i),Zfile(i),Zstdfile(i),ePotfile(i), &
+		!		eBondfile(i),eVdwfile(i),eIntraVdwfile(i),simTimefile(i),eqTimefile(i),Nfile(i)
+		write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f9.3,1x),2(f15.3,1x),f6.1)') &
+		i, Tfile(i),rhofile(i),Zfile(i),Zstdfile(i),Uresfile(i), UresStdfile(i), Nfile(i)
 
 	enddo
 	close(4321)
@@ -706,15 +712,17 @@ program	main
 			
 				T_IT(j)=Tfile(i)
 				rho_IT(j)=rhofile(i)
-				P_IT(j)=Pfile(i)
+				!P_IT(j)=Pfile(i)
 				Z_IT(j)=Zfile(i)
 				Zstd_IT(j)=Zstdfile(i)
-				ePot_IT(j)=ePotfile(i)
-				eBond_IT(j)=eBondfile(i)
-				eVdw_IT(j)=eVdwfile(i)
-				eIntraVdw_IT(j)=eIntraVdwfile(i)
-				simTime_IT(j)=simTimefile(i) 
-				eqTime_IT(j)=eqTimefile(i)
+				Ures_IT(j) = Uresfile(i)
+				Uresstd_IT(j) = UresStdfile(i)
+				!ePot_IT(j)=ePotfile(i)
+				!eBond_IT(j)=eBondfile(i)
+				!eVdw_IT(j)=eVdwfile(i)
+				!eIntraVdw_IT(j)=eIntraVdwfile(i)
+				!simTime_IT(j)=simTimefile(i) 
+				!eqTime_IT(j)=eqTimefile(i)
 				N_IT(j)=Nfile(i)
 			exit
 			endif
@@ -729,15 +737,17 @@ program	main
 				if(tolerance .lt. maxTolerance) then
 					T_IC(j,k)=Tfile(i)
 					rho_IC(j)=rhofile(i)
-					P_IC(j,k)=Pfile(i)
+					!P_IC(j,k)=Pfile(i)
 					Z_IC(j,k)=Zfile(i)
 					Zstd_IC(j,k)=Zstdfile(i)
-					ePot_IC(j,k)=ePotfile(i)
-					eBond_IC(j,k)=eBondfile(i)
-					eVdw_IC(j,k)=eVdwfile(i)
-					eIntraVdw_IC(j,k)=eIntraVdwfile(i)
-					simTime_IC(j,k)=simTimefile(i)
-					eqTime_IC(j,k)=eqTimefile(i)
+					Ures_IC(j,k) = Uresfile(i)
+					Uresstd_IC(j,k) = UresStdfile(i)
+					!ePot_IC(j,k)=ePotfile(i)
+					!eBond_IC(j,k)=eBondfile(i)
+					!eVdw_IC(j,k)=eVdwfile(i)
+					!eIntraVdw_IC(j,k)=eIntraVdwfile(i)
+					!simTime_IC(j,k)=simTimefile(i)
+					!eqTime_IC(j,k)=eqTimefile(i)
 					N_IC(j,k)=Nfile(i)
 				exit
 				endif
@@ -756,15 +766,17 @@ program	main
 				T_IT_vr(j)=Tfile(i)
 
 				rho_IT_vr(j)=rhofile(i)
-				P_IT_vr(j)=Pfile(i)
+				!P_IT_vr(j)=Pfile(i)
 				Z_IT_vr(j)=Zfile(i)
 				Zstd_IT_vr(j)=Zstdfile(i)
-				ePot_IT_vr(j)=ePotfile(i)
-				eBond_IT_vr(j)=eBondfile(i)
-				eVdw_IT_vr(j)=eVdwfile(i)
-				eIntraVdw_IT_vr(j)=eIntraVdwfile(i)
-				simTime_IT_vr(j)=simTimefile(i) 
-				eqTime_IT_vr(j)=eqTimefile(i)
+				Ures_IT_vr(j) = Uresfile(i)
+				Uresstd_IT_vr(j) = UresStdfile(i)				
+				!ePot_IT_vr(j)=ePotfile(i)
+				!eBond_IT_vr(j)=eBondfile(i)
+				!eVdw_IT_vr(j)=eVdwfile(i)
+				!eIntraVdw_IT_vr(j)=eIntraVdwfile(i)
+				!simTime_IT_vr(j)=simTimefile(i) 
+				!eqTime_IT_vr(j)=eqTimefile(i)
 				N_IT_vr(j)=Nfile(i)
 			exit
 			endif
@@ -782,15 +794,17 @@ program	main
 				T_IT2_vr(j)=Tfile(i)
 
 				rho_IT2_vr(j)=rhofile(i)
-				P_IT2_vr(j)=Pfile(i)
+				!P_IT2_vr(j)=Pfile(i)
 				Z_IT2_vr(j)=Zfile(i)
 				Zstd_IT2_vr(j)=Zstdfile(i)
-				ePot_IT2_vr(j)=ePotfile(i)
-				eBond_IT2_vr(j)=eBondfile(i)
-				eVdw_IT2_vr(j)=eVdwfile(i)
-				eIntraVdw_IT2_vr(j)=eIntraVdwfile(i)
-				simTime_IT2_vr(j)=simTimefile(i) 
-				eqTime_IT2_vr(j)=eqTimefile(i)
+				Ures_IT_vr2(j) = Uresfile(i)
+				Uresstd_IT_vr2(j) = UresStdfile(i)				
+				!ePot_IT2_vr(j)=ePotfile(i)
+				!eBond_IT2_vr(j)=eBondfile(i)
+				!eVdw_IT2_vr(j)=eVdwfile(i)
+				!eIntraVdw_IT2_vr(j)=eIntraVdwfile(i)
+				!simTime_IT2_vr(j)=simTimefile(i) 
+				!eqTime_IT2_vr(j)=eqTimefile(i)
 				N_IT2_vr(j)=Nfile(i)
 			exit
 			endif
@@ -818,8 +832,9 @@ program	main
 
 
 	write(*,*) "Isothermic Points"
-	write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)','eMol(kcal/mol)','&
-				eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
+	!write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)','eMol(kcal/mol)','&
+	!			eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
+	write(*,'(A2,1x,A9,1x,A9,1x,2(A15,1x),A6)') 'i','T(K)','rho(g/ml)','Z','Ures','nMolec'				
 	do i=1,nItPts
 
 		multi_IT(i)=T_IT(i)*rho_IT(i)
@@ -828,18 +843,21 @@ program	main
 			write(*,'(A31,1x,I2,A6,1x,2F10.5)') "Warning: Data lacks row number",i,'T,rho:',T_IT_calc(i),rho_IT_calc(i)
 			cycle
 		endif
-		write(*,'(I2,1x,f9.2,1x,f9.5,1x,3(f9.3,1x),4(f15.3,1x),2(f15.1,1x),I6)')&
-		i,T_IT(i),rho_IT(i),P_IT(i),Z_IT(i),Zstd_IT(i),ePot_IT(i),eBond_IT(i),eVdw_IT(i),&
-		eIntraVdw_IT(i),simTime_IT(i),eqTime_IT(i),N_IT(i)
+		!write(*,'(I2,1x,f9.2,1x,f9.5,1x,3(f9.3,1x),4(f15.3,1x),2(f15.1,1x),I6)')&
+		!i,T_IT(i),rho_IT(i),P_IT(i),Z_IT(i),Zstd_IT(i),ePot_IT(i),eBond_IT(i),eVdw_IT(i),&
+		!eIntraVdw_IT(i),simTime_IT(i),eqTime_IT(i),N_IT(i)
+		write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f15.6,1x),f6.1)') i,T_IT(i),rho_IT(i),Z_IT(i),Ures_IT(i), N_IT(i)
 
 	enddo
 
 	do j=iFirstIcPt,nItPts
 		write(*,*)
 		write(*,'(A28,2x,I2)') "Isochoric Points on Isochore",j
-		write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)',&
-				'eMol(kcal/mol)','&
-				eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
+		!write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)',&
+		!		'eMol(kcal/mol)','&
+		!		eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
+		write(*,'(A2,1x,A9,1x,A9,1x,2(A15,1x),A6)')'i','T(K)','rho(g/ml)','Z','Ures', 'nMolec'
+
 		do k=1,nPointsOnIC
 			multi_IC(j,k)=T_IC(j,k)*rho_IC(j)
 			if(multi_IC(j,k) < 1e-11) then
@@ -847,9 +865,11 @@ program	main
 				write(*,'(A31,1x,2I2,A6,1x,2F10.5)') "Warning: Data lacks row number",j,k,'T,rho:',T_IC_calc(j,k),rho_IC_calc(j)
 				cycle
 			endif
-		write(*,'(I2,1x,f9.2,1x,f9.5,1x,3(f9.3,1x),4(f15.3,1x),2(f15.1,1x),I6)')&
-		k,T_IC(j,k),rho_IC(j),P_IC(j,k),Z_IC(j,k),Zstd_IC(j,k),ePot_IC(j,k),eBond_IC(j,k),eVdw_IC(j,k),&
-		eIntraVdw_IC(j,k),simTime_IC(j,k),eqTime_IC(j,k),N_IC(j,k)
+		!write(*,'(I2,1x,f9.2,1x,f9.5,1x,3(f9.3,1x),4(f15.3,1x),2(f15.1,1x),I6)')&
+		!k,T_IC(j,k),rho_IC(j),P_IC(j,k),Z_IC(j,k),Zstd_IC(j,k),ePot_IC(j,k),eBond_IC(j,k),eVdw_IC(j,k),&
+		!eIntraVdw_IC(j,k),simTime_IC(j,k),eqTime_IC(j,k),N_IC(j,k)
+		write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f15.6,1x),f6.1)') k,T_IC(j,k),rho_IC(j),Z_IC(j,k),Ures_IC(j,k), N_IC(j,k)
+
 		enddo
 	enddo
 
@@ -858,8 +878,9 @@ program	main
 if(doesVirialCalcITpointsExist) then
 	write(*,*)
 	write(*,*) "Supercritical Virial Calculation Points"
-	write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)','eMol(kcal/mol)','&
-				eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
+	!write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)','eMol(kcal/mol)','&
+	!			eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
+	write(*,'(A2,1x,A9,1x,A9,1x,2(A15,1x),A6)')'i','T(K)','rho(g/ml)','Z','Ures','nMolec'				
 	do i=1,4
 		multi_IT(i)=T_IT_vr(i)*rho_IT_vr(i)
 		if(multi_IT(i) < 1e-11) then
@@ -867,9 +888,8 @@ if(doesVirialCalcITpointsExist) then
 			write(*,'(A31,1x,I2,A6,1x,2F10.5)') "Warning: Data lacks row number",i,'T,rho:',HighestT,rho_IT_calc_vr(i)
 			cycle
 		endif
-		write(*,'(I2,1x,f9.2,1x,f9.5,1x,3(f9.3,1x),4(f15.3,1x),2(f15.1,1x),I6)')&
-		i,T_IT_vr(i),rho_IT_vr(i),P_IT_vr(i),Z_IT_vr(i),Zstd_IT_vr(i),ePot_IT_vr(i),eBond_IT_vr(i),eVdw_IT_vr(i),&
-		eIntraVdw_IT_vr(i),simTime_IT_vr(i),eqTime_IT_vr(i),N_IT_vr(i)
+		write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f15.7,1x),f6.1)')&
+		i,T_IT_vr(i),rho_IT_vr(i),Z_IT_vr(i),Ures_IT_vr(i),N_IT_vr(i)
 
 	enddo
 endif
@@ -877,8 +897,10 @@ endif
 if(doesVirialCalcIT2pointsExist) then
 	write(*,*)
 	write(*,*) "Subcritical Virial Calculation  Points"
-	write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)','eMol(kcal/mol)','&
-				eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
+	!write(*,'(A2,1x,A9,1x,A9,1x,3(A9,1x),6(A15,1x),A6)')'i','T(K)','rho(g/ml)','P(atm)','Z','Zstd','ePot(kcal/mol)','eMol(kcal/mol)','&
+	!			eVdw(kcal/mol)','IVdw(kcal/mol)','RunTime(ns)','EqTime(ns)','nMolec'
+	write(*,'(A2,1x,A9,1x,A9,1x,2(A15,1x),A6)')'i','T(K)','rho(g/ml)','Z','Ures','nMolec'				
+
 	do i=1,4
 		multi_IT(i)=T_IT2_vr(i)*rho_IT2_vr(i)
 		if(multi_IT(i) < 1e-11) then
@@ -886,20 +908,17 @@ if(doesVirialCalcIT2pointsExist) then
 			write(*,'(A31,1x,I2,A6,1x,2F10.5)') "Warning: Data lacks row number",i,'T,rho:',T_IT2_vr(i),rho_IT_calc_vr(i)
 			cycle
 		endif
-		write(*,'(I2,1x,f9.2,1x,f9.5,1x,3(f9.3,1x),4(f15.3,1x),2(f15.1,1x),I6)')&
-		i,T_IT2_vr(i),rho_IT2_vr(i),P_IT2_vr(i),Z_IT2_vr(i),Zstd_IT2_vr(i),ePot_IT2_vr(i),eBond_IT2_vr(i),eVdw_IT2_vr(i),&
-		eIntraVdw_IT2_vr(i),simTime_IT2_vr(i),eqTime_IT2_vr(i),N_IT2_vr(i)
+		write(*,'(I2,1x,f9.2,1x,f9.5,1x,2(f15.7,1x),f6.1)')&
+		i,T_IT2_vr(i),rho_IT2_vr(i),Z_IT2_vr(i),Ures_IT_vr2(i), N_IT2_vr(i)
 
 	enddo
 endif
 
 	do i=1,nItPts
 		Zmin1OverRho_IT(i)=(Z_IT(i)-1.0)/rho_IT(i)
-		uDepT_IT(i)=(ePot_IT(i)-eBond_IT(i)-eIntraVdw_IT(i))/1.987d0*1000.d0/N_IT(i)
-		!uDepT_IT(i)=(ePot_IT(i))/1.987d0*1000.d0/N_IT(i)
-		!uDepT_IT(i)=(ePot_IT(i)-eBond_IT(i))/1.987d0*1000.d0/N_IT(i)
-		!uDepT_IT(i)=(ePot_IT(i)-eIntraVdw_IT(i))/1.987d0*1000.d0/N_IT(i)
-		!uDepT_IT(i)=(eVdw_IT(i))/1.987d0*1000.d0/N_IT(i)
+		!uDepT_IT(i)=(ePot_IT(i)-eBond_IT(i)-eIntraVdw_IT(i))/1.987d0*1000.d0/N_IT(i)
+		uDepT_IT(i) = Ures_IT(i) * T_IT(i)
+
 		if(isRichUdep)                uDepT_IT(i)=(ePot_IT(i))/1.987d0*1000.d0/N_IT(i)	!Based on Rich's inputfile
 		if(isUdepReadFromFile)        uDepT_IT(i)=(ePot_IT(i))*T_IT(i)
 		if(isUdepkcalReadFromFile)    uDepT_IT(i)=(ePot_IT(i)-eBond_IT(i))/1.987d0*1000.d0/N_IT(i)
@@ -911,11 +930,9 @@ endif
 	do j=iFirstIcPt,nItPts
 		do k=1,nPointsOnIC
 			Zmin1OverRho_IC(j,k)=(Z_IC(j,k)-1.0)/rho_IC(j)
-			uDepT_IC(j,k)=(ePot_IC(j,k)-eBond_IC(j,k)-eIntraVdw_IC(j,k))/1.987d0*1000.d0/N_IC(j,k)
-			!uDepT_IC(j,k)=(ePot_IC(j,k))/1.987d0*1000.d0/N_IC(j,k)
-			!uDepT_IC(j,k)=(ePot_IC(j,k)-eBond_IC(j,k))/1.987d0*1000.d0/N_IC(j,k)
-			!uDepT_IC(j,k)=(ePot_IC(j,k)-eIntraVdw_IC(j,k))/1.987d0*1000.d0/N_IC(j,k)
-			!uDepT_IC(j,k)=(eIntraVdw_IC(j,k))/1.987d0*1000.d0/N_IC(j,k)
+			!uDepT_IC(j,k)=(ePot_IC(j,k)-eBond_IC(j,k)-eIntraVdw_IC(j,k))/1.987d0*1000.d0/N_IC(j,k)
+			uDepT_IC(j,k)= Ures_IC(j,k) * T_IC(j,k)
+
 			if(isRichUdep) uDepT_IC(j,k)=(ePot_IC(j,k))/1.987d0*1000.d0/N_IC(j,k)	!Based on Rich's inputfile
 			if(isUdepReadFromFile) uDepT_IC(j,k)=(ePot_IC(j,k)-eBond_IC(j,k))*T_IC(j,k)
 			if(isUdepkcalReadFromFile) uDepT_IC(j,k)=(ePot_IC(j,k))/1.987d0*1000.d0/N_IC(j,k)
@@ -986,7 +1003,9 @@ endif
 
 		do i=1,4
 			!Zmin1OverRho_IT2(i)=(Z_IT2_vr(i)-1.0)/rho_IT2_vr(i)
-			uDep_over_rho_vr(i)=(ePot_IT2_vr(i)-eBond_IT2_vr(i)-eIntraVdw_IT2_vr(i))/1.987d0*1000.d0/N_IT2_vr(i)/T_IT2_vr(i)/rho_IT2_vr(i)
+			!uDep_over_rho_vr(i)=(ePot_IT2_vr(i)-eBond_IT2_vr(i)-eIntraVdw_IT2_vr(i))/1.987d0*1000.d0/N_IT2_vr(i)/T_IT2_vr(i)/rho_IT2_vr(i)
+			uDep_over_rho_vr(i)=Ures_IT_vr2(i)/rho_IT2_vr(i)
+
 			if(isRichUdep)then
 				uDep_over_rho_vr(i)=(ePot_IT2_vr(i))/1.987d0*1000.d0/N_IT2_vr(i)/T_IT2_vr(i)/rho_IT2_vr(i)
 			endif
@@ -1782,7 +1801,7 @@ enddo
 	write(*,'(A9,1x,15(F8.2))')"T_IT:",HighestT
 	write(*,'(A9,1x,15(I8))')"N_IT:",nItPts
 	write(*,'(A9,1x,15(F8.4))')"RHO_IT:",(rho_IT(j),j=1,nItPts)
-	write(*,'(A9,1x,15(I8))')"NMOL:",(N_IT(j),j=1,nItPts)
+	write(*,'(A9,1x,15(f6.1))')"NMOL:",(N_IT(j),j=1,nItPts)
 	write(*,*)
 	write(*,'(A9,1x,15(F8.4))')"RHO_HIGH:",highestRho
 	write(*,'(A9,1x,15(I8))')"N_IC:",nICs

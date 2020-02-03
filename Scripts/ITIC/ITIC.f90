@@ -1272,7 +1272,7 @@ subroutine MaxMinT(CASN,PropID,Tmin,Tmax)
   	CALL GETLOG(login)
 
 	dipfile=trim(CASN)//".dip"
-	dipfile="/home/"//trim(login)//"/Dippr/CASN/"//trim(CASN)//".dip"
+	dipfile="/home/"//trim(login)//"/Git/Dippr/CASN/"//trim(CASN)//".dip"
 	open(1,file=dipfile)
 		read(1,*)dStr,nLines 
 		read(1,*)
@@ -1322,7 +1322,7 @@ subroutine Dippr(CASN,Wanted,Tkelvin,value,Units)
   	CALL GETLOG(login)
 
 	dipFile="PropUnitID.dip"
-	dipFile="/home/"//trim(login)//"/Dippr/Database/PropUnitID.dip"
+	dipFile="/home/"//trim(login)//"/Git/Dippr/Database/PropUnitID.dip"
 	open(2,file=dipFile)
 		read(2,*,iostat=ioErr)
 		if(ioErr.ne.0)write(*,*)  'Dippr: error reading 1st line of PropUnitID.dip' 
@@ -1347,7 +1347,7 @@ subroutine Dippr(CASN,Wanted,Tkelvin,value,Units)
 	close(2)
 	!write(*,*)  'PropUnitID read ok.'
 	dipfile=trim(CASN)//".dip"
-	dipfile="/home/"//trim(login)//"/Dippr/CASN/"//trim(CASN)//".dip"
+	dipfile="/home/"//trim(login)//"/Git/Dippr/CASN/"//trim(CASN)//".dip"
 	open(1,file=dipfile)
 		read(1,*)dStr,nLines 
 		read(1,*)

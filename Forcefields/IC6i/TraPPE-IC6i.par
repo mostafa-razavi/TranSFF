@@ -1,0 +1,91 @@
+*
+* Parameter File for TraPPE (Martin and Siepmann) United Atom Force Field
+*
+* Parameters From:
+*
+* "Transferable potentials for phase equilibria. 1. United-atom description of n-alkanes." 
+* Martin, Marcus G., and J. Ilja Siepmann.
+* The Journal of Physical Chemistry B 102.14 (1998): 2569-2577.
+* DOI: 10.1021/jp972543+
+*
+*
+* "Novel configurational-bias Monte Carlo method for branched molecules.
+* Transferable potentials for phase equilibria. 2. United-atom description of branched alkanes."
+* Martin, Marcus G., and J. Ilja Siepmann. 
+* The Journal of Physical Chemistry B 103.21 (1999): 4508-4517.
+* DOI: 10.1021/jp984742e
+*
+*
+
+
+BONDS
+!
+!V(bond) = Kb(b - b0)**2
+!
+!Kb: kcal/mole/A**2
+!b0: A
+!
+! Kb (kcal/mol) = Kb (K) * Boltz. const.; (9999999999 if no stretching)
+!
+!atom type     Kb              b0        description
+CH31 CH22        9999999999      1.540
+CH22 CH21        9999999999      1.540
+CH21 CH1        9999999999      1.540
+CH1 CH32        9999999999      1.540
+CH1 CH33        9999999999      1.540
+
+ANGLES
+!
+!V(angle) = Ktheta(Theta - Theta0)**2
+!
+!Ktheta: kcal/mole/rad**2
+!Theta0: degrees
+!
+! Ktheta (kcal/mol) = Ktheta (K) * Boltz. const.
+!
+!atom types   Ktheta     Theta0 
+CH31 CH22 CH21    31250     114.00
+CH22 CH21 CH1    31250     114.00
+CH21 CH1 CH32    31250     112.00 
+CH21 CH1 CH33    31250     112.00 
+CH32 CH1 CH33    31250     112.00 
+
+
+DIHEDRALS
+!
+!V(dihedral) = Kchi(1 + cos(n(chi) - delta))
+!
+!Kchi: kcal/mole
+!n: multiplicity
+!delta: degrees
+!
+! Kchi (kcal/mol) = Kchi (K) * Boltz. const.
+! Boltzmann = 0.0019872041 kcal / (mol * K)
+!
+! TraPPE Inherits most of its dihedrals from OPLS UA
+! X-CT-CH1-X fitted to QM data in this work
+!
+!atom types         Kchi          n    delta         description
+X   CH21 CH22 X         0.000000    0      0.0  ! TraPPE I  (ex. n-butane) 
+X   CH21 CH22 X       355.029964    1      0.0  ! ""
+X   CH21 CH22 X       -68.189775    2    180.0  ! ""
+X   CH21 CH22 X       791.317812    3      0.0  ! ""
+X   CH21 CH1 X      -251.059767    0      0.0  ! TraPPE II (ex. 2-MBut)
+X   CH21 CH1 X       428.729993    1      0.0  ! ""
+X   CH21 CH1 X      -111.850111    2    180.0  ! ""
+X   CH21 CH1 X       441.270224    3      0.0  ! ""
+
+
+NONBONDED_MIE
+!
+!V(mie) = 4*eps*((sig_ij/r_ij)^n-(sig_ij/r_ij)^6)
+!
+!atom   eps          sig_ij     n    description
+CH31     98.00       3.750      12   ! TraPPE I
+CH32     98.00       3.750      12   ! TraPPE I
+CH33     98.00       3.750      12   ! TraPPE I
+CH21     46.00       3.950      12   ! TraPPE I 
+CH22     46.00       3.950      12   ! TraPPE I 
+CH1      10.00       4.680      12   ! TraPPE II 
+
+

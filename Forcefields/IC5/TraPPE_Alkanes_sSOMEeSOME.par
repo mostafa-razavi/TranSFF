@@ -113,5 +113,6 @@ NONBONDED_MIE
 !V(mie) = 4*eps*((sig_ij/r_ij)^n-(sig_ij/r_ij)^6)
 !
 !atom   eps          sig_ij     n    description
-CH3     some_nbp2_site1      some_nbp1_site1      16   
-CT      some_nbp2_site2      some_nbp1_site2      16   
+CH3     some_nbp2_site1      some_nbp1_site1      12   
+CH2     some_nbp2_site2      some_nbp1_site2      12   
+CH1     some_nbp2_site3      some_nbp1_site3      12   

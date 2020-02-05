@@ -1,0 +1,5 @@
+Site	sig_low	sig_high	eps_low	eps_high	n_low	n_high
+CH3	3.71	3.79	94	106	12	12
+CH2	3.91	3.99	46	54	12	12
+CH1	4.64	4.72	4	20	12	12
+CT	6.36	6.44	1	9	12	12

@@ -1,0 +1,28 @@
+MASS   1  CH31   15.035 C  ! 
+MASS   2  CH32   15.035 C  ! 
+MASS   3  CH33   15.035 C  ! 
+MASS   4  CH34   15.035 C  ! 
+MASS   5  CH35   15.035 C  ! 
+MASS   6  CH2    14.027 C  !
+MASS   7  CH1    13.019 C  !
+MASS   8   CT    12.011 C  !
+
+DEFA FIRS none LAST none
+AUTOGENERATE ANGLES DIHEDRALS
+
+RESI C8O        0.00 ! 2,2,4-trimethylpentane (isooctane)
+GROUP
+ATOM C1 CH31    0.00 !
+ATOM C2 CT      0.00 ! C6    C7    C8 ! CH32  CH33  CH34
+ATOM C3 CH2     0.00 !   \  /     /   !    \  /     / 
+ATOM C4 CH1     0.00 !    C2    C4    !     CT    CH1
+ATOM C5 CH35    0.00 !   /  \  /  \   !    /  \  /  \
+ATOM C6 CH32    0.00 ! C1    C3    C5 !  CH31  CH2  CH35
+ATOM C7 CH33    0.00 !
+ATOM C8 CH34    0.00 !
+BOND C1 C2 C2 C3 C3 C4
+BOND C4 C5 C2 C6 C2 C7
+BOND C4 C8
+PATCHING FIRS NONE LAST NONE
+
+END

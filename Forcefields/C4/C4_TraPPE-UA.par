@@ -60,4 +60,4 @@ NONBONDED_MIE
 !
 !atom   eps	sig_ij	n	description
 CH3	98.0	3.75	12	! TraPPE-UA
-CH2	48.0	3.95	12	! TraPPE-UA
+CH2	46.0	3.95	12	! TraPPE-UA

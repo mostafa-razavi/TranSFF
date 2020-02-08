@@ -107,9 +107,9 @@ NONBONDED_MIE
 !
 !atom   eps	sig_ij	n	description
 CH3	98.0	3.75	12	! TraPPE-UA
-CH2	48.0	3.95	12	! TraPPE-UA
-CH21	48.0	3.95	12	! TraPPE-UA
+CH2	46.0	3.95	12	! TraPPE-UA
+CH21	46.0	3.95	12	! TraPPE-UA
 CH22	some_nbp2_site1    some_nbp1_site1	12	! TraPPE-UA
-CH23	48.0	3.95	12	! TraPPE-UA
-CH24	48.0	3.95	12	! TraPPE-UA
-CH25	48.0	3.95	12	! TraPPE-UA
+CH23	46.0	3.95	12	! TraPPE-UA
+CH24	46.0	3.95	12	! TraPPE-UA
+CH25	46.0	3.95	12	! TraPPE-UA

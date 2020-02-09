@@ -46,6 +46,6 @@ mbar_zminus1overRho_err = mbar_z_err / mbar_rho_gcc
 
 print('T_K RHO_GCC Z Z_std Ures Ures_std N', file = OutFile)
 for i in range(0, len(mbar_temp_k)):
-	print(mbar_temp_k[i], mbar_rho_gcc[i], mbar_z[i], mbar_z_err[i], mbar_u_res[i], mbar_u_res_err[i], mbar_Nmolec[i], Neff[i], file = OutFile)
+	print(mbar_temp_k[i], mbar_rho_gcc[i], mbar_z[i], mbar_u_res[i], mbar_z_err[i], mbar_u_res_err[i], mbar_Nmolec[i], Neff[i], file = OutFile)
 
 OutFile.close()

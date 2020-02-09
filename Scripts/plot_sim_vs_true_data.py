@@ -36,8 +36,8 @@ dsim_data = numpy.loadtxt(dsim_data_file, skiprows=1)
 dsim_temp_k = dsim_data[:,0]
 dsim_rho_gcc = dsim_data[:,1]
 dsim_z = dsim_data[:,2]
-dsim_z_std = dsim_data[:,3]
-dsim_u_res = dsim_data[:,4]
+dsim_u_res = dsim_data[:,3]
+dsim_z_std = dsim_data[:,4]
 dsim_u_res_std = dsim_data[:,5]
 dsim_zminus1overRho = ( dsim_z - 1 ) / dsim_rho_gcc
 dsim_zminus1overRho_err = dsim_z_std / dsim_rho_gcc

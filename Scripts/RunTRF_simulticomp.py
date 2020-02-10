@@ -6,14 +6,14 @@ import scipy
 
 # Input parameters ##################
 run_name = "SimultaneousTRF_C2_N500_select9"
-molecules_array = [ "C2", "C12" ]
+molecules_array = ["C2", "C12"]
+datafile_keyword=["MiPPE", "MiPPE"]
 site_names_array = ["CH3", "CH2"]
 
 ref_array1="3.81-127 3.79-134 3.78-131 3.77-133 3.75-129" #C2 
 ref_array2="3.81-127_3.95-74 3.79-134_3.97-67 3.78-131_3.99-70 3.77-133_4.01-68 3.75-129_4.03-72" #C12
 
 raw_par_path="$HOME/Git/TranSFF/Forcefields/MiPPE-GEN_Alkanes_SOME.par"
-datafile_keyword="MiPPE"
 GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
 z_wt="0.80"
 u_wt="0.20"
@@ -46,14 +46,18 @@ nnbp = 2
 
 #===================================================
 molecules = ""
+datafile_keywords_string = ""
 all_molecules_ref_string = ""
 for imolec in range(0, len(molecules_array)):
     molecules = molecules + molecules_array[imolec] + " "
+    datafile_keywords_string = datafile_keywords_string + datafile_keyword_array[imolec] + " "
     vars()['ref_array' + str(imolec+1)] = "\"" + vars()['ref_array' + str(imolec+1)] + "\""
     all_molecules_ref_string = all_molecules_ref_string + vars()['ref_array' + str(imolec+1)] + " "
 all_molecules_ref_string = all_molecules_ref_string[:-1]
 molecules = molecules[:-1]
 molecules =  "\"" + molecules + "\""
+datafile_keywords_string = datafile_keywords_string[:-1]
+datafile_keywords_string =  "\"" + datafile_keywords_string + "\""
 
 
 log = open("trf.log", "w")
@@ -81,7 +85,7 @@ def objective_function(x):
     arg2 = prefix
     arg3 = molecules
     arg4 = raw_par_path
-    arg5 = datafile_keyword
+    arg5 = datafile_keywords_string
     arg6 = GOMC_exe
     arg7 = z_wt
     arg8 = u_wt

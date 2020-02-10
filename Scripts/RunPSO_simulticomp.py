@@ -5,55 +5,55 @@ from multiprocessing import Process, Pool
 import numpy
 
 # Input parameters ##################
-run_name = "SimultaneousPSO_C2_N500_select9"
-molecules_array = [ "C2", "C12" ]
-site_names_array = ["CH3", "CH2"]
+run_name = "SimultaneousPSO_IC8-22DMB_N500_select9"
+molecules_array = ["IC8", "22DMB"]
+datafile_keyword_array=[ "REFPROP", "MiPPE"]
+site_names_array = ["CT"]
 
-ref_array1="3.81-127 3.79-134 3.78-131 3.77-133 3.75-129" #C2 
-ref_array2="3.81-127_3.95-74 3.79-134_3.97-67 3.78-131_3.99-70 3.77-133_4.01-68 3.75-129_4.03-72" #C12
+ref_array1 = "3.780-120.2_4.693-13.7_6.305-1.15 3.78-123_4.73-25_6.32-5 3.79-120_4.68-10_6.35-8" #IC8 
+ref_array2 = "3.8-123-3.8-120_4.0-58.0-6.30-1.5 3.8-123-3.8-120_4.0-58.0-6.31-0.5" #22DMB 
 
-raw_par_path="$HOME/Git/TranSFF/Forcefields/MiPPE-GEN_Alkanes_SOME.par"
-datafile_keyword="MiPPE"
+raw_par_path="$HOME/Git/TranSFF/Forcefields/TranSFF0_Alkanes_CT-SOME.par"
 GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
-z_wt="0.80"
-u_wt="0.20"
+z_wt="0.8"
+u_wt="0.2"
 n_wt="0.0001"
 Nsnapshots="500"
 rerun_inp="none"
 number_of_lowest_Neff="1"
 target_Neff="25"
-Nproc_per_particle="6"
+Nproc_per_particle="5"
 ITIC_subset_name="select9"
-n_exp = 16
+n_exp = 12
 
 
 # Set PSO parameters ################
-swarm_size = 4
-max_iterations = 100
+swarm_size = 6
+max_iterations = 50
 tol = 1e-6
 
 # Set PSO bounds and initial guesses ################
-lb = [3.70, 127.0, 3.95, 67.0]
-ub = [3.81, 134.0, 4.03, 74.0]
-initial_guess = [[3.78, 131], [], [], []]
+lb = [6.27, 0.3]
+ub = [6.33, 5.0]
+initial_guess = [[], [], [], [], [], []]
 nnbp = 2
-
-
-
-
 
 
 
 #============================================================================================
 molecules = ""
+datafile_keywords_string = ""
 all_molecules_ref_string = ""
 for imolec in range(0, len(molecules_array)):
     molecules = molecules + molecules_array[imolec] + " "
+    datafile_keywords_string = datafile_keywords_string + datafile_keyword_array[imolec] + " "
     vars()['ref_array' + str(imolec+1)] = "\"" + vars()['ref_array' + str(imolec+1)] + "\""
     all_molecules_ref_string = all_molecules_ref_string + vars()['ref_array' + str(imolec+1)] + " "
 all_molecules_ref_string = all_molecules_ref_string[:-1]
 molecules = molecules[:-1]
 molecules =  "\"" + molecules + "\""
+datafile_keywords_string = datafile_keywords_string[:-1]
+datafile_keywords_string =  "\"" + datafile_keywords_string + "\""
 
 
 log = "pso.log"
@@ -74,9 +74,9 @@ def objective_function(x):
         for isite in range(0, len(site_names_array)):
             for inbp in range(0, nnbp):
                 if inbp/nnbp == 0:
-                    vars()['sig' + str(isite)] = round( sig_eps_nnn[isite * nnbp + inbp], 5)
+                    vars()['sig' + str(isite)] = round( sig_eps_nnn[isite * nnbp + inbp], 4)
                 else:
-                    vars()['eps' + str(isite)] = round( sig_eps_nnn[isite * nnbp + inbp], 5)
+                    vars()['eps' + str(isite)] = round( sig_eps_nnn[isite * nnbp + inbp], 4)
 
         site_sig_eps_nnn = ""
         for isite in range(0, len(site_names_array)):
@@ -88,7 +88,7 @@ def objective_function(x):
         arg2 = prefix
         arg3 = molecules
         arg4 = raw_par_path
-        arg5 = datafile_keyword
+        arg5 = datafile_keywords_string
         arg6 = GOMC_exe
         arg7 = z_wt
         arg8 = u_wt

@@ -6,7 +6,7 @@ site_sig_eps_nnn=$1
 prefix=$2
 molecules=$3
 raw_par_path=$4
-datafile_keyword=$5
+datafile_keywords_string=$5
 GOMC_exe=$6
 z_wt=$7
 u_wt=$8
@@ -20,6 +20,7 @@ ITIC_subset_name=${15}
 
 
 molecules_array=($molecules)
+datafile_keywords=($datafile_keywords_string)
 last_arg=$(echo "15 + ${#molecules_array[@]}" | bc)
 j=-1
 for ((i = 16; i <= $last_arg; i++ )); do
@@ -40,10 +41,10 @@ do
     echo "${prefix}_${site_sig_eps_nnn}" "$ref_array" >> $CD/reference_list.log        
 
     select_itic_points=$(cat $HOME/Git/TranSFF/Molecules/${molec}/${molec}_${ITIC_subset_name}.trho)
-    data_file="$HOME/Git/TranSFF/Data/${molec}/${datafile_keyword}_${ITIC_subset_name}.res"
+    data_file="$HOME/Git/TranSFF/Data/${molec}/${datafile_keywords[i]}_${ITIC_subset_name}.res"
 
-    eval "bash $HOME/Git/TranSFF/Scripts/simulticomp_pre.sh $key ${molec} \"$select_itic_points\" $Nproc ${site_sig_eps_nnn} \"$ref_array\" $data_file ${datafile_keyword} $raw_par_path $GOMC_exe $z_wt $u_wt $n_wt" "$Nsnapshots" "$rerun_inp" "$number_of_lowest_Neff" "$target_Neff"
-    echo "bash $HOME/Git/TranSFF/Scripts/simulticomp_pre.sh $key ${molec} \"$select_itic_points\" $Nproc ${site_sig_eps_nnn} \"$ref_array\" $data_file ${datafile_keyword} $raw_par_path $GOMC_exe $z_wt $u_wt $n_wt" "$Nsnapshots" "$rerun_inp" "$number_of_lowest_Neff" "$target_Neff"
+    eval "bash $HOME/Git/TranSFF/Scripts/simulticomp_pre.sh $key ${molec} \"$select_itic_points\" $Nproc ${site_sig_eps_nnn} \"$ref_array\" $data_file ${datafile_keywords[i]} $raw_par_path $GOMC_exe $z_wt $u_wt $n_wt" "$Nsnapshots" "$rerun_inp" "$number_of_lowest_Neff" "$target_Neff"
+    echo "bash $HOME/Git/TranSFF/Scripts/simulticomp_pre.sh $key ${molec} \"$select_itic_points\" $Nproc ${site_sig_eps_nnn} \"$ref_array\" $data_file ${datafile_keywords[i]} $raw_par_path $GOMC_exe $z_wt $u_wt $n_wt" "$Nsnapshots" "$rerun_inp" "$number_of_lowest_Neff" "$target_Neff"
     echo
 done
 
@@ -74,7 +75,7 @@ do
     if [ -e "$key" ]; then
         echo "There is a folder associated to this parameter set. simulticomp_post.sh script will not run!"
     else
-        bash $HOME/Git/TranSFF/Scripts/simulticomp_post.sh $key ${molec} "$select_itic_points" $Nproc "${site_sig_eps_nnn}" "$ref_array" $HOME/Git/TranSFF/Data/${molec}/${datafile_keyword}_${ITIC_subset_name}.res ${datafile_keyword} $raw_par_path $GOMC_exe $z_wt $u_wt $n_wt "$Nsnapshots" "$rerun_inp" "$number_of_lowest_Neff" "$target_Neff" &
+        bash $HOME/Git/TranSFF/Scripts/simulticomp_post.sh $key ${molec} "$select_itic_points" $Nproc "${site_sig_eps_nnn}" "$ref_array" $HOME/Git/TranSFF/Data/${molec}/${datafile_keywords[i]}_${ITIC_subset_name}.res ${datafile_keywords[i]} $raw_par_path $GOMC_exe $z_wt $u_wt $n_wt "$Nsnapshots" "$rerun_inp" "$number_of_lowest_Neff" "$target_Neff" &
     fi
 done
 wait

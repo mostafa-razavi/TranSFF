@@ -6,7 +6,7 @@ LitsatExt=($4)
 LitsatLabel=($5) 
 
 ITICres="ITIC.out"
-OutFile="${molec}.png"
+OutFile="${molec}_vle.png"
 
 ITICfile="$HOME/Git/TranSFF/Molecules/${molec}/${molec}.itic"
 Expsat="$HOME/Git/TranSFF/Expsat/${molec}.dipsat"
@@ -28,7 +28,7 @@ Simsat="ITIC.sat"
 
 #============Gnuplot Script Starts==========#
 gnuplot -persist <<PLOT
-set terminal pngcairo size 1500,750 enhanced font "Times,20"
+set terminal pngcairo size 2250,750 enhanced font "Times,20"
 set termoption dashe
 set output '${OutFile}'
 set autoscale x
@@ -37,7 +37,7 @@ set autoscale y
 ##########################################
 ############ Start multiplot #############
 ##########################################
-set multiplot layout 1,2 rowsfirst
+set multiplot layout 1,3 rowsfirst
 
 
 ##########################################
@@ -80,8 +80,25 @@ plot \
 
 unset key
 unset label
+unset xrange
 
+##########################################
+# --- Hvap
+##########################################
+set xlabel "{T} [{K}]"
+set ylabel "{{/Symbol D}H_{v} [KJ/mol]}"
+set key on inside left bottom
 
+plot \
+"$Expsat" u 1:4 smooth csplines with lines lt 1 lw 2 lc rgb "black" title "${ExpsatLabel}",\
+\
+"${Litsat[1]}" skip 1 u 1:5 with points pt ${PT[1]} ps 2 lw 3 lc rgb "${PC[1]}" title "${LitsatLabel[1]}",\
+"${Litsat[0]}" skip 1 u 1:5 with points pt ${PT[0]} ps 2 lw 3 lc rgb "${PC[0]}" title "${LitsatLabel[0]}",\
+\
+"$Simsat" u 3:10	with points pt 6 ps 2 lw 3 lc rgb "red" title "${SimsatLabel}"
+
+unset key
+unset label
 
 ##########################################
 ############ End multiplot ###############

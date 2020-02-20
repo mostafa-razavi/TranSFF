@@ -1,0 +1,87 @@
+*
+* Parameter File for TraPPE (Martin and Siepmann) United Atom Force Field
+*
+* Parameters From:
+*
+* "Transferable potentials for phase equilibria. 1. United-atom description of n-alkanes." 
+* Martin, Marcus G., and J. Ilja Siepmann.
+* The Journal of Physical Chemistry B 102.14 (1998): 2569-2577.
+* DOI: 10.1021/jp972543+
+*
+*
+* "Novel configurational-bias Monte Carlo method for branched molecules.
+* Transferable potentials for phase equilibria. 2. United-atom description of branched alkanes."
+* Martin, Marcus G., and J. Ilja Siepmann. 
+* The Journal of Physical Chemistry B 103.21 (1999): 4508-4517.
+* DOI: 10.1021/jp984742e
+*
+*
+
+
+BONDS
+!
+!V(bond) = Kb(b - b0)**2
+!
+!Kb: kcal/mole/A**2
+!b0: A
+!
+! Kb (kcal/mol) = Kb (K) * Boltz. const.; (9999999999 if no stretching)
+!
+!atom type     Kb              b0        description
+CH31 CH21        9999999999      1.540   ! TraPPE I  (ex. n-propane)
+CH21 CH22        9999999999      1.540   ! TraPPE I  (ex. n-propane)
+CH22 CH23        9999999999      1.540   ! TraPPE I  (ex. n-propane)
+CH23 CH32        9999999999      1.540   ! TraPPE I  (ex. n-propane)
+
+
+ANGLES
+!
+!V(angle) = Ktheta(Theta - Theta0)**2
+!
+!Ktheta: kcal/mole/rad**2
+!Theta0: degrees
+!
+! Ktheta (kcal/mol) = Ktheta (K) * Boltz. const.
+!
+!atom types   Ktheta     Theta0 
+CH31 CH21 CH22    31250     114.00  ! TraPPE I  (ex. n-butane)
+CH21 CH22 CH23    31250     114.00  ! TraPPE I  (ex. n-butane)
+CH22 CH23 CH32    31250     114.00  ! TraPPE I  (ex. n-butane)
+
+
+
+DIHEDRALS
+!
+!V(dihedral) = Kchi(1 + cos(n(chi) - delta))
+!
+!Kchi: kcal/mole
+!n: multiplicity
+!delta: degrees
+!
+! Kchi (kcal/mol) = Kchi (K) * Boltz. const.
+! Boltzmann = 0.0019872041 kcal / (mol * K)
+!
+! TraPPE Inherits most of its dihedrals from OPLS UA
+! X-CT-CH1-X fitted to QM data in this work
+!
+!atom types         Kchi          n    delta         description
+X   CH21 CH22 X         0.000000    0      0.0  ! TraPPE I  (ex. n-butane) 
+X   CH21 CH22 X       355.029964    1      0.0  ! ""
+X   CH21 CH22 X       -68.189775    2    180.0  ! ""
+X   CH21 CH22 X       791.317812    3      0.0  ! ""
+X   CH22 CH23 X         0.000000    0      0.0  ! TraPPE I  (ex. n-butane) 
+X   CH22 CH23 X       355.029964    1      0.0  ! ""
+X   CH22 CH23 X       -68.189775    2    180.0  ! ""
+X   CH22 CH23 X       791.317812    3      0.0  ! ""
+
+
+NONBONDED_MIE
+!
+!V(mie) = 4*eps*((sig_ij/r_ij)^n-(sig_ij/r_ij)^6)
+!
+!atom   eps	sig_ij	n	description
+CH31	98.0	3.75	12	! TraPPE-UA
+CH32	98.0	3.75	12	! TraPPE-UA
+CH21	some_nbp2_site1    some_nbp1_site1	12	! TraPPE-UA
+CH22	46.0	3.95	12	! TraPPE-UA
+CH23	46.0	3.95	12	! TraPPE-UA

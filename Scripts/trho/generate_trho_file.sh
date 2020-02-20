@@ -4,7 +4,7 @@ round() {
   printf "%.${2}f" "${1}"
 }
 
-select_what="select6sat3lowrho3"
+select_what="select3sat3"
 forcefield="MiPPE"
 inFile="${forcefield}_${select_what}.res"
 

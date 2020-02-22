@@ -25,14 +25,14 @@ true_data = numpy.loadtxt(true_data_file, skiprows=1)
 true_temp_k = true_data[:,0]
 true_rho_gcc = true_data[:,1]
 true_z = true_data[:,2]
-true_u_res = true_data[:,4]
+true_u_res = true_data[:,3]
 true_zminus1overRho = ( true_z - 1 ) / true_rho_gcc
 
 dsim_data = numpy.loadtxt(dsim_data_file, skiprows=1)
 dsim_temp_k = dsim_data[:,0]
 dsim_rho_gcc = dsim_data[:,1]
 dsim_z = dsim_data[:,2]
-dsim_u_res = dsim_data[:,4]
+dsim_u_res = dsim_data[:,3]
 dsim_zminus1overRho = ( dsim_z - 1 ) / dsim_rho_gcc
 
 # Calculate deviations

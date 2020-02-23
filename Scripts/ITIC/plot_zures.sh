@@ -5,7 +5,7 @@ ITIC_trhozures_label=($3)
 trimZ="$4"
 trimU="$5"
 
-PT=(6 6 6 6 6)
+PT=(6 8 12 10 14)
 PC=(red blue green orange cyan)
 OutFile="${molec}_zures.png"
 
@@ -41,14 +41,21 @@ UresMaxIC=$(echo "${UresMaxIC[*]}" | sort -nr | head -n1)
 ZMinIT=$(echo "${ZMinIT[*]}" | sort -nr | tail -n1)
 TUresMaxIC=$(echo "scale=4; $UresMaxIC*$T_IT*0.95" | bc )
 
+trimZx1=$(echo "scale=1; ${trimZ}*1" | bc 2> /dev/null)
+trimUx1=$(echo "scale=1; ${trimU}*1" | bc 2> /dev/null)
+
 if [ "$trimZ" == "yes-trimZ" ]; then
     Zm1rhoMinIC=$(echo "scale=4; ($ZMinIT-1)/$RHO_IT2*1.4" | bc )
+elif [ "$trimZx1" == "$trimZ" ]; then
+    Zm1rhoMinIC="$trimZ"
 else
     Zm1rhoMinIC=""
 fi
 
 if [ "$trimU" == "yes-trimU" ]; then
     TUresMaxIC=$(echo "scale=4; $UresMaxIC*$T_IT*0.95" | bc )
+elif [ "$trimUx1" == "$trimU" ]; then
+    TUresMaxIC="$trimU"
 else
     TUresMaxIC=""
 fi

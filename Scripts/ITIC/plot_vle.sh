@@ -15,7 +15,7 @@ ExpsatLabel="DIPPR"
 Litsat[0]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[0]}"
 Litsat[1]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[1]}"
 
-PT=(6 6 6)
+PT=(8 12 10)
 PC=("blue" "green" "orange")
 
 CASN=$(grep 'CASN:' ${ITICfile} | awk '{print $2}')

@@ -1,16 +1,26 @@
 #!/bin/bash
 CD=${PWD}
 
-molecules_array="C2 C3 C4"
-Forcefiled_name="MiPPE"
-para_file="$HOME/Git/TranSFF/Forcefields/MiPPE-GEN_Alkanes.par"
-config_filename="VDW_6M.conf"
-gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
+Forcefiled_name="TraPPE-SWF"
+molecules_array="IC4 IC5 IC6 23DMB 2MH 25DMH 34DMH NP IC8 22DMB 22DMPE 22DMH 33DMH"
+para_file="$HOME/myProjects/GOMC/ITIC/TraPPE-SWF_branched-alkanes_CH3-3.723-101.68_CH2-3.993-51.28_CH1-4.709-12.74_CT-6.222-1.7/TraPPE-SWF_Alkanes_CH3-3.723-101.68_CH2-3.993-51.28_CH1-4.709-12.74_CT-6.222-1.7.par"
+config_filename="FSWITCH_4M_rc1214_light.conf"
+Nproc=26 #$(nproc)
 select="all"
 nblocks="5"
-Nproc=8 #$(nproc)
 OutputName="nvt"
+gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
 
+#============Plots Settings=============
+LitsatExt="trappe-gcmc"
+LitsatLabel="TraPPE-GCMC"
+ITIC_trhozures_filename="trhozures.res TraPPE.res"
+ITIC_trhozures_label="$Forcefiled_name TraPPE"
+trimZ="no-trimZ" 
+trimU="yes-trimU"
+
+
+#======================================
 rm -rf ${CD}/COMMANDS.parallel
 molecules_array=($molecules_array)
 for molec in "${molecules_array[@]}"
@@ -41,6 +51,7 @@ do
     cd ${CD}/${molec}
     bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GONVT_BlockAvg.sh Blk_${OutputName}_BOX_0.dat $ndataskip $nblocks
     bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GONvtRdr.sh nvt.inp ${OutputName}
-    bash $HOME/Git/TranSFF/Scripts/ITIC/plot_coexistence.sh ${molec} trhozures.res $Forcefiled_name "mippe-gcmc" "MiPPE-GCMC"   # last two arguments (lit. extention and label) could be arrays
+    bash $HOME/Git/TranSFF/Scripts/ITIC/plot_vle.sh ${molec} trhozures.res $Forcefiled_name "$LitsatExt" "$LitsatLabel"   # last two arguments (lit. extention and label) could be arrays
+    bash $HOME/Git/TranSFF/Scripts/ITIC/plot_zures.sh ${molec} "$ITIC_trhozures_filename" "$ITIC_trhozures_label" $trimZ $trimU
     cd $CD
 done

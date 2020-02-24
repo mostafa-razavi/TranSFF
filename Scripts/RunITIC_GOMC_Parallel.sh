@@ -3,9 +3,9 @@
 # Example:
 # bash RunITIC_GOMC_Parallel.sh C4 C4_TraPPE-UA.par FSHIFT_BULK_LONG.conf "360.00/0.6220 0.6220/95.00" yes 5
 # bash RunITIC_GOMC_Parallel.sh C4 C4_TraPPE-UA.par FSHIFT_BULK_LONG.conf all no
-# bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh 22DMH 22DMH_TranSFF0.par FSHIFT_BULK_4M.conf all yes 8
-# bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh 22DMH 22DMH_TranSFF0.par FSHIFT_BULK_4M.conf all yes 8
-# bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh 22DMH /home/mostafa/myProjects/TransFF/bAlkanes/TranSFF0_Alkanes.par FSHIFT_BULK_4M.conf all "$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT" yes 8
+# bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh 22MH 22MH_TranSFF0.par FSHIFT_BULK_4M.conf all yes 8
+# bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh 22MH 22MH_TranSFF0.par FSHIFT_BULK_4M.conf all yes 8
+# bash ~/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh 22MH /home/mostafa/myProjects/TransFF/bAlkanes/TranSFF0_Alkanes.par FSHIFT_BULK_4M.conf all "$HOME/Git/GOMC/GOMC-FSHIFT2-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT" yes 8
 
 # S. Mostafa Razavi (sr87@zips.uakron.edu)
 

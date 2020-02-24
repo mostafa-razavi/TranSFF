@@ -2,7 +2,7 @@
 CD=${PWD}
 
 Forcefiled_name="TraPPE-SWF"
-molecules_array="IC4 IC5 IC6 23DMB 2MH 25DMH 34DMH NP IC8 22DMB 22DMPE 22DMH 33DMH"
+molecules_array="IC4 IC5 IC6 23MB 2MH 25MH 34MH NP IC8 22MB 22MP 22MH 33MH"
 para_file="$HOME/myProjects/GOMC/ITIC/TraPPE-SWF_branched-alkanes_CH3-3.723-101.68_CH2-3.993-51.28_CH1-4.709-12.74_CT-6.222-1.7/TraPPE-SWF_Alkanes_CH3-3.723-101.68_CH2-3.993-51.28_CH1-4.709-12.74_CT-6.222-1.7.par"
 config_filename="FSWITCH_4M_rc1214_light.conf"
 Nproc=26 #$(nproc)

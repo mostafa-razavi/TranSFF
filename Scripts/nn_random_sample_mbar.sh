@@ -1,7 +1,7 @@
 #!/bin/bash
 CD=${PWD}
 gomc_exe_address="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
-raw_par="23DMB_TranSFF_sSOMEeSOME.par"
+raw_par="23MB_TranSFF_sSOMEeSOME.par"
 sig_eps_nnn_array="paste here list of parameter sets"
 
 sig_eps_nnn_array=($sig_eps_nnn_array)
@@ -9,7 +9,7 @@ sig_eps_nnn_array=($sig_eps_nnn_array)
 ref_array="3.500-100.00_4.400-40.00"
 config_filename="FSHIFT_6M.conf"
 Nproc="9"
-molec="23DMB"
+molec="23MB"
 
 molecules_array=($molecules_array)
 

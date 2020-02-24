@@ -8,12 +8,12 @@ import numpy
 
 
 # Input parameters ##################
-molecule="23DMB"
+molecule="23MB"
 NS=2
 config_filename="FSHIFT_BULK_2M.conf"
 nproc="5"
-selected_itic_points = "0.5133/427.22 0.6673/286.69 525.00/0.2053 525.00/0.5133 525.00/0.6673"  # 23DMB select5
-true_data_file="$HOME/Git/TranSFF/Data/23DMB/TranSFF0_select5.res" 
+selected_itic_points = "0.5133/427.22 0.6673/286.69 525.00/0.2053 525.00/0.5133 525.00/0.6673"  # 23MB select5
+true_data_file="$HOME/Git/TranSFF/Data/23MB/TranSFF0_select5.res" 
 true_data_label="TranSFF0"                                                              
 Z_WT="0.5"
 U_WT="0.5"

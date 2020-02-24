@@ -1,0 +1,22 @@
+MASS   1  CH4    16.043 C  ! 
+MASS   2  CH3e   15.035 C  ! 
+MASS   3  CH3a   15.035 C  ! 
+MASS   4  CH3b   15.035 C  ! 
+MASS   5  CH2    14.027 C  !
+MASS   6  CH1    13.019 C  !
+MASS   7   CT    12.011 C  !
+
+RESI C6D        0.00 ! 2,2-dimethylbutane
+GROUP
+ATOM C1 CH3b    0.00 ! C5  C6
+ATOM C2 CT      0.00 !  \ /
+ATOM C3 CH2     0.00 !   C2   C4
+ATOM C4 CH3a    0.00 !  /  \ /
+ATOM C5 CH3b    0.00 ! C1   C3
+ATOM C6 CH3b    0.00 !
+BOND C1 C2 C2 C3 C3 C4
+BOND C2 C5 C2 C6
+PATCHING FIRS NONE LAST NONE
+
+END
+

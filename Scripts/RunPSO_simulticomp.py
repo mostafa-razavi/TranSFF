@@ -5,13 +5,13 @@ from multiprocessing import Process, Pool
 import numpy
 
 # Input parameters ##################
-run_name = "SimultaneousPSO_IC8-22DMB_N500_select9"
-molecules_array = ["IC8", "22DMB"]
+run_name = "SimultaneousPSO_IC8-22MB_N500_select9"
+molecules_array = ["IC8", "22MB"]
 datafile_keyword_array=[ "REFPROP", "MiPPE"]
 site_names_array = ["CT"]
 
 ref_array1 = "3.780-120.2_4.693-13.7_6.305-1.15 3.78-123_4.73-25_6.32-5 3.79-120_4.68-10_6.35-8" #IC8 
-ref_array2 = "3.8-123-3.8-120_4.0-58.0-6.30-1.5 3.8-123-3.8-120_4.0-58.0-6.31-0.5" #22DMB 
+ref_array2 = "3.8-123-3.8-120_4.0-58.0-6.30-1.5 3.8-123-3.8-120_4.0-58.0-6.31-0.5" #22MB 
 
 raw_par_path="$HOME/Git/TranSFF/Forcefields/TranSFF0_Alkanes_CT-SOME.par"
 GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"

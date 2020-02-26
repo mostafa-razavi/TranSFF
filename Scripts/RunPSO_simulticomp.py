@@ -76,7 +76,7 @@ def objective_function(x):
                 if inbp/nnbp == 0:
                     vars()['sig' + str(isite)] = round( sig_eps_nnn[isite * nnbp + inbp], 4)
                 else:
-                    vars()['eps' + str(isite)] = round( sig_eps_nnn[isite * nnbp + inbp], 4)
+                    vars()['eps' + str(isite)] = round( sig_eps_nnn[isite * nnbp + inbp], 2)
 
         site_sig_eps_nnn = ""
         for isite in range(0, len(site_names_array)):

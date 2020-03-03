@@ -1,0 +1,172 @@
+*
+* Topology File for Mie General model (Mick, Soroush Barhaghi, and Potoff) United Atom Force Field
+*
+* Parameters From:
+*
+* "Mie potentials for phase equilibria calculations: Application to alkanes and perfluoroalkanes." 
+* Potoff, Jeffrey J., and Damien A. Bernard-Brunel. 
+* The Journal of Physical Chemistry B 113.44 (2009): 14725-14731.
+*
+*
+* "Optimized Mie Potentials for Phase Equilibria: Understanding the limits of transferability in branched alkanes" 
+* Jason R. Mick, Mohammad Soroush Barhaghi, Jeffrey J. Potoff.
+*
+*
+
+
+BONDS
+!
+!V(bond) = Kb(b - b0)**2
+!
+!Kb: kcal/mole/A**2
+!b0: A
+!
+! Kb (kcal/mol) = Kb (K) * Boltz. const.; (9999999999 if no stretching)
+!
+!atom type     Kb              b0        description
+CH3 CH3        9999999999      1.540   ! (ex. ethane) 
+CH3 CH2        9999999999      1.540   ! (ex. propane)
+CH2 CH2        9999999999      1.540   ! (ex. n-butane)
+CH3 CH1        9999999999      1.540   ! (ex. 2-methylpropane) 
+CH3 CT         9999999999      1.540   ! (ex. 2-methylpentane)
+CH2 CH1        9999999999      1.540   ! (ex. 2,2-dimethylpropane)
+CH2 CT         9999999999      1.540   ! (ex. 2,2-dimethylbutane)
+CH1 CH1        9999999999      1.540   ! (ex. 2,3-dimethylbutane)
+CH1 CT         9999999999      1.540   ! (ex. 2,2,3-trimethylbutane) 
+CTT CTT        9999999999      1.580   ! (ex. 2,2,3,3-tetramethylbutane)
+CH3 CH2=       9999999999      1.500
+CH2 CH2=       9999999999      1.500
+CH1 CH2=       9999999999      1.500
+CT CH2=        9999999999      1.500
+CH3 CH=        9999999999      1.500
+CH2 CH=        9999999999      1.500
+CH1 CH=        9999999999      1.500
+CT CH=         9999999999      1.500
+CH3 C=         9999999999      1.500
+CH2 C=         9999999999      1.500
+CH1 C=         9999999999      1.500
+CT C=          9999999999      1.500
+CH2= CH2=      9999999999      1.330
+CH= CH=        9999999999      1.330
+C= C=          9999999999      1.330
+CH= CH2=       9999999999      1.330
+C= CH2=        9999999999      1.330
+C= CH=         9999999999      1.330
+
+
+
+ANGLES
+!
+!V(angle) = Ktheta(Theta - Theta0)**2
+!
+!Ktheta: kcal/mole/rad**2
+!Theta0: degrees
+!
+! Ktheta (kcal/mol) = Ktheta (K) * Boltz. const.
+!
+!atom types         Ktheta       Theta0   
+CH3 CH2 CH3         31250        114.00  ! (propane only)
+CH3 CH2 CH2         31250        114.00  ! (ex. n-butane)
+CH3 CH2 CH1         31250        114.00  ! (ex. 2-methylbutane)
+CH3 CH2 CT          31250        114.00  ! (ex. 2,2-dimethylbutane) 
+CH2 CH2 CH2         31250        114.00  ! (ex. n-pentane)
+CH2 CH2 CH1         31250        114.00  ! (ex. 2-methylpentane)
+CH2 CH2 CT          31250        114.00  ! (ex. 2,2-dimethylpentane)
+CH1 CH2 CH1         31250        114.00  ! (ex. 2,4-dimethylpentane) 
+CH1 CH2 CT          31250        114.00  ! (ex. 2,2,4-trimethylpentane)
+CH3 CH1 CH3         31250        112.00  ! (ex. 2-methylpropane)
+CH3 CH1 CH2         31250        112.00  ! (ex. 2-methylpentane)
+CH3 CH1 CH1         31250        112.00  ! (ex. 2-methylbutane)
+CH3 CH1 CT          31250        112.00  ! (ex. 2-methylpentane)
+CH2 CH1 CH2         31250        112.00  ! (ex. 2,3-dimethylbutane)
+CH2 CH1 CH1         31250        112.00  ! (ex. 2,3-dimethylpentane)
+CH2 CH1 CT          31250        112.00  ! (ex. 2,2,3-trimethylbutane)
+CH1 CH1 CH1         31250        112.00  ! (ex. 2,3,4-trimethylpentane)
+CH3 CT  CH3         31250        109.47  ! (ex. 2,2-dimethylpropane)
+CH3 CT  CH2         31250        109.47  ! (ex. 2,2-dimethylbutane)
+CH3 CT  CH1         31250        109.47  ! (ex. 2,2,3-trimethylbutane)
+CH2 CT  CH2         31250        109.47  ! (ex. 3,3-dimethylpentane)
+CH3 CTT CTT         31250        111.00  ! (2,2,3,3-tetramethylbutane)
+CH3 CTT CH3         31250        107.00  ! (2,2,3,3-tetramethylbutane)
+CH2= CH= CH3        39545        124.4
+CH2= CH= CH2        39545        124.4
+CH2= CH= CH1        39545        124.4
+CH2= CH= CT         39545        124.4
+CH= CH2 CH3         31250        114.00
+CH= CH2 CH2         31250        114.00
+CH2= CH= CH=        39545        124.4 ! 1,3-butadiene??????
+CH3 CH= CH=         39545        124.4 ! 2-butene?????
+CH= CH= CH2         39545        124.4 ! 2-pentene?????
+
+DIHEDRALS
+!
+!V(dihedral) = Kchi(1 + cos(n(chi) - delta))
+!
+!Kchi: kcal/mole
+!n: multiplicity
+!delta: degrees
+!
+! Kchi (kcal/mol) = Kchi (K) * Boltz. const.
+! Boltzmann = 0.0019872041 kcal / (mol * K)
+!
+! TraPPE Inherits most of its dihedrals from OPLS UA
+! X-CT-CH1-X fitted to QM data in this work
+!
+!X   CH2 CH2 X         0.000000    0      0.0     ! OPLS (ex. n-butane)
+!X   CH2 CH2 X       355.029964    1      0.0     ! ""
+!X   CH2 CH2 X       -68.189775    2    180.0     ! "" 
+!X   CH2 CH2 X       791.317812    3      0.0     ! ""
+!atom types         Kchi          n    delta           description
+X   CH2 CH1 X      -251.059767    0      0.0     ! OPLS (ex. 2-methylbutane)
+X   CH2 CH1 X       428.729993    1      0.0     ! ""
+X   CH2 CH1 X      -111.850111    2    180.0     ! ""
+X   CH2 CH1 X       441.270224    3      0.0     ! "" 
+X   CH1 CH1 X      -251.059767    0      0.0     ! OPLS (ex. 2,3-dimethylbutane)
+X   CH1 CH1 X       428.729993    1      0.0     ! "" 
+X   CH1 CH1 X      -111.850111    2    180.0     ! ""
+X   CH1 CH1 X       441.270224    3      0.0     ! "" 
+X   CT  CH2 X       461.289809    3      0.0     ! OPLS (ex. 2,2-dimethylbutane)
+X   CT  CH1 X       1369.00000    3      0.0     ! this work (ex. 2,2,3-TriMPe)
+X   CT  CT  X      2950.910000    0      0.0     ! this work -- from QM
+X   CT  CT  X     -2047.060000    3      0.0     ! (ex. 2,2,3,3-tetramethylbutane)
+X   CT  CT  X       529.250000    6    180.0     ! ""
+X   CT  CT  X       150.160000   12      0.0     ! ""
+X   CH2 CH2 X         0.000     0      0.0     ! Potoff2014
+X   CH2 CH2 X       496.90      1      0.0     ! ""
+X   CH2 CH2 X       -277.50     2    180.0     ! "" 
+X   CH2 CH2 X       959.69      3      0.0     ! ""
+CH2= CH= CH2 X    1132.3  0   90                ! Potoff2014
+CH2= CH= CH2 X    99.84   1   0
+CH2= CH= CH2 X    -141.87 2   180
+CH2= CH= CH2 X    -498.22 3   0
+CH2= CH= CH= X    1132.3  0   90                ! 1,3-butadiene?????????
+CH2= CH= CH= X    99.84   1   0
+CH2= CH= CH= X    -141.87 2   180
+CH2= CH= CH= X    -498.22 3   0
+CH3 CH= CH= CH3    1132.3  0   90                ! dummy for 2-butene
+CH3 CH= CH= CH3    99.84   1   0
+CH3 CH= CH= CH3   -141.87 2   180
+CH3 CH= CH= CH3    -498.22 3   0
+CH3 CH= CH= CH2    1132.3  0   90                ! dummy for 2-pentene
+CH3 CH= CH= CH2    99.84   1   0
+CH3 CH= CH= CH2   -141.87 2   180
+CH3 CH= CH= CH2    -498.22 3   0
+CH= CH= CH2 CH3    1132.3  0   90                ! for 2-pentene?????
+CH= CH= CH2 CH3    99.84   1   0
+CH= CH= CH2 CH3    -141.87 2   180
+CH= CH= CH2 CH3    -498.22 3   0
+
+NONBONDED_MIE
+!
+!V(mie) = 4*eps*((sig_ij/r_ij)^n-(sig_ij/r_ij)^6)
+!
+!atom   eps          sig_ij     n    description
+CH4     161.00       3.740      14   ! Potoff, 2009
+CH3     121.25       3.783      16   ! Potoff, 2009 
+CH2      61.00       3.990      16   ! Potoff, 2009 
+CH1      15.00       4.600      16   ! (this work) 
+CT        1.20       6.100      16   ! (this work) 
+CTT       1.20       6.100      16   ! 2,2,3,3-tetramethylbutane (same as CT) 
+CH2=    104.20       3.705      16   ! Potoff, 2014, alkenes
+CH=      60.00       3.810      16   ! Potoff, 2014, alkenes
+C=      189.00       2.950      16   ! Barhaghi, 2017, alkynes

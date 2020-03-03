@@ -37,8 +37,10 @@ NP = df['P'].max()
 
 x = [i for i, _ in enumerate(cols)]
 
+if NP == 1: 
+    PCOLORS = ['red']
 if NP == 2: 
-    PCOLORS = ['red', 'green']
+    PCOLORS = ['red', 'green']    
 if NP == 3: 
     PCOLORS = ['red', 'green', 'blue']
 if NP == 4: 

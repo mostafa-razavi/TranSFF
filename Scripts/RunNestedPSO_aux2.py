@@ -42,6 +42,7 @@ tol = 1e-3
 LB = [3.65, 110.0]
 UB = [3.90, 140.0]
 INITIAL_GUESS = [[3.74, 127.0], [3.70, 130.0], [3.71, 120.0], [3.80, 128.0]]
+NNBP = 3
 
 
 
@@ -87,7 +88,7 @@ def OBJECTIVE_FUNCTION(X):
         for D in range(0, ND):
             SIG_or_EPS_or_NNN = X[P,D]
 
-            if D == int(ND/NS) - 1:
+            if D % (NNBP) == NNBP-1:
                 delimiter = "_"
             else:
                 delimiter = "-"
@@ -142,7 +143,7 @@ def OBJECTIVE_FUNCTION(X):
             for d in range(0, nd):
                 sig_or_eps_or_nnn = sig_eps_nnn[d]
 
-                if d == int(nd/NS) - 1:
+                if d % (NNBP) == NNBP-1:
                     delimiter = "_"
                 else:
                     delimiter = "-"

@@ -1,11 +1,14 @@
-MASS   1  CH4    16.043 C  ! 
-MASS   2  CH3    15.035 C  !  
-MASS   3  CH2    14.027 C  !
-MASS   4  CH1    13.019 C  !
-MASS   5  CT     12.011 C  !
-MASS   6  CH2=   14.027 C  !
-MASS   7  CH=    13.019 C  !
-MASS   8  C=     12.011 C  !
+MASS   1  CH4     16.043 C  ! 
+MASS   2  CH3a    15.035 C  !  
+MASS   3  CH3b    15.035 C  !  
+MASS   4  CH3e    15.035 C  !  
+MASS   5  CH2     14.027 C  !
+MASS   6  CH1     13.019 C  !
+MASS   7  CT      12.011 C  !
+MASS   8  CH2=    14.027 C  !
+MASS   9  CH2e=   14.027 C  !
+MASS  10  CH=     13.019 C  !
+MASS  11  C=      12.011 C  !
 
 DEFA FIRS none LAST none
 AUTOGENERATE ANGLES DIHEDRALS
@@ -18,7 +21,7 @@ ATOM C3 CH2     0.00 !
 ATOM C4 CH2     0.00 !
 ATOM C5 CH2     0.00 !
 ATOM C6 CH2     0.00 !
-ATOM C7 CH3     0.00 !
+ATOM C7 CH3a    0.00 !
 BOND C1 C2 C2 C3
 BOND C3 C4 C4 C5
 BOND C5 C6 C6 C7

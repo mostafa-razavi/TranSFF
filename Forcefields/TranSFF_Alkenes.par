@@ -1,0 +1,178 @@
+*
+* Topology File for TranSFF potential (Razavi, Elliott) United Atom Force Field
+*
+* Note: The missning dihedrals and non-bonded parameters are marked by "Fix this"
+
+
+
+
+
+
+
+
+
+
+
+
+
+BONDS
+!
+!V(bond) = Kb(b - b0)**2
+!
+!Kb: kcal/mole/A**2
+!b0: A
+!
+! Kb (kcal/mol) = Kb (K) * Boltz. const.; (9999999999 if no stretching)
+!
+!
+!
+!atom type      Kb              b0        description
+CH2E= CH2E=     9999999999      1.330
+CH2= CH=        9999999999      1.330
+CH= CH3A        9999999999      1.540
+CH= CH2         9999999999      1.540
+CH2 CH3A        9999999999      1.540
+CH2 CH2         9999999999      1.540
+CH= CH=         9999999999      1.330
+CH2= C=         9999999999      1.330
+C= CH3A         9999999999      1.540
+C= CH=          9999999999      1.540   ! This bond is C-CH not -C=CH=. The bond length of the latter would be 1.330
+
+
+
+
+
+
+
+
+
+
+
+
+ANGLES
+!
+!V(angle) = Ktheta(Theta - Theta0)**2
+!
+!Ktheta: kcal/mole/rad**2
+!Theta0: degrees
+!
+! Ktheta (kcal/mol) = Ktheta (K) * Boltz. const.
+!
+!atom types         Ktheta       Theta0   
+!=============================C3E=============================
+CH2= CH= CH3A   35210 119.7
+!=============================1C4E=============================
+CH2= CH= CH2   35210 119.7
+CH= CH2 CH3A   31250 114
+!=============================1C5E=============================
+CH= CH2 CH2   31250 114
+CH2 CH2 CH3A   31250 114
+!=============================1C6E=============================
+CH2 CH2 CH2     31250 114
+!=============ct-2C4E============== 
+CH3A CH= CH=    35210 119.7
+!=============ct-2C5E============== 
+CH= CH= CH2     35210 119.7
+!=============13C4E============== 
+CH2= CH= CH=    35210 119.7
+!=============IC4E============== 
+CH3A C= CH3A    35210 119.7
+CH2= C= CH3A    35210 119.7
+CH2= C= CH=     35210 119.7
+C= CH= CH2=     35210 119.7
+CH3A C= CH=     35210 119.7
+
+
+
+
+
+
+
+
+
+
+
+
+DIHEDRALS
+!
+!V(dihedral) = Kchi(1 + cos(n(chi) - delta))
+!
+!Kchi: kcal/mole
+!n: multiplicity
+!delta: degrees
+!
+! Kchi (kcal/mol) = Kchi (K) * Boltz. const.
+! Boltzmann = 0.0019872041 kcal / (mol * K)
+!
+! TraPPE Inherits most of its dihedrals from OPLS UA
+! X-CT-CH1-X fitted to QM data in this work
+!
+!atom types         Kchi          n    delta           description
+!=============1C4E==============
+CH2= CH= CH2 CH3A      688.50    0      0.0     ! 
+CH2= CH= CH2 CH3A       86.36    1      0.0     ! 
+CH2= CH= CH2 CH3A     -109.77    2    180.0     !  
+CH2= CH= CH2 CH3A     -282.24    3      0.0     ! 
+!=============1C5E==============
+X   CH2 CH2 X         0.000000    0      0.0     ! OPLS (ex. n-butane)
+X   CH2 CH2 X       355.029964    1      0.0     ! 
+X   CH2 CH2 X       -68.189775    2    180.0     !  
+X   CH2 CH2 X       791.317812    3      0.0     ! 
+
+CH2= CH= CH2 CH2      688.50    0      0.0      
+CH2= CH= CH2 CH2       86.36    1      0.0      
+CH2= CH= CH2 CH2     -109.77    2    180.0       
+CH2= CH= CH2 CH2     -282.24    3      0.0     
+
+!=============c-2C4E============== Fix this
+CH3A CH= CH= CH3A     1   1   1
+!=============t-2C4E============== Fix this
+CH3A CH= CH= CH3A     1   1   1
+
+!=============c-2C5E============== 
+CH3A CH= CH= CH2     1   1   1
+
+CH= CH= CH2 CH3A      688.50    0      0.0      
+CH= CH= CH2 CH3A       86.36    1      0.0      
+CH= CH= CH2 CH3A     -109.77    2    180.0       
+CH= CH= CH2 CH3A     -282.24    3      0.0     
+
+!=============t-2C5E============== 
+CH3A CH= CH= CH2     1   1   1
+
+!=============13C4E============== Fix this
+CH2= CH= CH= CH2=     1   1   1
+
+!=============2M13C4E==============  Fix this
+CH2= C= CH= CH2=    1   1   1
+CH3A C= CH= CH2=    1   1   1   ! This is a CH3-C-CH=CH2 dihedral. Is this the same as CHx-CH2-CH=CHy ?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NONBONDED_MIE
+!
+!V(mie) = 4*eps*((sig_ij/r_ij)^n-(sig_ij/r_ij)^6)
+!
+!atom   eps          sig_ij     n    description
+CH4     175.0   3.720   12  ! TranSFF
+CH3e    122.0   3.767   12  ! TranSFF
+CH3a    123.0   3.800   12  ! TranSFF
+CH3b    120.0   3.800   12  ! TranSFF
+CH2      58.0   4.000   12  ! TranSFF
+CH1      13.5   4.700   12  ! TranSFF
+CT        0.7   6.330   12  ! TranSFF
+CH2e=   105.0   3.690   12  ! TranSFF
+CH2=    111.0   3.725   12  ! TranSFF
+CH=      59.0   3.780   12  ! TranSFF
+C=        1.1   1.111   11  ! Fix this

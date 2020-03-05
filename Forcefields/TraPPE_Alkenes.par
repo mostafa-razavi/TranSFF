@@ -28,6 +28,7 @@ BONDS
 !
 !atom type      Kb              b0        description
 CH2E= CH2E=     9999999999      1.330
+CH2= CH2=     9999999999      1.330
 CH2= CH=        9999999999      1.330
 CH= CH3        9999999999      1.540
 CH= CH2         9999999999      1.540

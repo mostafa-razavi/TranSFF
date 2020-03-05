@@ -1,0 +1,24 @@
+MASS   1  CH4    16.043 C  ! 
+MASS   2  CH3    15.035 C  !  
+MASS   3  CH2    14.027 C  !
+MASS   4  CH1    13.019 C  !
+MASS   5  CT     12.011 C  !
+MASS   6  CH2=   14.027 C  !
+MASS   7  CH2e=  14.027 C  !
+MASS   8  CH=    13.019 C  !
+MASS   9  C=     12.011 C  !
+
+DEFA FIRS none LAST none
+AUTOGENERATE ANGLES DIHEDRALS
+
+RESI I4E        0.00 ! isobutene
+GROUP
+ATOM C1 CH2=    0.00 !   C1
+ATOM C2 C=      0.00 !   ||
+ATOM C3 CH3     0.00 !   C2
+ATOM C4 CH3     0.00 !  /  \
+BOND C1 C2 C2 C3     ! C3  C4
+BOND C2 C4
+PATCHING FIRS NONE LAST NONE
+
+END

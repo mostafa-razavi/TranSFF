@@ -40,7 +40,7 @@ do
     key="${prefix}"
     echo "${prefix}_${site_sig_eps_nnn}" "$ref_array" >> $CD/reference_list.log        
 
-    select_itic_points=$(cat $HOME/Git/TranSFF/Molecules/${molec}/${molec}_${ITIC_subset_name}.trho)
+    select_itic_points=$(cat $HOME/Git/TranSFF/SelectITIC/${molec}_${ITIC_subset_name}.trho)
     data_file="$HOME/Git/TranSFF/Data/${molec}/${datafile_keywords[i]}_${ITIC_subset_name}.res"
 
     eval "bash $HOME/Git/TranSFF/Scripts/simulticomp_pre.sh $key ${molec} \"$select_itic_points\" $Nproc ${site_sig_eps_nnn} \"$ref_array\" $data_file ${datafile_keywords[i]} $raw_par_path $GOMC_exe $z_wt $u_wt $n_wt" "$Nsnapshots" "$rerun_inp" "$number_of_lowest_Neff" "$target_Neff"

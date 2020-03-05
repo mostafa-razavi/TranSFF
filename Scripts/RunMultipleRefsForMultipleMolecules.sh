@@ -48,7 +48,7 @@ do
     if [ "$select_key" == "all" ]; then
       select_itic_points="all"
     else
-      select_itic_points=$(cat $HOME/Git/TranSFF/Molecules/${molec}/${molec}_${select_key}.trho)
+      select_itic_points=$(cat $HOME/Git/TranSFF/SelectITIC/${molec}_${select_key}.trho)
     fi
 
     bash $HOME/Git/TranSFF/Scripts/RunITIC_GOMC_Parallel.sh "$molec" ${CD}/${molec}/$ref/$par_file_name $config_filename "$select_itic_points" "$gomc_exe_address" no

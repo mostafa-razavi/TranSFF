@@ -13,7 +13,7 @@ molec="23MB"
 
 molecules_array=($molecules_array)
 
-select_itic_points=$(cat $HOME/Git/TranSFF/Molecules/${molec}/${molec}_select9.trho)
+select_itic_points=$(cat $HOME/Git/TranSFF/SelectITIC/${molec}_select9.trho)
 
 i=0
 big_array_len_over_two=$(echo "${#sig_eps_nnn_array[@]}-1" | bc)

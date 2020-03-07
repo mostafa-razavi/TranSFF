@@ -70,7 +70,7 @@ do
     i=$((i+1))
     cd ${CD}/${molec}
     ref_array="${all_ref_array[i]}"
-    select_itic_points=$(cat $HOME/Git/TranSFF/Molecules/${molec}/${molec}_${ITIC_subset_name}.trho)
+    select_itic_points=$(cat $HOME/Git/TranSFF/SelectITIC/${molec}_${ITIC_subset_name}.trho)
     key="${prefix}"
     if [ -e "$key" ]; then
         echo "There is a folder associated to this parameter set. simulticomp_post.sh script will not run!"

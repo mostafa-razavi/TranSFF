@@ -4,8 +4,8 @@ round() {
   printf "%.${2}f" "${1}"
 }
 
-select_what="select3sat2lowrho1"
-forcefield="MiPPE"
+select_what="select9"
+forcefield="TraPPE"
 inFile="${forcefield}_${select_what}.res"
 
 for iMolec in *

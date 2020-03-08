@@ -90,10 +90,10 @@ set ylabel "{{/Symbol D}H_{v} [KJ/mol]}"
 set key on inside left bottom
 
 plot \
-"$Expsat" u 1:4 smooth csplines with lines lt 1 lw 2 lc rgb "black" title "${ExpsatLabel}",\
+"$Expsat" u 1:4 smooth csplines with lines lt 1 lw 2 lc rgb "black" title "     ${ExpsatLabel}",\
 \
-"${Litsat[1]}" skip 1 u 1:5 with points pt ${PT[1]} ps 2 lw 3 lc rgb "${PC[1]}" title "${LitsatLabel[1]}",\
-"${Litsat[0]}" skip 1 u 1:5 with points pt ${PT[0]} ps 2 lw 3 lc rgb "${PC[0]}" title "${LitsatLabel[0]}",\
+"${Litsat[1]}" skip 1 u 1:5 with points pt ${PT[1]} ps 2 lw 3 lc rgb "${PC[1]}" title "     ${LitsatLabel[1]}",\
+"${Litsat[0]}" skip 1 u 1:5 with points pt ${PT[0]} ps 2 lw 3 lc rgb "${PC[0]}" title "     ${LitsatLabel[0]}",\
 \
 "$Simsat" u 3:10	with points pt 6 ps 2 lw 3 lc rgb "red" title "${SimsatLabel}"
 

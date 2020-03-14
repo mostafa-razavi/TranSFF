@@ -7,7 +7,7 @@ import scipy
 # Input parameters ##################
 run_name = "SimultaneousTRF_C2_N500_select9"
 molecules_array = ["C2", "C12"]
-datafile_keyword=["MiPPE", "MiPPE"]
+datafile_keyword_array=["MiPPE", "MiPPE"]
 site_names_array = ["CH3", "CH2"]
 
 ref_array1="3.81-127 3.79-134 3.78-131 3.77-133 3.75-129" #C2 
@@ -70,9 +70,9 @@ def objective_function(x):
     for isite in range(0, len(site_names_array)):
         for inbp in range(0, nnbp):
             if inbp/nnbp == 0:
-                vars()['sig' + str(isite)] = round( x[isite * nnbp + inbp], 5)
+                vars()['sig' + str(isite)] = round( x[isite * nnbp + inbp], 4)
             else:
-                vars()['eps' + str(isite)] = round( x[isite * nnbp + inbp], 5)
+                vars()['eps' + str(isite)] = round( x[isite * nnbp + inbp], 2)
 
     site_sig_eps_nnn = ""
     for isite in range(0, len(site_names_array)):

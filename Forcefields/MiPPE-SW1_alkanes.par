@@ -113,6 +113,7 @@ NONBONDED_MIE
 !V(mie) = 4*eps*((sig_ij/r_ij)^n-(sig_ij/r_ij)^6)
 !
 !atom   eps          sig_ij     n    description
+CH4     173.9                   3.733                   14
 CH3     130.7                   3.777                   16         
 CH2     69.4                    4.010                   16           
 CH1     19.6                    4.580                   16

@@ -5,7 +5,7 @@ round() {
 }
 
 select_what="select9"
-forcefield="TraPPE"
+forcefield="REFPROP"
 inFile="${forcefield}_${select_what}.res"
 
 for iMolec in *

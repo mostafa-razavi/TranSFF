@@ -5,7 +5,7 @@ select_which="1 2 6 10 17 19 21 23 25 27" #select9
 #select_which="1 2 6 10" #select3sat3
 #select_which="1 2 10 17" #select3sat2lowrho1
 select_what="select9"
-forcefield="TraPPE"
+forcefield="REFPROP"
 
 for i in */
 do

@@ -68,7 +68,7 @@ parallel --willcite --jobs $Nproc < "${keyword}.parallel" #> "${keyword}.log"
 bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_3.sh "FFT" "$keyword" "$reference_foldernames_array" $par_file_name $rerun_inp $Nsnapshots $Nproc $gomc_exe_address "$Selected_Ts" "$Selected_rhos" "$ures_or_pures"
 
 mbar_data_file=$(ls "${keyword}"*".target.res")
-score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev_3.py $MW ${true_data_file} $mbar_data_file $z_wt $u_wt $n_wt $number_of_lowest_Neff $target_Neff)
+score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev_rmsd.py $MW ${true_data_file} $mbar_data_file $z_wt $u_wt $n_wt $number_of_lowest_Neff $target_Neff)
 echo $score > ${keyword}.score
 python3.6 $HOME/Git/TranSFF/Scripts/plot_mbar_vs_true_data_2.py $MW ${true_data_file} $mbar_data_file ${true_data_label} ${mbar_data_file}.png
 

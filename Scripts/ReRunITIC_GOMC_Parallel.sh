@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script runs GOMC_ITIC_MBAR_2.sh, calc_mbar_from_true_data_dev_3.py, and plot_mbar_vs_true_data_2 scripts and puts everything in keyword folder
+# This script runs GOMC_ITIC_MBAR_2.sh, calc_mbar_from_true_data_dev_dev.py, and plot_mbar_vs_true_data_2 scripts and puts everything in keyword folder
 # Example:
 # bash ReRunITIC_GOMC_Parallel.sh some_keyword C12 "0.5336/547.99 0.6937/368.10 691.00/0.2135 691.00/0.5336 691.00/0.6937" C12_s3.780e120.0_s4.00e60.0.par FSHIFT_BULK_2M.conf 5 C12_s3.760e120.0_s4.00e60.0 ~/Git/TranSFF/Data/C12/REFPROP_select5.res REFPROP
 
@@ -64,7 +64,7 @@ parallel --willcite --jobs $Nproc < "${keyword}.parallel" #> "${keyword}.log"
 bash $HOME/Git/TranSFF/Scripts/GOMC_ITIC_MBAR_3.sh "FFT" "$keyword" "$reference_foldernames_array" $par_file_name $rerun_inp $Nsnapshots $Nproc $gomc_exe_address "$Selected_Ts" "$Selected_rhos" "$ures_or_pures"
 
 mbar_data_file=$(ls "${keyword}"*".target.res")
-score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev_3.py $MW ${true_data_file} $mbar_data_file $z_wt $u_wt $n_wt $number_of_lowest_Neff $target_Neff)
+score=$(python3.6 $HOME/Git/TranSFF/Scripts/calc_mbar_from_true_data_dev_rmsd.py $MW ${true_data_file} $mbar_data_file $z_wt $u_wt $n_wt $number_of_lowest_Neff $target_Neff)
 echo $score > ${keyword}.score
 python3.6 $HOME/Git/TranSFF/Scripts/plot_mbar_vs_true_data_2.py $MW ${true_data_file} $mbar_data_file ${true_data_label} ${mbar_data_file}.png
 

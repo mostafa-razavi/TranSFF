@@ -5,7 +5,7 @@ SimsatLabel=$3
 LitsatExt=($4) 
 LitsatLabel=($5) 
 
-ITICres="ITIC.out"
+ITICres="ITIC.res"
 OutFile="${molec}_vle.png"
 
 ITICfile="$HOME/Git/TranSFF/Molecules/${molec}/${molec}.itic"

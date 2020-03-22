@@ -170,7 +170,6 @@ for rho in "${rhosIC[@]}"
 			sed -i -e "s/some_Temperature/$T/g" ${gomc_input_file_name}
 			sed -i -e "s/some_box_length/$L/g" ${gomc_input_file_name}
 			sed -i -e "s/rhoGCC_NNN/${rho}_${N}/g" ${gomc_input_file_name}
-			sed -i -e "s/somr_parameter_file/${force_field_file_name}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_Restart/${Restart}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_parameter_file/${parameter_file}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_Potential/${Potential}/g" ${gomc_input_file_name}
@@ -245,7 +244,6 @@ for T in "${TsIT[@]}"
 			sed -i -e "s/some_Temperature/$T/g" ${gomc_input_file_name}
 			sed -i -e "s/some_box_length/$L/g" ${gomc_input_file_name}
 			sed -i -e "s/rhoGCC_NNN/${rho}_${N}/g" ${gomc_input_file_name}
-			sed -i -e "s/somr_parameter_file/${force_field_file_name}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_Restart/${Restart}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_parameter_file/${parameter_file}/g" ${gomc_input_file_name}
 			sed -i -e "s/some_Potential/${Potential}/g" ${gomc_input_file_name}

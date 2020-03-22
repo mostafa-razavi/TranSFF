@@ -1,0 +1,149 @@
+########################
+## Init File v2.0
+## 
+## IMPROVEMENTS
+## - Compacts inputs into one line
+## - Suggestion: edit inline with (insert key)
+##
+## To-Do 
+## (make editor + XML version)
+########################
+
+############################################################################
+#  ========-------------------- INPUT --------------------------===========
+############################################################################
+
+#########################
+# enable, step
+#########################
+Restart	 	some_Restart   
+
+####################################
+# kind {RESTART, RANDOM, INTSEED}
+####################################
+PRNG     	RANDOM
+
+####################################
+# FORCE FIELD
+####################################
+ParaTypeCHARMM	 false
+ParaTypeEXOTIC	 true
+Parameters     	 ../../Files/some_parameter_file
+
+####################################
+# INPUT PDB FILES
+####################################
+Coordinates 0    ../../Files/rhoLGCC/rhoLGCC.pdb
+Coordinates 1	 ../../Files/rhoVGCC/rhoVGCC.pdb
+
+####################################
+# INPUT PSF FILES
+####################################
+Structure 0  	 ../../Files/rhoLGCC/rhoLGCC.psf
+Structure 1	     ../../Files/rhoVGCC/rhoVGCC.psf
+
+############################################################################
+#  =======--------------------- SYSTEM --------------------------===========
+############################################################################
+
+##################################
+# GEMC TYPE (DEFULT IS NVT_GEMC)  
+##################################
+GEMC       NVT
+
+#############################
+# SIMULATION CONDITION   
+#############################
+Temperature     some_Temperature
+Potential       some_Potential 
+LRC		    some_LRC
+Rcut		some_Rcut   
+RcutFactor	some_R_cut_Factor     
+Rswitch		some_Rswitch 
+Exclude 	1-4
+
+#############################
+# ELECTROSTATIC   
+#############################
+ElectroStatic   false
+Ewald		false
+PressureCalc  true some_PressureCalc
+
+
+################################
+# STEPS 
+################################
+RunSteps	some_RunSteps      
+EqSteps		some_EqSteps       
+AdjSteps	some_AdjSteps        
+
+################################
+# MOVE FREQUENCY              
+################################
+DisFreq		0.39
+RotFreq  	0.10
+VolFreq  	0.01
+SwapFreq 	0.15
+CrankShaftFreq	0.15
+RegrowthFreq	0.20
+
+
+################################
+# BOX DIMENSION #, X, Y, Z
+################################
+CellBasisVector1 0	LLL_L	0.00	0.00
+CellBasisVector2 0	0.00	LLL_L	0.00
+CellBasisVector3 0	0.00	0.00	LLL_L
+
+CellBasisVector1 1	LLL_V	0.00	0.00
+CellBasisVector2 1	0.00	LLL_V	0.00
+CellBasisVector3 1	0.00	0.00	LLL_V
+
+	
+
+##############################
+# CBMC TRIALS
+##############################
+CBMC_First   10     
+CBMC_Nth     8
+CBMC_Ang     100
+CBMC_Dih     20
+
+####################################
+#          Mol. Name     Chem. Pot.
+####################################
+
+
+
+############################################################################
+#  =======-------------------- OUTPUT --------------------------===========
+############################################################################
+
+##########################
+# statistics filename add
+##########################
+OutputName  some_OutputName
+
+#####################################
+# enable, frequency           
+#####################################
+CoordinatesFreq    true   some_CoordinatesFreq
+RestartFreq  	   true   some_Freq_Restart
+ConsoleFreq        true   some_ConsoleFreq
+BlockAverageFreq   true   some_BlockAverageFreq
+
+
+
+################################
+# OutHistSettings
+################################
+
+
+##################################
+# enable: blk avg., fluct.
+##################################
+OutEnergy         true    true 
+OutPressure       true    true    
+OutMolNum         true    true  
+OutDensity        true    true  
+

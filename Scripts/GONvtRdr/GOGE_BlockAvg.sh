@@ -14,12 +14,12 @@ do
 	T=${IX[-1]}
 
 	GOMC_datfile_content=$(cat "$GOMC_datfile_L")
-	if [ -e "$GOMC_datfile_L" ] && [ "$GOMC_datfile_content" != "" ]; then
-		#averages=$(python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GOGE_BlockAvg.py ${GOMC_datfile_L} ${GOMC_datfile_V} $Nskip_lines $Nblocks avg) 
+	is_simulation_finishes=$(grep -R "Info: Completed at:" gomc.log | awk '{print$2}')
+	rm -rf Blocks_L.avg Blocks_V.avg Blocks_L.std Blocks_V.std
+	if [ -e "$GOMC_datfile_L" ] && [ "$GOMC_datfile_content" != "" ] && [ "$is_simulation_finishes" == "Completed" ] ; then
 		averages_L=$(python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GOGE_BlockAvg.py ${GOMC_datfile_L} ${GOMC_datfile_V} $Nskip_lines $Nblocks avg | head -n1)
 		averages_V=$(python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GOGE_BlockAvg.py ${GOMC_datfile_L} ${GOMC_datfile_V} $Nskip_lines $Nblocks avg | tail -n1)
 
-		#stdev=$(python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GOGE_BlockAvg.py ${GOMC_datfile_L} ${GOMC_datfile_V} $Nskip_lines $Nblocks std)
 		stdev_L=$(python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GOGE_BlockAvg.py ${GOMC_datfile_L} ${GOMC_datfile_V} $Nskip_lines $Nblocks std | head -n1)
 		stdev_V=$(python3.6 $HOME/Git/TranSFF/Scripts/GONvtRdr/GOGE_BlockAvg.py ${GOMC_datfile_L} ${GOMC_datfile_V} $Nskip_lines $Nblocks std | tail -n1)
 

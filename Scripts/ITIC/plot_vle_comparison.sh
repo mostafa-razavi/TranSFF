@@ -2,8 +2,8 @@
 molec=$1
 LitsatExt=($2) 
 LitsatLabel=($3) 
+OutFile=$4 #"${molec}_vle.png"
 
-OutFile="${molec}_vle.png"
 
 Expsat="$HOME/Git/TranSFF/Expsat/${molec}.dipsat"
 ExpsatLabel="DIPPR"

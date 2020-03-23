@@ -8,12 +8,12 @@ OutFile="${molec}_vle.png"
 Expsat="$HOME/Git/TranSFF/Expsat/${molec}.dipsat"
 ExpsatLabel="DIPPR"
 
-Litsat[0]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[0]}"
-Litsat[1]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[1]}"
-Litsat[2]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[2]}"
-Litsat[3]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[3]}"
-Litsat[4]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[4]}"
-Litsat[5]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[5]}"
+if [ -e "${molec}.${LitsatExt[0]}" ]; then Litsat[0]="${molec}.${LitsatExt[0]}"; else Litsat[0]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[0]}"; fi
+if [ -e "${molec}.${LitsatExt[1]}" ]; then Litsat[1]="${molec}.${LitsatExt[1]}"; else Litsat[1]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[1]}"; fi
+if [ -e "${molec}.${LitsatExt[2]}" ]; then Litsat[2]="${molec}.${LitsatExt[2]}"; else Litsat[2]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[2]}"; fi
+if [ -e "${molec}.${LitsatExt[3]}" ]; then Litsat[3]="${molec}.${LitsatExt[3]}"; else Litsat[3]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[3]}"; fi
+if [ -e "${molec}.${LitsatExt[4]}" ]; then Litsat[4]="${molec}.${LitsatExt[4]}"; else Litsat[4]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[4]}"; fi
+if [ -e "${molec}.${LitsatExt[5]}" ]; then Litsat[5]="${molec}.${LitsatExt[5]}"; else Litsat[5]="$HOME/Git/TranSFF/Litsat/${molec}.${LitsatExt[5]}"; fi
 
 PT=(6 8 12 10 14 4)
 PC=("red" "blue" "green" "orange" "cyan" "purple")

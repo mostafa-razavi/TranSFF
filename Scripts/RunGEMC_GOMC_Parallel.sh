@@ -144,8 +144,12 @@ for fol in GE/*; do
 	echo "cd $CD/$fol; $gomc_exe_address $gomc_input_file_name > gomc.log" >> ${CD}/COMMANDS.parallel
 done
 
+cd ${CD}
 if [ "$should_run" == "yes" ]; then
 	parallel --jobs $Nproc < ${CD}/COMMANDS.parallel
-	# Add post-processing script here
+	ndataskip=$(echo "($RunSteps/$BlockAverageFreq)/2" | bc )
+	nblocks="5"
+	echo $ndataskip $nblocks	
+	bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GOGE_BlockAvg.sh Blk_${OutputName}_BOX_0.dat Blk_${OutputName}_BOX_1.dat ${ndataskip} $nblocks ${molec}.gemc-razavi
 fi
 

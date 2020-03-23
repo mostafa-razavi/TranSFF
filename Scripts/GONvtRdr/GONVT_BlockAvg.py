@@ -2,6 +2,7 @@ import numpy
 import sys
 
 input_L=sys.argv[1]
+
 Nskip_lines=int(sys.argv[2])
 Nblocks = int(sys.argv[3])
 avg_or_std = sys.argv[4]
@@ -23,8 +24,28 @@ PRESSURE_L = numpy.loadtxt(input_L , usecols=(10),skiprows=Nskip_lines)
 TOT_MOL_L = numpy.loadtxt(input_L , usecols=(11),skiprows=Nskip_lines)
 TOT_DENS_L = numpy.loadtxt(input_L , usecols=(12),skiprows=Nskip_lines)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Ndata = len(PRESSURE_L)
 Nint= int(Ndata/Nblocks)
+
 
 TOT_EN_L_avg = []
 EN_INTER_L_avg = [] 

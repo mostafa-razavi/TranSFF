@@ -87,17 +87,17 @@ unset xrange
 ##########################################
 set xlabel "{T} [{K}]"
 set ylabel "{{/Symbol D}H_{v} [KJ/mol]}"
-set key on inside left bottom
+set key on inside right top
 
 plot \
-"$Expsat" u 1:4 smooth csplines with lines lt 1 lw 2 lc rgb "black" title "     ${ExpsatLabel}",\
+"$Expsat" u 1:4 smooth csplines with lines lt 1 lw 2 lc rgb "black" title "${ExpsatLabel}",\
 \
-"${Litsat[0]}" skip 1 u 1:5 with points pt ${PT[0]} ps 2 lw 3 lc rgb "${PC[0]}" title "     ${LitsatLabel[0]}",\
-"${Litsat[1]}" skip 1 u 1:5 with points pt ${PT[1]} ps 2 lw 3 lc rgb "${PC[1]}" title "     ${LitsatLabel[1]}",\
-"${Litsat[2]}" skip 1 u 1:5 with points pt ${PT[2]} ps 2 lw 3 lc rgb "${PC[2]}" title "     ${LitsatLabel[2]}",\
-"${Litsat[3]}" skip 1 u 1:5 with points pt ${PT[3]} ps 2 lw 3 lc rgb "${PC[3]}" title "     ${LitsatLabel[3]}",\
-"${Litsat[4]}" skip 1 u 1:5 with points pt ${PT[4]} ps 2 lw 3 lc rgb "${PC[4]}" title "     ${LitsatLabel[4]}",\
-"${Litsat[5]}" skip 1 u 1:5 with points pt ${PT[5]} ps 2 lw 3 lc rgb "${PC[5]}" title "     ${LitsatLabel[5]}",\
+"${Litsat[0]}" skip 1 u 1:5 with points pt ${PT[0]} ps 2 lw 3 lc rgb "${PC[0]}" title "${LitsatLabel[0]}",\
+"${Litsat[1]}" skip 1 u 1:5 with points pt ${PT[1]} ps 2 lw 3 lc rgb "${PC[1]}" title "${LitsatLabel[1]}",\
+"${Litsat[2]}" skip 1 u 1:5 with points pt ${PT[2]} ps 2 lw 3 lc rgb "${PC[2]}" title "${LitsatLabel[2]}",\
+"${Litsat[3]}" skip 1 u 1:5 with points pt ${PT[3]} ps 2 lw 3 lc rgb "${PC[3]}" title "${LitsatLabel[3]}",\
+"${Litsat[4]}" skip 1 u 1:5 with points pt ${PT[4]} ps 2 lw 3 lc rgb "${PC[4]}" title "${LitsatLabel[4]}",\
+"${Litsat[5]}" skip 1 u 1:5 with points pt ${PT[5]} ps 2 lw 3 lc rgb "${PC[5]}" title "${LitsatLabel[5]}",\
 
 unset key
 unset label

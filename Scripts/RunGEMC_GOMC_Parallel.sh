@@ -150,6 +150,6 @@ if [ "$should_run" == "yes" ]; then
 	ndataskip=$(echo "($RunSteps/$BlockAverageFreq)/2" | bc )
 	nblocks="5"
 	echo $ndataskip $nblocks	
-	bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GOGE_BlockAvg.sh Blk_${OutputName}_BOX_0.dat Blk_${OutputName}_BOX_1.dat ${ndataskip} $nblocks ${molec}.gemc-razavi
+	bash $HOME/Git/TranSFF/Scripts/GONvtRdr/GOGE_BlockAvg.sh Blk_${OutputName}_BOX_0.dat Blk_${OutputName}_BOX_1.dat ${ndataskip} $nblocks ${molecule}.gemc-razavi
 fi
 

@@ -1,6 +1,8 @@
 #!/bin/bash
 OutFile=$1
 
+if [ "$OutFile" == "" ]; then echo "Please specify a name for the output file. Exiting..."; exit; fi
+
 CD=${PWD}
 
 for folder in `ls -d I-*/ | sort -V`

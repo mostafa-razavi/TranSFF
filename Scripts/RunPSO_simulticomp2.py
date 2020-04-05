@@ -5,39 +5,50 @@ from multiprocessing import Process, Pool
 import numpy
 
 # Input parameters ##################
-run_name = "SimultaneousPSO_IC8-22MB_N500_select9"
-molecules_array = ["IC8", "22MB"]
-datafile_keyword_array=[ "REFPROP", "MiPPE"]
-site_names_array = ["CT"]
+run_name = "SimulPSO_C2-C3-C4-C8-C12_N500_select9_rmsd_wide-range_P12"
+molecules_array = ["C2", "C3", "C4", "C8", "C12"]
+datafile_keyword_array=[ "REFPROP", "REFPROP", "REFPROP", "REFPROP", "REFPROP"]
+site_names_array = ["CH3", "CH2"]
 
-ref_array1 = "3.780-120.2_4.693-13.7_6.305-1.15 3.78-123_4.73-25_6.32-5 3.79-120_4.68-10_6.35-8" #IC8 
-ref_array2 = "3.8-123-3.8-120_4.0-58.0-6.30-1.5 3.8-123-3.8-120_4.0-58.0-6.31-0.5" #22MB 
+#ref_array1 = "3.80-100 3.82-110 3.75-98.0 3.73-93.0 3.79-98.0 3.77-88.0 3.75-108.0" #C2
+#ref_array2 = "3.80-100_4.00-48 3.82-110_4.01-45 3.75-98.0_3.95-46.0 3.79-93.0_3.97-43.5 3.75-108.0_3.91-50.5 3.73-98.0_3.95-54.0 3.77-103.0_3.93-47.0" #C3
+#ref_array3 = "3.80-100_4.00-48 3.82-110_4.01-45 3.75-98.0_3.95-46.0 3.73-88.0_3.97-50.5 3.77-98.0_3.91-47.0 3.75-108.0_3.95-43.5 3.79-93.0_3.99-40.0" #C4
+#ref_array4 = "3.80-100_4.00-48 3.82-110_4.01-45 3.75-98.0_3.95-46.0 3.73-88.0_3.97-50.5 3.77-98.0_3.91-47.0 3.75-108.0_3.95-43.5 3.79-93.0_3.99-40.0" #C8
+#ref_array5 = "3.80-100_4.00-48 3.82-110_4.01-45 3.75-98.0_3.95-46.0 3.73-88.0_3.97-50.5 3.77-98.0_3.91-47.0 3.75-108.0_3.95-43.5 3.79-93.0_3.99-40.0" #C12
 
-raw_par_path="$HOME/Git/TranSFF/Forcefields/TranSFF0_Alkanes_CT-SOME.par"
-GOMC_exe="$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
-z_wt="0.8"
-u_wt="0.2"
-n_wt="0.0001"
-Nsnapshots="500"
-rerun_inp="none"
-number_of_lowest_Neff="1"
-target_Neff="25"
-Nproc_per_particle="5"
-ITIC_subset_name="select9"
+ref_array1 = "3.75-98.0 3.73-93.0 3.71-103.0 3.79-98.0 3.77-88.0 3.75-108.0" #C2
+ref_array2 = "3.75-98.0_3.95-46.0 3.79-93.0_3.97-43.5 3.75-108.0_3.91-50.5 3.71-88.0_3.99-40.0 3.73-98.0_3.95-54.0 3.77-103.0_3.93-47.0" #C3
+ref_array3 = "3.75-98.0_3.95-46.0 3.73-88.0_3.97-50.5 3.77-98.0_3.91-47.0 3.75-108.0_3.95-43.5 3.71-103.0_3.93-54.0 3.79-93.0_3.99-40.0" #C4
+ref_array4 = "3.75-98.0_3.95-46.0 3.73-88.0_3.97-50.5 3.77-98.0_3.91-47.0 3.75-108.0_3.95-43.5 3.71-103.0_3.93-54.0 3.79-93.0_3.99-40.0" #C8
+ref_array5 = "3.75-98.0_3.95-46.0 3.73-88.0_3.97-50.5 3.77-98.0_3.91-47.0 3.75-108.0_3.95-43.5 3.71-103.0_3.93-54.0 3.79-93.0_3.99-40.0" #C12
+
+weights_file = "$HOME/Git/TranSFF/Weights/select9_satZx10_lowrhoZx4_satUx2.wts"
+raw_par_path = "$HOME/Git/TranSFF/Forcefields/TraPPE-UA_Alkanes_SOME.par"
+GOMC_exe = "$HOME/Git/GOMC/GOMC-FSHIFT2-SWF-HighPrecisionPDB-StartFrame/bin/GOMC_CPU_NVT"
+#z_wt="0.8"
+#u_wt="0.2"
+#n_wt="0.0001"
+ZU_or_onlyU = "ZU"
+Nsnapshots = "500"
+rerun_inp = "none"
+#number_of_lowest_Neff="1"
+#target_Neff="25"
+Nproc_per_particle = "3"
+ITIC_subset_name = "select9"
 n_exp = 12
-
+sig_sigfig = 3
+eps_sigfig = 1
 
 # Set PSO parameters ################
-swarm_size = 6
-max_iterations = 50
+swarm_size = 12
+max_iterations = 20
 tol = 1e-6
 
 # Set PSO bounds and initial guesses ################
-lb = [6.27, 0.3]
-ub = [6.33, 5.0]
-initial_guess = [[], [], [], [], [], []]
+lb = [3.73, 92, 3.93, 42]
+ub = [3.82, 106, 4.02, 60]
+initial_guess = [[], [], [], [], [], [], [], [], [], [], [], []]
 nnbp = 2
-
 
 
 #============================================================================================
@@ -74,9 +85,9 @@ def objective_function(x):
         for isite in range(0, len(site_names_array)):
             for inbp in range(0, nnbp):
                 if inbp/nnbp == 0:
-                    vars()['sig' + str(isite)] = round( sig_eps_nnn[isite * nnbp + inbp], 4)
+                    vars()['sig' + str(isite)] = round( sig_eps_nnn[isite * nnbp + inbp], sig_sigfig)
                 else:
-                    vars()['eps' + str(isite)] = round( sig_eps_nnn[isite * nnbp + inbp], 2)
+                    vars()['eps' + str(isite)] = round( sig_eps_nnn[isite * nnbp + inbp], eps_sigfig)
 
         site_sig_eps_nnn = ""
         for isite in range(0, len(site_names_array)):
@@ -90,18 +101,15 @@ def objective_function(x):
         arg4 = raw_par_path
         arg5 = datafile_keywords_string
         arg6 = GOMC_exe
-        arg7 = z_wt
-        arg8 = u_wt
-        arg9 = n_wt
-        arg10 = Nsnapshots
-        arg11 = rerun_inp                                                                             
-        arg12 = number_of_lowest_Neff
-        arg13 = target_Neff
-        arg14 = Nproc_per_particle
-        arg15 = ITIC_subset_name
-        arg16 = all_molecules_ref_string
+        arg7 = weights_file
+        arg8 = ZU_or_onlyU
+        arg9 = Nsnapshots
+        arg10 = rerun_inp                                                                             
+        arg11 = Nproc_per_particle
+        arg12 = ITIC_subset_name
+        arg13 = all_molecules_ref_string
 
-        command = "bash $HOME/Git/TranSFF/Scripts/simulticomp.sh" + " " + arg1 + " " + arg2+  " " + arg3 + " " + arg4 + " " + arg5 + " " + arg6 + " " + arg7 + " " + arg8 + " " + arg9 + " " + arg10 + " " + arg11 + " " + arg12 + " " + arg13 + " " + arg14 + " " + arg15 + " " + arg16
+        command = "bash $HOME/Git/TranSFF/Scripts/simulticomp.sh" + " " + arg1 + " " + arg2+  " " + arg3 + " " + arg4 + " " + arg5 + " " + arg6 + " " + arg7 + " " + arg8 + " " + arg9 + " " + arg10 + " " + arg11 + " " + arg12 + " " + arg13 #+ " " + arg14 + " " + arg15 + " " + arg16
         print(command)
 
         os.system(command)
@@ -129,13 +137,15 @@ def objective_function(x):
         scores_data = numpy.loadtxt(score_file_address, skiprows=1, usecols=[1,2,3])
 
         if len(molecules_array) == 1:
-            sum_z_scores = numpy.sum(scores_data[1])  # if only one molecule is being optimized => sum_z_scores = numpy.sum(scores_data[1])
-            sum_u_scores = numpy.sum(scores_data[2])  # if only one molecule is being optimized => sum_u_scores = numpy.sum(scores_data[2])
+            #sum_z_scores = numpy.sum(scores_data[1])  # if only one molecule is being optimized => sum_z_scores = numpy.sum(scores_data[1])
+            #sum_u_scores = numpy.sum(scores_data[2])  # if only one molecule is being optimized => sum_u_scores = numpy.sum(scores_data[2])
+            score = numpy.sum(scores_data[0])
         else:
-            sum_z_scores = numpy.sum(scores_data[:,1])  # if more than one molecule is being optimized => sum_z_scores = numpy.sum(scores_data[:,1])
-            sum_u_scores = numpy.sum(scores_data[:,2])  # if more than one molecule is being optimized => sum_u_scores = numpy.sum(scores_data[:,2])
+            #sum_z_scores = numpy.sum(scores_data[:,1])  # if more than one molecule is being optimized => sum_z_scores = numpy.sum(scores_data[:,1])
+            #sum_u_scores = numpy.sum(scores_data[:,2])  # if more than one molecule is being optimized => sum_u_scores = numpy.sum(scores_data[:,2])
+            score = numpy.sum(scores_data[:,0])
 
-        score = sum_z_scores + sum_u_scores
+        #score = sum_z_scores + sum_u_scores
         objective_array.append(score)
 
     print("objective_array: ", objective_array)
@@ -149,4 +159,4 @@ xopt, fopt = parallel_pso(objective_function, lb, ub, ig = initial_guess ,swarms
 
 print("xopt, fopt: ", xopt, fopt)
 
-os.system("bash $HOME/Git/TranSFF/Scripts/simulticomp_organize.sh " + run_name + " " + molecules)
+os.system("bash $HOME/Git/TranSFF/Scripts/simulticomp_organize2.sh " + run_name + " " + molecules)

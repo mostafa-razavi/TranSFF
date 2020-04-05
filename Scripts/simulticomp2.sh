@@ -18,9 +18,9 @@ ITIC_subset_name=${12}
 
 molecules_array=($molecules)
 datafile_keywords=($datafile_keywords_string)
-last_arg=$(echo "11 + ${#molecules_array[@]}" | bc)
+last_arg=$(echo "12 + ${#molecules_array[@]}" | bc)
 j=-1
-for ((i = 12; i <= $last_arg; i++ )); do
+for ((i = 13; i <= $last_arg; i++ )); do
     j=$((j+1))
     all_ref_array[j]="${!i}"
 done

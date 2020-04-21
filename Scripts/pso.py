@@ -74,10 +74,14 @@ def parallel_pso(func, lb, ub, ig=[], ieqcons=[], f_ieqcons=None, args=(), kwarg
    
     vhigh = np.abs(ub - lb)
     vlow = -vhigh
-    if not ig:
-        pass
-    else:
+    if ig:
         assert len(ig)==swarmsize, 'The size of initial guess list should be the same as number of particles'
+        for i in range(len(ig)):
+            if len(ig[i]) != 0:
+                assert len(ig[i])==len(lb), 'The size of each element of initial guess list should be the same as length of bounds'
+                assert np.all(ub >= ig[i]), 'All upper-bound values must be greater than initial guess'
+                assert np.all(lb <= ig[i]), 'All lower-bound values must be smaller than initial guess'
+
 
     # Check for constraint function(s) #########################################
     obj = lambda x: func(x, *args, **kwargs)

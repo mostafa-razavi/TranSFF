@@ -4,11 +4,11 @@ round() {
   printf "%.${2}f" "${1}"
 }
 
-select_what="select9"
-forcefield="REFPROP"
+select_what="select5sat3lowrho2"
+forcefield="MiPPE"
 inFile="${forcefield}_${select_what}.res"
 
-for iMolec in *
+for iMolec in 1C5E 1C6E 1C7E #c-2C4E t-2C4E # #
 do
 
     T_IT1=$(grep -R "T_IT:" $HOME/Git/TranSFF/Molecules/${iMolec}/${iMolec}.itic | awk '{print $2}')

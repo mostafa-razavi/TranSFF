@@ -70,7 +70,7 @@ def parallel_pso(func, lb, ub, ig=[], ieqcons=[], f_ieqcons=None, args=(), kwarg
     assert hasattr(func, '__call__'), 'Invalid function handle'
     lb = np.array(lb)
     ub = np.array(ub)
-    assert np.all(ub>lb), 'All upper-bound values must be greater than lower-bound values'
+    assert np.all(ub>=lb), 'All upper-bound values must be greater than pr equal lower-bound values'
    
     vhigh = np.abs(ub - lb)
     vlow = -vhigh
@@ -301,7 +301,7 @@ def serial_pso(func, lb, ub, ig=[], ieqcons=[], f_ieqcons=None, args=(), kwargs=
     assert hasattr(func, '__call__'), 'Invalid function handle'
     lb = np.array(lb)
     ub = np.array(ub)
-    assert np.all(ub>lb), 'All upper-bound values must be greater than lower-bound values'
+    assert np.all(ub>=lb), 'All upper-bound values must be greater than or equal lower-bound values'
    
     vhigh = np.abs(ub - lb)
     vlow = -vhigh
@@ -525,7 +525,7 @@ def parallel_pso_auxiliary(func, lb, ub, ig=[], ieqcons=[], f_ieqcons=None, args
     assert hasattr(func, '__call__'), 'Invalid function handle'
     lb = np.array(lb)
     ub = np.array(ub)
-    assert np.all(ub>lb), 'All upper-bound values must be greater than lower-bound values'
+    assert np.all(ub>=lb), 'All upper-bound values must be greater than or equal lower-bound values'
    
     vhigh = np.abs(ub - lb)
     vlow = -vhigh
@@ -757,7 +757,7 @@ def parallel_pso_auxiliary_chain(func, lb, ub, ig=[], ieqcons=[], f_ieqcons=None
     assert hasattr(func, '__call__'), 'Invalid function handle'
     lb = np.array(lb)
     ub = np.array(ub)
-    assert np.all(ub>lb), 'All upper-bound values must be greater than lower-bound values'
+    assert np.all(ub>=lb), 'All upper-bound values must be greater than or equal lower-bound values'
    
     vhigh = np.abs(ub - lb)
     vlow = -vhigh
@@ -988,7 +988,7 @@ def parallel_pso_const(func, lb, ub, ig=[], const_list=[], ieqcons=[], f_ieqcons
     assert hasattr(func, '__call__'), 'Invalid function handle'
     lb = np.array(lb)
     ub = np.array(ub)
-    assert np.all(ub>lb), 'All upper-bound values must be greater than lower-bound values'
+    assert np.all(ub>=lb), 'All upper-bound values must be greater than or equal lower-bound values'
    
     vhigh = np.abs(ub - lb)
     vlow = -vhigh

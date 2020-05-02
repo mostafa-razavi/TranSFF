@@ -933,8 +933,8 @@ def parallel_pso_const(func, lb, ub, ig=[], const_list=[], ieqcons=[], f_ieqcons
     Optional
     ========
     const : list
-        A list of strings. If an element is "NA" the corresponding variable is subject to change, but if
-        the list contains a string value of for example "3.58", the corresponding variable will be kept constant
+        A list of floats. If the nth element is None the corresponding nth variable is subject to change, but if
+        the list contains a float, the corresponding variable will be kept constant at that value
     ig : list
         A list of tuples each representing the initial guess for one particle
     ieqcons : list
@@ -1003,7 +1003,7 @@ def parallel_pso_const(func, lb, ub, ig=[], const_list=[], ieqcons=[], f_ieqcons
         assert len(const_list)==len(ub), 'The size of constant list should be the same as the number of variables'
         # Check validity of constant list
         for j in range(len(ub)):
-            if const_list[j] != "NA":
+            if const_list[j] != None:
                 try:
                     float(const_list[j])
                 except:
@@ -1060,7 +1060,7 @@ def parallel_pso_const(func, lb, ub, ig=[], const_list=[], ieqcons=[], f_ieqcons
         # Apply constant list
         for i in range(S):
             for j in range(D):
-                if const_list[j] != "NA":
+                if const_list[j] != None:
                     x[i, j] = float(const_list[j])
             p[i, :] = x[i, :]
 
@@ -1090,7 +1090,7 @@ def parallel_pso_const(func, lb, ub, ig=[], const_list=[], ieqcons=[], f_ieqcons
     else:
         # Apply constant list
         for j in range(D):
-            if const_list[j] != "NA":
+            if const_list[j] != None:
                 g[j] = float(const_list[j])       
 
 
@@ -1163,7 +1163,7 @@ def parallel_pso_const(func, lb, ub, ig=[], const_list=[], ieqcons=[], f_ieqcons
             else:
                 # Apply constant list                        
                 for j in range(D):
-                    if const_list[j] != "NA":
+                    if const_list[j] != None:
                         x[i:j] = float(const_list[j])  
                         g[j] = float(const_list[j])     
 

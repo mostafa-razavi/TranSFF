@@ -5,10 +5,11 @@
 #select_which="1 2 6 10" #select3sat3
 #select_which="1 2 10 17" #select3sat2lowrho1
 #select_which="1 2 10 17 20" #select4
-select_which="1 2 6 10 17 20" #select5sat3lowrho2
+#select_which="1 2 6 10 17 20" #select5sat3lowrho2
+select_which="1 2 10 17 21" #select4_2-10-17-21
 
-select_what="select5sat3lowrho2"
-forcefield="REFPROP"
+select_what="select4_2-10-17-21"
+forcefield="MiPPE-SWF"
 
 for i in */
 do

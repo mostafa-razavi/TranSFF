@@ -6,18 +6,21 @@
 #select_which="1 2 10 17" #select3sat2lowrho1
 #select_which="1 2 10 17 20" #select4
 #select_which="1 2 6 10 17 20" #select5sat3lowrho2
-select_which="1 2 10 17 21" #select4_2-10-17-21
+#select_which="1 2 10 17 21" #select4_2-10-17-21
+select_which="1 2 10 18 20" #select4_2-10-18-20
 
-select_what="select4_2-10-17-21"
-forcefield="MiPPE-SWF"
+select_what="select4_2-10-18-20"
 
-for i in */
+for iFF in REFPROP TraPPE MiPPE TraPPE-SWF MiPPE-SWF
 do
-    rm -rf ${i}${forcefield}_${select_what}.res
-    for l in $select_which
+    for i in */
     do
-        if [ -e "${i}${forcefield}.res" ]; then
-            sed "${l}q;d" ${i}${forcefield}.res >> ${i}${forcefield}_${select_what}.res
-        fi
+        rm -rf ${i}${iFF}_${select_what}.res
+        for l in $select_which
+        do
+            if [ -e "${i}${iFF}.res" ]; then
+                sed "${l}q;d" ${i}${iFF}.res >> ${i}${iFF}_${select_what}.res
+            fi
+        done
     done
 done

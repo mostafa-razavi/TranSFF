@@ -21,4 +21,4 @@ done
 mv $CD/*.score $CD/$run_name
 mv $CD/*.parallel $CD/$run_name
 mv $CD/*.log $CD/$run_name
-cp $CD/*simulticomp.py $CD/$run_name
+cp $CD/*simulticomp2.py $CD/$run_name

@@ -24,3 +24,4 @@ do
 done
 
 python3.6 $HOME/Git/TranSFF/Scripts/ITIC/calc_deviations_from_dippr.py $vle_data_file $outfile
+#python3.6 $HOME/Git/TranSFF/Scripts/ITIC/calc_deviations_from_dippr_rmsd.py $vle_data_file $outfile
